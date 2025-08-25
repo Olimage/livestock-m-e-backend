@@ -9,7 +9,7 @@ $namespace = 'App\Http\Controllers';
 Route::group([
     'prefix'=>'/v1',
     'namespace' => $namespace,
-    'middleware' => ['json-response'],
+    'middleware' => ['json-response', 'cors'],
 ], function(){
 
 
