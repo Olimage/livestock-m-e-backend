@@ -37,3 +37,5 @@ docker/volumes
 /.env.backup
 /.env.production
 /docs
+makefile
+./makefile
