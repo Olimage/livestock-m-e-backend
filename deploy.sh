@@ -1,9 +1,6 @@
 #!/bin/bash
 cd /var/www/laravel
 
-# Pull latest changes
-git pull origin main
-
 # Install PHP dependencies
 composer install --no-dev --optimize-autoloader
 
