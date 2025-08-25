@@ -38,6 +38,6 @@ docker/volumes
 /.env.production
 /docs
 makefile
-./makefile
+/makefile
 .env
-./.env
+/.env
