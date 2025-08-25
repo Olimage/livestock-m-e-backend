@@ -18,9 +18,9 @@ php artisan route:cache
 php artisan view:cache
 
 # Set proper permissions
-echo "Setting permissions..."
-chmod -R 755 storage bootstrap/cache
-chown -R www-data:www-data storage bootstrap/cache
+# echo "Setting permissions..."
+# chmod -R 755 storage bootstrap/cache
+# chown -R www-data:www-data storage bootstrap/cache
 
 # Restart services (optional - uncomment if needed)
 # echo "Restarting Apache..."
