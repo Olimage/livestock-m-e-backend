@@ -16,6 +16,7 @@ php artisan optimize:clear
 php artisan optimize
 php artisan route:cache
 php artisan view:cache
+php artisan config:clear
 
 # Set proper permissions
 # echo "Setting permissions..."
