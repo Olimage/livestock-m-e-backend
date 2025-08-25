@@ -41,3 +41,4 @@ makefile
 /makefile
 .env
 /.env
+/storage
