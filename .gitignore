@@ -39,3 +39,5 @@ docker/volumes
 /docs
 makefile
 ./makefile
+.env
+./.env
