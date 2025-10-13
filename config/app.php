@@ -15,6 +15,9 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'baseline_domain' => env('BASELINE_DOMAIN', null),
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -123,6 +126,5 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'baseline_domain' => env('BASELINE_DOMAIN', null),
 
 ];
