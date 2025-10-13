@@ -1,21 +1,45 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Artisan;
-use App\Models\User;
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
 
 Route::get('/', function () {
     // return view('welcome');
 
-     return Inertia::render('Welcome');
+    //  return Inertia::render('Welcome');
+    //  return Inertia::render('Welcome', [
+    //     'canLogin' => Route::has('login'),
+    //     'canRegister' => Route::has('register'),
+    //     'laravelVersion' => Application::VERSION,
+    //     'phpVersion' => PHP_VERSION,
+    // ]);
 
-    return response()->json('hello world', 200  );
+    return response()->json('hello world', 200);
 })->name('home');
 
+Route::group(['prefix' => '/baseline'], function () {
 
+    Route::get('/', function () {
+
+        return Inertia::render('Baseline/Pages/Dashboard', [
+            // 'users' => User::all()
+        ]);
+        // return Inertia::render('Baseline/Index');
+        // return Inertia::render('Baseline/Index', [
+        //     'users' => User::all()
+        // ]);
+    })->name('baseline');
+
+    Route::get('/new', function () {
+        return Inertia::render('Baseline/Pages/NewEnumeration');
+    })->name('new');
+
+    Route::get('/saved-data', function () {
+        // return Inertia::render('SavedData');
+    })->name('saved-data');
+
+});
 
 Route::get('/clear-cache', function () {
     Artisan::call('config:clear');
@@ -25,22 +49,21 @@ Route::get('/clear-cache', function () {
     return 'Cache cleared!';
 });
 
-
 Route::get('/run-seed', function () {
     Artisan::call('db:seed');
     $output = Artisan::output();
 
     return response()->json([
         'message' => 'Database seeding executed successfully!',
-        'output'  => $output
+        'output'  => $output,
     ]);
 });
 
 Route::get('/run-worker', function () {
     try {
         Artisan::call('queue:work', [
-            // '--once' => true, // Only process one job
-            '--quiet' => true // Optional: suppress verbose output
+                               // '--once' => true, // Only process one job
+            '--quiet' => true, // Optional: suppress verbose output
         ]);
 
         $output = Artisan::output();
@@ -51,10 +74,8 @@ Route::get('/run-worker', function () {
         ]);
     } catch (\Exception $e) {
         return response()->json([
-            'status' => 'error',
+            'status'  => 'error',
             'message' => $e->getMessage(),
         ], 500);
     }
 });
-
-

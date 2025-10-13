@@ -1,0 +1,236 @@
+{
+  "_BeLayout-Dz1cWBdJ.css": {
+    "file": "assets/BeLayout-Dz1cWBdJ.css",
+    "src": "_BeLayout-Dz1cWBdJ.css"
+  },
+  "_BeLayout-epcUHFxn.js": {
+    "file": "assets/BeLayout-epcUHFxn.js",
+    "name": "BeLayout",
+    "imports": [
+      "resources/js/app.js",
+      "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
+      "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/BeLayout-Dz1cWBdJ.css",
+      "assets/FootBe-CjeHUH2E.css"
+    ]
+  },
+  "_FootBe-CjeHUH2E.css": {
+    "file": "assets/FootBe-CjeHUH2E.css",
+    "src": "_FootBe-CjeHUH2E.css"
+  },
+  "__plugin-vue_export-helper-DlAUqK2U.js": {
+    "file": "assets/_plugin-vue_export-helper-DlAUqK2U.js",
+    "name": "_plugin-vue_export-helper"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff": {
+    "file": "assets/bootstrap-icons-BeopsB42.woff",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2": {
+    "file": "assets/bootstrap-icons-mSm7cUeB.woff2",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-BvW8wQQk.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/Pages/Baseline/Pages/Dashboard.vue": {
+    "file": "assets/Dashboard-CLEa6EbE.js",
+    "name": "Dashboard",
+    "src": "resources/js/Pages/Baseline/Pages/Dashboard.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_BeLayout-epcUHFxn.js",
+      "resources/js/Pages/Baseline/components/Statistics.vue",
+      "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
+      "__plugin-vue_export-helper-DlAUqK2U.js",
+      "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue"
+    ],
+    "css": [
+      "assets/FootBe-CjeHUH2E.css"
+    ]
+  },
+  "resources/js/Pages/Baseline/Pages/NewEnumeration.vue": {
+    "file": "assets/NewEnumeration-B4HbYSFf.js",
+    "name": "NewEnumeration",
+    "src": "resources/js/Pages/Baseline/Pages/NewEnumeration.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_BeLayout-epcUHFxn.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js",
+      "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
+      "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue"
+    ],
+    "css": [
+      "assets/NewEnumeration-Cil-BD7b.css",
+      "assets/FootBe-CjeHUH2E.css"
+    ]
+  },
+  "resources/js/Pages/Baseline/components/Statistics.vue": {
+    "file": "assets/Statistics-BO-Ol3JJ.js",
+    "name": "Statistics",
+    "src": "resources/js/Pages/Baseline/components/Statistics.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/Statistics-DfG7wdpN.css"
+    ]
+  },
+  "resources/js/Pages/Baseline/components/user_layout/FootBe.vue": {
+    "file": "assets/FootBe-CcA6rGKp.js",
+    "name": "FootBe",
+    "src": "resources/js/Pages/Baseline/components/user_layout/FootBe.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "__plugin-vue_export-helper-DlAUqK2U.js",
+      "resources/js/app.js"
+    ],
+    "css": [
+      "assets/FootBe-CjeHUH2E.css"
+    ]
+  },
+  "resources/js/Pages/Baseline/components/user_layout/Footer.vue": {
+    "file": "assets/Footer-BweEl1ry.js",
+    "name": "Footer",
+    "src": "resources/js/Pages/Baseline/components/user_layout/Footer.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "__plugin-vue_export-helper-DlAUqK2U.js",
+      "resources/js/app.js"
+    ],
+    "css": [
+      "assets/Footer-D1VmwMCW.css"
+    ]
+  },
+  "resources/js/Pages/Baseline/components/user_layout/Header.vue": {
+    "file": "assets/Header-C-pq24qW.js",
+    "name": "Header",
+    "src": "resources/js/Pages/Baseline/components/user_layout/Header.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "__plugin-vue_export-helper-DlAUqK2U.js",
+      "resources/js/app.js"
+    ],
+    "css": [
+      "assets/Header-BBFl5h_K.css"
+    ]
+  },
+  "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue": {
+    "file": "assets/NavSidebar-tZQG6JX5.js",
+    "name": "NavSidebar",
+    "src": "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/NavSidebar-CTEeL6sx.css"
+    ]
+  },
+  "resources/js/Pages/Baseline/components/user_layout/Sidebar.vue": {
+    "file": "assets/Sidebar-8Wpgc17A.js",
+    "name": "Sidebar",
+    "src": "resources/js/Pages/Baseline/components/user_layout/Sidebar.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "__plugin-vue_export-helper-DlAUqK2U.js",
+      "resources/js/app.js"
+    ],
+    "css": [
+      "assets/Sidebar-DCXHfB_O.css"
+    ]
+  },
+  "resources/js/Pages/Baseline/components/user_layout/TopBar.vue": {
+    "file": "assets/TopBar-CHVjOce3.js",
+    "name": "TopBar",
+    "src": "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/TopBar-BaAtCClG.css"
+    ]
+  },
+  "resources/js/Pages/Baseline/components/user_layout/be_layout.vue": {
+    "file": "assets/be_layout-9j7DJytc.js",
+    "name": "be_layout",
+    "src": "resources/js/Pages/Baseline/components/user_layout/be_layout.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/be_layout-CrzAGDYw.css",
+      "assets/FootBe-CjeHUH2E.css"
+    ]
+  },
+  "resources/js/Pages/Baseline/components/user_layout/fe_layout.vue": {
+    "file": "assets/fe_layout-DkgPu7Xp.js",
+    "name": "fe_layout",
+    "src": "resources/js/Pages/Baseline/components/user_layout/fe_layout.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/Pages/Baseline/components/user_layout/Header.vue",
+      "resources/js/Pages/Baseline/components/user_layout/Footer.vue",
+      "resources/js/app.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ]
+  },
+  "resources/js/Pages/Welcome.vue": {
+    "file": "assets/Welcome-BGsz9xBi.js",
+    "name": "Welcome",
+    "src": "resources/js/Pages/Welcome.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_BeLayout-epcUHFxn.js",
+      "resources/js/app.js",
+      "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
+      "__plugin-vue_export-helper-DlAUqK2U.js",
+      "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue"
+    ],
+    "css": [
+      "assets/FootBe-CjeHUH2E.css"
+    ]
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-qeQ2ps81.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/Pages/Baseline/Pages/Dashboard.vue",
+      "resources/js/Pages/Baseline/Pages/NewEnumeration.vue",
+      "resources/js/Pages/Baseline/components/Statistics.vue",
+      "resources/js/Pages/Baseline/components/user_layout/FootBe.vue",
+      "resources/js/Pages/Baseline/components/user_layout/Footer.vue",
+      "resources/js/Pages/Baseline/components/user_layout/Header.vue",
+      "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue",
+      "resources/js/Pages/Baseline/components/user_layout/Sidebar.vue",
+      "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
+      "resources/js/Pages/Baseline/components/user_layout/be_layout.vue",
+      "resources/js/Pages/Baseline/components/user_layout/fe_layout.vue",
+      "resources/js/Pages/Welcome.vue"
+    ],
+    "css": [
+      "assets/app-BTILH_m9.css"
+    ],
+    "assets": [
+      "assets/bootstrap-icons-mSm7cUeB.woff2",
+      "assets/bootstrap-icons-BeopsB42.woff"
+    ]
+  }
+}
