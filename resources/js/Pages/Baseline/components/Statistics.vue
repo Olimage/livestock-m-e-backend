@@ -5,7 +5,7 @@ const newSurvey =
     {
         title: 'New Survey',
         icon: 'bi bi-plus-square',
-        route: '/new'
+        route: 'baseline-new'
     }
 
 </script>
@@ -25,7 +25,7 @@ const newSurvey =
                 <div class="  card text-bg-light">
                     <div class="card-header"> Statistics
 
-                        <Link :href="newSurvey.route" class="btn btn-success float-end">
+                        <Link :href="route(newSurvey.route)" class="btn btn-success float-end">
                         New Input <i :class="newSurvey.icon"></i>
                         </Link>
                        

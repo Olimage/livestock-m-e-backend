@@ -1,11 +1,7 @@
 <template>
   <div>
     <!-- Overlay for mobile -->
-    <div 
-      class="offcanvas-overlay" 
-      :class="{ 'show': showOffcanvas }" 
-      @click="closeOffcanvas"
-    ></div>
+    <div class="offcanvas-overlay" :class="{ 'show': showOffcanvas }" @click="closeOffcanvas"></div>
 
     <!-- Sidebar / Off-canvas -->
     <div :class="[
@@ -33,14 +29,10 @@
         <nav class="sidebar-nav">
           <ul class="nav flex-column">
             <li class="nav-item" v-for="item in navItems" :key="item.name">
-              <Link
-                :href="item.path"
-                class="nav-link"
-                :class="{ active: isActive(item.path) }"
-                @click="onNavClick"
-              >
-                <i :class="item.icon"></i>
-                <span class="nav-text">{{ item.name }}</span>
+              <Link :href="route(item.routeName)" class="nav-link" :class="{ active: isActive(item.routeName) }"
+                @click="onNavClick">
+              <i :class="item.icon"></i>
+              <span class="nav-text">{{ item.name }}</span>
               </Link>
             </li>
           </ul>
@@ -69,9 +61,9 @@ export default {
     return {
       collapsed: false,
       navItems: [
-        { name: 'Dashboard', path: '/', icon: 'bi bi-speedometer2' },
-        { name: 'New Input', path: '/new', icon: 'bi bi-plus-square' },
-        { name: 'Saved Data', path: '/saved-data', icon: 'bi bi-floppy' },
+        { name: 'Dashboard', routeName: 'baseline-dashboard', icon: 'bi bi-speedometer2' },
+        { name: 'New Input', routeName: 'baseline-new', icon: 'bi bi-plus-square' },
+        { name: 'Saved Data', routeName: 'baseline-saved-data', icon: 'bi bi-floppy' },
       ]
     }
   },
@@ -90,9 +82,11 @@ export default {
     }
   },
   methods: {
-    isActive(path) {
-      return this.currentUrl === path
-    },
+
+    isActive(routeName) {
+  return this.$page.props.routeName === routeName
+},
+    
     toggleCollapse() {
       this.collapsed = !this.collapsed
     },

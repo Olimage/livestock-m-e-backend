@@ -1,6 +1,6 @@
 {
-  "_BeLayout-BCs7CGCT.js": {
-    "file": "assets/BeLayout-BCs7CGCT.js",
+  "_BeLayout-4tqLAcWc.js": {
+    "file": "assets/BeLayout-4tqLAcWc.js",
     "name": "BeLayout",
     "imports": [
       "resources/js/app.js",
@@ -34,18 +34,27 @@
     "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-BvW8wQQk.css",
+    "file": "assets/app-BkwbwyGf.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
+  "resources/js/Pages/Baseline/Pages/Auth/Login.vue": {
+    "file": "assets/Login-jAyIKvnc.js",
+    "name": "Login",
+    "src": "resources/js/Pages/Baseline/Pages/Auth/Login.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
   "resources/js/Pages/Baseline/Pages/Dashboard.vue": {
-    "file": "assets/Dashboard-D0b5F2Zt.js",
+    "file": "assets/Dashboard-QJXM1KYC.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Baseline/Pages/Dashboard.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_BeLayout-BCs7CGCT.js",
+      "_BeLayout-4tqLAcWc.js",
       "resources/js/Pages/Baseline/components/Statistics.vue",
       "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
       "__plugin-vue_export-helper-DlAUqK2U.js",
@@ -56,13 +65,13 @@
     ]
   },
   "resources/js/Pages/Baseline/Pages/NewEnumeration.vue": {
-    "file": "assets/NewEnumeration-Bw2ut2PU.js",
+    "file": "assets/NewEnumeration-BxaoSaFw.js",
     "name": "NewEnumeration",
     "src": "resources/js/Pages/Baseline/Pages/NewEnumeration.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_BeLayout-BCs7CGCT.js",
+      "_BeLayout-4tqLAcWc.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
       "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
       "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue"
@@ -73,7 +82,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/Statistics.vue": {
-    "file": "assets/Statistics-CUi4ErXP.js",
+    "file": "assets/Statistics-CbVRdScp.js",
     "name": "Statistics",
     "src": "resources/js/Pages/Baseline/components/Statistics.vue",
     "isDynamicEntry": true,
@@ -82,11 +91,11 @@
       "__plugin-vue_export-helper-DlAUqK2U.js"
     ],
     "css": [
-      "assets/Statistics-Dvj8i0hw.css"
+      "assets/Statistics-DD3oeJuW.css"
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/FootBe.vue": {
-    "file": "assets/FootBe-CPprv0HS.js",
+    "file": "assets/FootBe-C2ECZOl8.js",
     "name": "FootBe",
     "src": "resources/js/Pages/Baseline/components/user_layout/FootBe.vue",
     "isDynamicEntry": true,
@@ -99,7 +108,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/Footer.vue": {
-    "file": "assets/Footer-B-V_R8Qw.js",
+    "file": "assets/Footer-6K2VlQLz.js",
     "name": "Footer",
     "src": "resources/js/Pages/Baseline/components/user_layout/Footer.vue",
     "isDynamicEntry": true,
@@ -112,7 +121,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/Header.vue": {
-    "file": "assets/Header-Dqe7PFJn.js",
+    "file": "assets/Header-PZJ1v7nA.js",
     "name": "Header",
     "src": "resources/js/Pages/Baseline/components/user_layout/Header.vue",
     "isDynamicEntry": true,
@@ -125,7 +134,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue": {
-    "file": "assets/NavSidebar-mq0mhRfc.js",
+    "file": "assets/NavSidebar-B-OGz6go.js",
     "name": "NavSidebar",
     "src": "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue",
     "isDynamicEntry": true,
@@ -134,11 +143,11 @@
       "__plugin-vue_export-helper-DlAUqK2U.js"
     ],
     "css": [
-      "assets/NavSidebar-Bc8cbX6q.css"
+      "assets/NavSidebar-D4nEbtD8.css"
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/Sidebar.vue": {
-    "file": "assets/Sidebar-DB43zELY.js",
+    "file": "assets/Sidebar-qKMIrZOC.js",
     "name": "Sidebar",
     "src": "resources/js/Pages/Baseline/components/user_layout/Sidebar.vue",
     "isDynamicEntry": true,
@@ -151,7 +160,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/TopBar.vue": {
-    "file": "assets/TopBar-DwVjLr7k.js",
+    "file": "assets/TopBar-BBcyOP15.js",
     "name": "TopBar",
     "src": "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
     "isDynamicEntry": true,
@@ -164,7 +173,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/be_layout.vue": {
-    "file": "assets/be_layout-Dvi4dzWu.js",
+    "file": "assets/be_layout-nHj5KCJE.js",
     "name": "be_layout",
     "src": "resources/js/Pages/Baseline/components/user_layout/be_layout.vue",
     "isDynamicEntry": true,
@@ -179,7 +188,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/fe_layout.vue": {
-    "file": "assets/fe_layout-Bv_wXVno.js",
+    "file": "assets/fe_layout--LW3rkLQ.js",
     "name": "fe_layout",
     "src": "resources/js/Pages/Baseline/components/user_layout/fe_layout.vue",
     "isDynamicEntry": true,
@@ -191,12 +200,12 @@
     ]
   },
   "resources/js/Pages/Welcome.vue": {
-    "file": "assets/Welcome-BWIorb2c.js",
+    "file": "assets/Welcome-DwP6zNRW.js",
     "name": "Welcome",
     "src": "resources/js/Pages/Welcome.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_BeLayout-BCs7CGCT.js",
+      "_BeLayout-4tqLAcWc.js",
       "resources/js/app.js",
       "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
       "__plugin-vue_export-helper-DlAUqK2U.js",
@@ -207,11 +216,12 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-a8SeMSoE.js",
+    "file": "assets/app-BYjJsSG6.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "dynamicImports": [
+      "resources/js/Pages/Baseline/Pages/Auth/Login.vue",
       "resources/js/Pages/Baseline/Pages/Dashboard.vue",
       "resources/js/Pages/Baseline/Pages/NewEnumeration.vue",
       "resources/js/Pages/Baseline/components/Statistics.vue",
@@ -226,7 +236,7 @@
       "resources/js/Pages/Welcome.vue"
     ],
     "css": [
-      "assets/app-BTILH_m9.css"
+      "assets/app-BVjGMGES.css"
     ],
     "assets": [
       "assets/bootstrap-icons-mSm7cUeB.woff2",

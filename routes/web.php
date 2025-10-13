@@ -6,31 +6,27 @@ use Inertia\Inertia;
 
 $baselineDomain = config('app.baseline_domain');
 
-$baselineRoutes = function(){
+$baselineRoutes = function () {
 
-    
     Route::get('/', function () {
 
         return Inertia::render('Baseline/Pages/Dashboard', [
+            'routeName' => Route::currentRouteName(),
             // 'users' => User::all()
         ]);
-        // return Inertia::render('Baseline/Index');
-        // return Inertia::render('Baseline/Index', [
-        //     'users' => User::all()
-        // ]);
-    })->name('baseline');
+        
+    })->name('baseline-dashboard');
 
     Route::get('/new', function () {
-        return Inertia::render('Baseline/Pages/NewEnumeration');
-    })->name('new');
+        return Inertia::render('Baseline/Pages/NewEnumeration', [
+            'routeName' => Route::currentRouteName(),
+        ]);
+    })->name('baseline-new');
 
     Route::get('/saved-data', function () {
-        // return Inertia::render('SavedData');
-    })->name('saved-data');
-
+    })->name('baseline-saved-data');
 
 };
-
 
 if ($baselineDomain == 'fmld-baseline.olimageserver.com') {
     Route::domain($baselineDomain)->group($baselineRoutes);
