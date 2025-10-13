@@ -32,7 +32,7 @@ $baselineRoutes = function(){
 };
 
 
-if ($baselineDomain) {
+if ($baselineDomain == 'fmld-baseline.olimageserver.com') {
     Route::domain($baselineDomain)->group($baselineRoutes);
 } else {
     Route::prefix('baseline')->group($baselineRoutes);

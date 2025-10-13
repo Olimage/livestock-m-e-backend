@@ -16,6 +16,7 @@ return [
     'name' => env('APP_NAME', 'Laravel'),
 
     'baseline_domain' => env('BASELINE_DOMAIN', null),
+    
 
 
     /*
