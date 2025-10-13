@@ -1,10 +1,6 @@
 {
-  "_BeLayout-Dz1cWBdJ.css": {
-    "file": "assets/BeLayout-Dz1cWBdJ.css",
-    "src": "_BeLayout-Dz1cWBdJ.css"
-  },
-  "_BeLayout-epcUHFxn.js": {
-    "file": "assets/BeLayout-epcUHFxn.js",
+  "_BeLayout-BCs7CGCT.js": {
+    "file": "assets/BeLayout-BCs7CGCT.js",
     "name": "BeLayout",
     "imports": [
       "resources/js/app.js",
@@ -16,6 +12,10 @@
       "assets/BeLayout-Dz1cWBdJ.css",
       "assets/FootBe-CjeHUH2E.css"
     ]
+  },
+  "_BeLayout-Dz1cWBdJ.css": {
+    "file": "assets/BeLayout-Dz1cWBdJ.css",
+    "src": "_BeLayout-Dz1cWBdJ.css"
   },
   "_FootBe-CjeHUH2E.css": {
     "file": "assets/FootBe-CjeHUH2E.css",
@@ -39,13 +39,13 @@
     "isEntry": true
   },
   "resources/js/Pages/Baseline/Pages/Dashboard.vue": {
-    "file": "assets/Dashboard-CLEa6EbE.js",
+    "file": "assets/Dashboard-D0b5F2Zt.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Baseline/Pages/Dashboard.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_BeLayout-epcUHFxn.js",
+      "_BeLayout-BCs7CGCT.js",
       "resources/js/Pages/Baseline/components/Statistics.vue",
       "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
       "__plugin-vue_export-helper-DlAUqK2U.js",
@@ -56,13 +56,13 @@
     ]
   },
   "resources/js/Pages/Baseline/Pages/NewEnumeration.vue": {
-    "file": "assets/NewEnumeration-B4HbYSFf.js",
+    "file": "assets/NewEnumeration-Bw2ut2PU.js",
     "name": "NewEnumeration",
     "src": "resources/js/Pages/Baseline/Pages/NewEnumeration.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_BeLayout-epcUHFxn.js",
+      "_BeLayout-BCs7CGCT.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
       "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
       "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue"
@@ -73,7 +73,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/Statistics.vue": {
-    "file": "assets/Statistics-BO-Ol3JJ.js",
+    "file": "assets/Statistics-CUi4ErXP.js",
     "name": "Statistics",
     "src": "resources/js/Pages/Baseline/components/Statistics.vue",
     "isDynamicEntry": true,
@@ -82,11 +82,11 @@
       "__plugin-vue_export-helper-DlAUqK2U.js"
     ],
     "css": [
-      "assets/Statistics-DfG7wdpN.css"
+      "assets/Statistics-Dvj8i0hw.css"
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/FootBe.vue": {
-    "file": "assets/FootBe-CcA6rGKp.js",
+    "file": "assets/FootBe-CPprv0HS.js",
     "name": "FootBe",
     "src": "resources/js/Pages/Baseline/components/user_layout/FootBe.vue",
     "isDynamicEntry": true,
@@ -99,7 +99,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/Footer.vue": {
-    "file": "assets/Footer-BweEl1ry.js",
+    "file": "assets/Footer-B-V_R8Qw.js",
     "name": "Footer",
     "src": "resources/js/Pages/Baseline/components/user_layout/Footer.vue",
     "isDynamicEntry": true,
@@ -112,7 +112,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/Header.vue": {
-    "file": "assets/Header-C-pq24qW.js",
+    "file": "assets/Header-Dqe7PFJn.js",
     "name": "Header",
     "src": "resources/js/Pages/Baseline/components/user_layout/Header.vue",
     "isDynamicEntry": true,
@@ -125,7 +125,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue": {
-    "file": "assets/NavSidebar-tZQG6JX5.js",
+    "file": "assets/NavSidebar-mq0mhRfc.js",
     "name": "NavSidebar",
     "src": "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue",
     "isDynamicEntry": true,
@@ -134,11 +134,11 @@
       "__plugin-vue_export-helper-DlAUqK2U.js"
     ],
     "css": [
-      "assets/NavSidebar-CTEeL6sx.css"
+      "assets/NavSidebar-Bc8cbX6q.css"
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/Sidebar.vue": {
-    "file": "assets/Sidebar-8Wpgc17A.js",
+    "file": "assets/Sidebar-DB43zELY.js",
     "name": "Sidebar",
     "src": "resources/js/Pages/Baseline/components/user_layout/Sidebar.vue",
     "isDynamicEntry": true,
@@ -151,7 +151,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/TopBar.vue": {
-    "file": "assets/TopBar-CHVjOce3.js",
+    "file": "assets/TopBar-DwVjLr7k.js",
     "name": "TopBar",
     "src": "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
     "isDynamicEntry": true,
@@ -164,7 +164,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/be_layout.vue": {
-    "file": "assets/be_layout-9j7DJytc.js",
+    "file": "assets/be_layout-Dvi4dzWu.js",
     "name": "be_layout",
     "src": "resources/js/Pages/Baseline/components/user_layout/be_layout.vue",
     "isDynamicEntry": true,
@@ -179,7 +179,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/fe_layout.vue": {
-    "file": "assets/fe_layout-DkgPu7Xp.js",
+    "file": "assets/fe_layout-Bv_wXVno.js",
     "name": "fe_layout",
     "src": "resources/js/Pages/Baseline/components/user_layout/fe_layout.vue",
     "isDynamicEntry": true,
@@ -191,12 +191,12 @@
     ]
   },
   "resources/js/Pages/Welcome.vue": {
-    "file": "assets/Welcome-BGsz9xBi.js",
+    "file": "assets/Welcome-BWIorb2c.js",
     "name": "Welcome",
     "src": "resources/js/Pages/Welcome.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_BeLayout-epcUHFxn.js",
+      "_BeLayout-BCs7CGCT.js",
       "resources/js/app.js",
       "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
       "__plugin-vue_export-helper-DlAUqK2U.js",
@@ -207,7 +207,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-qeQ2ps81.js",
+    "file": "assets/app-a8SeMSoE.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
