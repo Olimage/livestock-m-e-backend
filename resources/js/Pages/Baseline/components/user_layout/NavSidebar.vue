@@ -69,9 +69,9 @@ export default {
     return {
       collapsed: false,
       navItems: [
-        { name: 'Dashboard', path: '/baseline/', icon: 'bi bi-speedometer2' },
-        { name: 'New Input', path: '/baseline/new', icon: 'bi bi-plus-square' },
-        { name: 'Saved Data', path: '/baseline/saved-data', icon: 'bi bi-floppy' },
+        { name: 'Dashboard', path: '/', icon: 'bi bi-speedometer2' },
+        { name: 'New Input', path: '/new', icon: 'bi bi-plus-square' },
+        { name: 'Saved Data', path: '/saved-data', icon: 'bi bi-floppy' },
       ]
     }
   },

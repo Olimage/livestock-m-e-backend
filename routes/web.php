@@ -18,7 +18,10 @@ Route::get('/', function () {
     return response()->json('hello world', 200);
 })->name('home');
 
-Route::group(['prefix' => '/baseline'], function () {
+
+Route::domain('fmld-baseline.olimageserver.com')->group(function () {
+
+Route::group(['prefix' => '/'], function () {
 
     Route::get('/', function () {
 
@@ -38,6 +41,8 @@ Route::group(['prefix' => '/baseline'], function () {
     Route::get('/saved-data', function () {
         // return Inertia::render('SavedData');
     })->name('saved-data');
+
+});
 
 });
 

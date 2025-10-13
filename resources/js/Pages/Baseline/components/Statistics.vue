@@ -5,7 +5,7 @@ const newSurvey =
     {
         title: 'New Survey',
         icon: 'bi bi-plus-square',
-        route: '/baseline/new'
+        route: '/new'
     }
 
 </script>
