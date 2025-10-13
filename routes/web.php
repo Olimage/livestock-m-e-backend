@@ -18,6 +18,13 @@ Route::get('/', function () {
     return response()->json('hello world', 200);
 })->name('home');
 
+Route::get('/check-host', function (\Illuminate\Http\Request $request) {
+    return [
+        'host' => $request->getHost(),
+        'app_url' => config('app.url')
+    ];
+});
+
 
 Route::domain('fmld-baseline.olimageserver.com')->group(function () {
 
