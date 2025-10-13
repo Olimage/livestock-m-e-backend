@@ -21,7 +21,6 @@ Route::get('/', function () {
 
 Route::domain('fmld-baseline.olimageserver.com')->group(function () {
 
-Route::group(['prefix' => '/'], function () {
 
     Route::get('/', function () {
 
@@ -42,7 +41,6 @@ Route::group(['prefix' => '/'], function () {
         // return Inertia::render('SavedData');
     })->name('saved-data');
 
-});
 
 });
 
