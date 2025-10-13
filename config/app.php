@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'baseline_domain' => env('BASELINE_DOMAIN', null),
+
 ];

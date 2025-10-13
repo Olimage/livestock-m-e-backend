@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-
+$baselineDomain = config('app.baseline_domain');
 
 Route::get('/check-host', function (\Illuminate\Http\Request $request) {
     return [
@@ -14,7 +14,7 @@ Route::get('/check-host', function (\Illuminate\Http\Request $request) {
 });
 
 
-Route::domain('fmld-baseline.olimageserver.com')->group(function () {
+Route::domain($baselineDomain)->group(function () {
 
 
     Route::get('/', function () {
