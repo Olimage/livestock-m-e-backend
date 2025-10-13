@@ -6,17 +6,9 @@ use Inertia\Inertia;
 
 $baselineDomain = config('app.baseline_domain');
 
-Route::get('/check-host', function (\Illuminate\Http\Request $request) {
-    return [
-        'host' => $request->getHost(),
-        'app_url' => config('app.url')
-    ];
-});
+$baselineRoutes = function(){
 
-
-Route::domain($baselineDomain)->group(function () {
-
-
+    
     Route::get('/', function () {
 
         return Inertia::render('Baseline/Pages/Dashboard', [
@@ -37,7 +29,14 @@ Route::domain($baselineDomain)->group(function () {
     })->name('saved-data');
 
 
-});
+};
+
+
+if ($baselineDomain) {
+    Route::domain($baselineDomain)->group($baselineRoutes);
+} else {
+    Route::prefix('baseline')->group($baselineRoutes);
+}
 
 Route::get('/', function () {
     // return view('welcome');
