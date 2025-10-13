@@ -4,19 +4,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    // return view('welcome');
 
-    //  return Inertia::render('Welcome');
-    //  return Inertia::render('Welcome', [
-    //     'canLogin' => Route::has('login'),
-    //     'canRegister' => Route::has('register'),
-    //     'laravelVersion' => Application::VERSION,
-    //     'phpVersion' => PHP_VERSION,
-    // ]);
-
-    return response()->json('hello world', 200);
-})->name('home');
 
 Route::get('/check-host', function (\Illuminate\Http\Request $request) {
     return [
@@ -50,6 +38,20 @@ Route::domain('fmld-baseline.olimageserver.com')->group(function () {
 
 
 });
+
+Route::get('/', function () {
+    // return view('welcome');
+
+    //  return Inertia::render('Welcome');
+    //  return Inertia::render('Welcome', [
+    //     'canLogin' => Route::has('login'),
+    //     'canRegister' => Route::has('register'),
+    //     'laravelVersion' => Application::VERSION,
+    //     'phpVersion' => PHP_VERSION,
+    // ]);
+
+    return response()->json('hello world', 200);
+})->name('home');
 
 Route::get('/clear-cache', function () {
     Artisan::call('config:clear');
