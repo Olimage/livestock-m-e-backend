@@ -4,10 +4,13 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Artisan;
 use App\Models\User;
+use Inertia\Inertia;
 
 
 Route::get('/', function () {
     // return view('welcome');
+
+     return Inertia::render('Welcome');
 
     return response()->json('hello world', 200  );
 })->name('home');
