@@ -32,7 +32,7 @@ $baselineRoutes = function(){
 };
 
 
-if ($baselineDomain != 'local') {
+if ($baselineDomain) {
     Route::domain($baselineDomain)->group($baselineRoutes);
 } else {
     Route::prefix('baseline')->group($baselineRoutes);
