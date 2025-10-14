@@ -102,15 +102,24 @@ const submit = () => {
 
 <style scoped>
 
+
+
+
 .login-logo {
   height: 90px;
   width: auto;
   display: block;
   margin: 0 auto 1rem;
 }
+
 .auth-root {
-    background: #f6f8f9;
+  background: #f6f8f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
 }
+
 .bg-white {
     background-color: rgb(252 252 252) !important;
 }
