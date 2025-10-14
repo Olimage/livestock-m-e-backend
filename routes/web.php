@@ -26,6 +26,13 @@ $baselineRoutes = function () {
     Route::get('/saved-data', function () {
     })->name('baseline-saved-data');
 
+    Route::get('login', function () {
+        return Inertia::render('Baseline/Pages/Auth/Login', [
+            'canResetPassword' => Route::has('password.request'),
+            'status' => session('status'),
+        ]);
+    })->name('baseline-login');
+
 };
 
 if ($baselineDomain == 'fmld-baseline.olimageserver.com') {
