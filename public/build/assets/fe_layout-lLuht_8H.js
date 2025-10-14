@@ -1,1 +1,0 @@
-import r from"./Header-B28K5vNT.js";import t from"./Footer-BYWztLvh.js";import{p as a,c as n,a as e,o as m}from"./app-CNZdXexu.js";import"./_plugin-vue_export-helper-DlAUqK2U.js";const f={__name:"fe_layout",setup(c){return(p,_)=>{const o=a("router-view");return m(),n("main",null,[e(r),e(o),e(t)])}}};export{f as default};
