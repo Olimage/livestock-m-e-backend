@@ -1,6 +1,6 @@
 {
-  "_BeLayout-4tqLAcWc.js": {
-    "file": "assets/BeLayout-4tqLAcWc.js",
+  "_BeLayout-CbwpxXn_.js": {
+    "file": "assets/BeLayout-CbwpxXn_.js",
     "name": "BeLayout",
     "imports": [
       "resources/js/app.js",
@@ -34,27 +34,38 @@
     "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-BkwbwyGf.css",
+    "file": "assets/app-BnYIJ9qf.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
+  "resources/images/logo.png": {
+    "file": "assets/logo-D3CRUDmI.png",
+    "src": "resources/images/logo.png"
+  },
   "resources/js/Pages/Baseline/Pages/Auth/Login.vue": {
-    "file": "assets/Login-jAyIKvnc.js",
+    "file": "assets/Login-q3CpYjJt.js",
     "name": "Login",
     "src": "resources/js/Pages/Baseline/Pages/Auth/Login.vue",
     "isDynamicEntry": true,
     "imports": [
-      "resources/js/app.js"
+      "resources/js/app.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/Login-DSlPqAav.css"
+    ],
+    "assets": [
+      "assets/logo-D3CRUDmI.png"
     ]
   },
   "resources/js/Pages/Baseline/Pages/Dashboard.vue": {
-    "file": "assets/Dashboard-QJXM1KYC.js",
+    "file": "assets/Dashboard-CwfLtf4y.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Baseline/Pages/Dashboard.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_BeLayout-4tqLAcWc.js",
+      "_BeLayout-CbwpxXn_.js",
       "resources/js/Pages/Baseline/components/Statistics.vue",
       "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
       "__plugin-vue_export-helper-DlAUqK2U.js",
@@ -65,13 +76,13 @@
     ]
   },
   "resources/js/Pages/Baseline/Pages/NewEnumeration.vue": {
-    "file": "assets/NewEnumeration-BxaoSaFw.js",
+    "file": "assets/NewEnumeration-Dy1IXKZW.js",
     "name": "NewEnumeration",
     "src": "resources/js/Pages/Baseline/Pages/NewEnumeration.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_BeLayout-4tqLAcWc.js",
+      "_BeLayout-CbwpxXn_.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
       "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
       "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue"
@@ -82,7 +93,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/Statistics.vue": {
-    "file": "assets/Statistics-CbVRdScp.js",
+    "file": "assets/Statistics-BaY3RkQE.js",
     "name": "Statistics",
     "src": "resources/js/Pages/Baseline/components/Statistics.vue",
     "isDynamicEntry": true,
@@ -95,7 +106,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/FootBe.vue": {
-    "file": "assets/FootBe-C2ECZOl8.js",
+    "file": "assets/FootBe-CC1EspQM.js",
     "name": "FootBe",
     "src": "resources/js/Pages/Baseline/components/user_layout/FootBe.vue",
     "isDynamicEntry": true,
@@ -108,7 +119,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/Footer.vue": {
-    "file": "assets/Footer-6K2VlQLz.js",
+    "file": "assets/Footer-BYWztLvh.js",
     "name": "Footer",
     "src": "resources/js/Pages/Baseline/components/user_layout/Footer.vue",
     "isDynamicEntry": true,
@@ -121,7 +132,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/Header.vue": {
-    "file": "assets/Header-PZJ1v7nA.js",
+    "file": "assets/Header-B28K5vNT.js",
     "name": "Header",
     "src": "resources/js/Pages/Baseline/components/user_layout/Header.vue",
     "isDynamicEntry": true,
@@ -134,7 +145,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue": {
-    "file": "assets/NavSidebar-B-OGz6go.js",
+    "file": "assets/NavSidebar-BRp3gkPe.js",
     "name": "NavSidebar",
     "src": "resources/js/Pages/Baseline/components/user_layout/NavSidebar.vue",
     "isDynamicEntry": true,
@@ -147,7 +158,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/Sidebar.vue": {
-    "file": "assets/Sidebar-qKMIrZOC.js",
+    "file": "assets/Sidebar-jRJ7mQlF.js",
     "name": "Sidebar",
     "src": "resources/js/Pages/Baseline/components/user_layout/Sidebar.vue",
     "isDynamicEntry": true,
@@ -160,7 +171,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/TopBar.vue": {
-    "file": "assets/TopBar-BBcyOP15.js",
+    "file": "assets/TopBar-BB9PO7f6.js",
     "name": "TopBar",
     "src": "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
     "isDynamicEntry": true,
@@ -173,7 +184,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/be_layout.vue": {
-    "file": "assets/be_layout-nHj5KCJE.js",
+    "file": "assets/be_layout-s4NV3fbk.js",
     "name": "be_layout",
     "src": "resources/js/Pages/Baseline/components/user_layout/be_layout.vue",
     "isDynamicEntry": true,
@@ -188,7 +199,7 @@
     ]
   },
   "resources/js/Pages/Baseline/components/user_layout/fe_layout.vue": {
-    "file": "assets/fe_layout--LW3rkLQ.js",
+    "file": "assets/fe_layout-lLuht_8H.js",
     "name": "fe_layout",
     "src": "resources/js/Pages/Baseline/components/user_layout/fe_layout.vue",
     "isDynamicEntry": true,
@@ -200,12 +211,12 @@
     ]
   },
   "resources/js/Pages/Welcome.vue": {
-    "file": "assets/Welcome-DwP6zNRW.js",
+    "file": "assets/Welcome-sMTbZ3HJ.js",
     "name": "Welcome",
     "src": "resources/js/Pages/Welcome.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_BeLayout-4tqLAcWc.js",
+      "_BeLayout-CbwpxXn_.js",
       "resources/js/app.js",
       "resources/js/Pages/Baseline/components/user_layout/TopBar.vue",
       "__plugin-vue_export-helper-DlAUqK2U.js",
@@ -216,7 +227,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-BYjJsSG6.js",
+    "file": "assets/app-CNZdXexu.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -236,7 +247,7 @@
       "resources/js/Pages/Welcome.vue"
     ],
     "css": [
-      "assets/app-BVjGMGES.css"
+      "assets/app-mHrASBH0.css"
     ],
     "assets": [
       "assets/bootstrap-icons-mSm7cUeB.woff2",
