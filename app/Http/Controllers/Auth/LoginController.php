@@ -11,9 +11,68 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Inertia\Inertia;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
+/// for web auth 
+
+   public function login(Request $request)
+    {
+
+        try{
+
+        
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+            'module'   => 'required|string|in:app,baseline',
+        ]);
+
+        $loginField = filter_var($credentials['username'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        
+        if (Auth::attempt([
+            $loginField => $credentials['username'],
+            'password' => $credentials['password']
+        ], $request->boolean('remember'))) {
+            $request->session()->regenerate();
+
+            return redirect()
+                ->intended(route('dashboard'))
+                ->with('success', 'Welcome back, ' . Auth::user()->name . '!');
+        }
+
+          return back()->withErrors(['message' => 'Invalid login credentials']);
+
+    } catch (\Throwable $e) {
+
+        return back()->withErrors(['message' => $e->getMessage()]);
+
+        
+
+    }
+    }
+
+    /**
+     * Handle logout request
+     */
+    public function logout(Request $request)
+    {
+        $name = Auth::user()->name;
+        
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()
+            ->route('login')
+            ->with('info', 'You have been logged out successfully.');
+    }
+
+
+    /// for api auth 
 
     public function signIn(Request $request)
     {

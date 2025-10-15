@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Auth\LoginController;
 
 $baselineDomain = config('app.baseline_domain');
 
@@ -35,11 +36,17 @@ $baselineRoutes = function () {
 
 };
 
+
+
 if ($baselineDomain == 'fmld-baseline.olimageserver.com') {
     Route::domain($baselineDomain)->group($baselineRoutes);
 } else {
     Route::prefix('baseline')->group($baselineRoutes);
 }
+
+
+
+Route::post('/login', [LoginController::class, 'login'])->name('app.login');
 
 Route::get('/', function () {
     // return view('welcome');

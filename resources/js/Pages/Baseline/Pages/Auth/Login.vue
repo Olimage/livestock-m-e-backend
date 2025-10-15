@@ -1,26 +1,32 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3'
+import { useToast } from '@/composables/useToast'
 import Logo from '../../../../../images/logo.png'
+import Includes from '../../../../Layouts/Includes.vue'
+
 
 // Inertia form object
 const form = useForm({
-    username: '',
+    email: '',
     password: '',
-    remember: false,
+    module: 'baseline',
 })
 
 // submit handler
 const submit = () => {
-    form.post(route('login'), {
+    form.post(route('app.login'), {
         onFinish: () => form.reset('password'),
+      
     })
 }
 </script>
 
 <template>
+    <Includes />
     <div class="auth-root min-vh-100 d-flex align-items-center">
 
-        <Head title="Login" />
+        <Head title="Baseline Login" />
+
 
         <div class="container py-5">
             <div class="row g-0 shadow-sm rounded overflow-hidden auth-card">
@@ -36,10 +42,10 @@ const submit = () => {
                         <!-- Username -->
                         <div class="mb-3">
                             <label class="form-label">Username</label>
-                            <input v-model="form.username" type="text" class="form-control"
-                                :class="{ 'is-invalid': form.errors.username }" placeholder="Enter your username"
+                            <input v-model="form.email" type="text" class="form-control"
+                                :class="{ 'is-invalid': form.errors.email }" placeholder="Enter your email"
                                 required autofocus />
-                            <div class="invalid-feedback">{{ form.errors.username }}</div>
+                            <div v-if="form.errors.email" class="invalid-feedback">{{ form.errors.email }}</div>
                         </div>
 
                         <!-- Password -->
@@ -47,16 +53,7 @@ const submit = () => {
                             <label class="form-label">Password</label>
                             <input v-model="form.password" type="password" class="form-control"
                                 :class="{ 'is-invalid': form.errors.password }" placeholder="••••••••" required />
-                            <div class="invalid-feedback">{{ form.errors.password }}</div>
-                        </div>
-
-                        <!-- Remember + Forgot -->
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div class="form-check">
-                                <input v-model="form.remember" class="form-check-input" type="checkbox" id="remember" />
-                                <label class="form-check-label small" for="remember">Remember me</label>
-                            </div>
-                            <Link href="#" class="small text-decoration-none">Forgot password?</Link>
+                            <div v-if="form.errors.password" class="invalid-feedback">{{ form.errors.password }}</div>
                         </div>
 
                         <!-- Submit -->
@@ -101,10 +98,6 @@ const submit = () => {
 </template>
 
 <style scoped>
-
-
-
-
 .login-logo {
   height: 90px;
   width: auto;
