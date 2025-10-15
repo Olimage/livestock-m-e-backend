@@ -22,7 +22,7 @@ class EnsureGuest
     {
         if (Auth::check()) {
             // Redirect authenticated users to dashboard
-            return redirect()->route('dashboard');
+            return redirect()->route('baseline-dashboard');
         }
 
         return $next($request);

@@ -16,23 +16,23 @@ $baselineRoutes = function () {
             // 'users' => User::all()
         ]);
         
-    })->name('baseline-dashboard');
+    })->name('baseline-dashboard')->middleware('auth.custom');
 
     Route::get('/new', function () {
         return Inertia::render('Baseline/Pages/NewEnumeration', [
             'routeName' => Route::currentRouteName(),
         ]);
-    })->name('baseline-new');
+    })->name('baseline-new')->middleware('auth.custom');
 
     Route::get('/saved-data', function () {
-    })->name('baseline-saved-data');
+    })->name('baseline-saved-data')->middleware('auth.custom');
 
     Route::get('login', function () {
         return Inertia::render('Baseline/Pages/Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
         ]);
-    })->name('baseline-login');
+    })->name('baseline-login')->middleware('guest.custom');
 
 };
 

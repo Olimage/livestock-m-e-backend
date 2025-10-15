@@ -23,6 +23,9 @@ const getColor = (type) => {
   }
   return colors[type] || colors.info
 }
+
+
+
 </script>
 
 <template>

@@ -13,10 +13,12 @@ use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Inertia\Inertia;
 use Illuminate\Validation\ValidationException;
+use App\Helper\Modules;
 
 class LoginController extends Controller
 {
 /// for web auth 
+
 
    public function login(Request $request)
     {
@@ -30,16 +32,16 @@ class LoginController extends Controller
             'module'   => 'required|string|in:app,baseline',
         ]);
 
-        $loginField = filter_var($credentials['username'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $loginField = filter_var($credentials['email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
         
         if (Auth::attempt([
-            $loginField => $credentials['username'],
+            $loginField => $credentials['email'],
             'password' => $credentials['password']
         ], $request->boolean('remember'))) {
             $request->session()->regenerate();
 
             return redirect()
-                ->intended(route('dashboard'))
+                ->intended(route(config('modules-routes')[$request->module].'dashboard'))
                 ->with('success', 'Welcome back, ' . Auth::user()->name . '!');
         }
 

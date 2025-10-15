@@ -16,7 +16,7 @@ class EnsureAuthenticated
                 session()->put('url.intended', $request->url());
             }
             
-            return redirect()->route('login')->with('error', 'Please login to continue.');
+            return redirect()->route('baseline-login')->with('error', 'Please login to continue.');
         }
 
         return $next($request);
