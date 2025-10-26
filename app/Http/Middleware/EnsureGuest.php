@@ -6,6 +6,8 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Controllers\DashboardController;
+
 
 class EnsureGuest
 {
@@ -18,11 +20,13 @@ class EnsureGuest
      * @param  \Closure  $next
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         if (Auth::check()) {
             // Redirect authenticated users to dashboard
-            return redirect()->route('baseline-dashboard');
+
+                        return (new DashboardController)->index($request);
+            // return redirect()->route('baseline-dashboard');
         }
 
         return $next($request);

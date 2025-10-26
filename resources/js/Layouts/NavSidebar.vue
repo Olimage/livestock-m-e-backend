@@ -28,13 +28,49 @@
         <!-- Navigation items -->
         <nav class="sidebar-nav">
           <ul class="nav flex-column">
-            <li class="nav-item" v-for="item in navItems" :key="item.name">
-              <Link :href="route(item.routeName)" class="nav-link" :class="{ active: isActive(item.routeName) }"
-                @click="onNavClick">
-              <i :class="item.icon"></i>
-              <span class="nav-text">{{ item.name }}</span>
-              </Link>
-            </li>
+            <template v-for="item in navItems" :key="item.name">
+              <!-- Items with submenus -->
+              <li class="nav-item" v-if="item.submenu">
+                <a href="#" 
+                   class="nav-link" 
+                   :class="{ 
+                     'active': isActiveParent(item),
+                     'has-submenu': true 
+                   }"
+                   @click.prevent="toggleSubmenu(item.name)">
+                  <i :class="item.icon"></i>
+                  <span class="nav-text">{{ item.name }}</span>
+                  <i class="bi submenu-arrow" 
+                     :class="isSubmenuOpen(item.name) ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+                </a>
+                
+                <!-- Submenu -->
+                <transition name="submenu">
+                  <ul class="submenu nav flex-column" v-show="isSubmenuOpen(item.name)">
+                    <li class="nav-item" v-for="subItem in item.submenu" :key="subItem.name">
+                      <Link :href="route(subItem.routeName)" 
+                            class="nav-link submenu-link" 
+                            :class="{ active: isActive(subItem.routeName) }"
+                            @click="onNavClick">
+                        <i :class="subItem.icon"></i>
+                        <span class="nav-text">{{ subItem.name }}</span>
+                      </Link>
+                    </li>
+                  </ul>
+                </transition>
+              </li>
+
+              <!-- Regular items without submenus -->
+              <li class="nav-item" v-else>
+                <Link :href="route(item.routeName)" 
+                      class="nav-link" 
+                      :class="{ active: isActive(item.routeName) }"
+                      @click="onNavClick">
+                  <i :class="item.icon"></i>
+                  <span class="nav-text">{{ item.name }}</span>
+                </Link>
+              </li>
+            </template>
           </ul>
         </nav>
       </div>
@@ -60,10 +96,43 @@ export default {
   data() {
     return {
       collapsed: false,
+      openSubmenus: [],
       navItems: [
-        { name: 'Dashboard', routeName: 'baseline-dashboard', icon: 'bi bi-speedometer2' },
-        { name: 'New Input', routeName: 'baseline-new', icon: 'bi bi-plus-square' },
-        { name: 'Saved Data', routeName: 'baseline-saved-data', icon: 'bi bi-floppy' },
+        { 
+          name: 'Dashboard', 
+          routeName: 'baseline-dashboard', 
+          icon: 'bi bi-speedometer2' 
+        },
+        { 
+          name: 'New Input', 
+          routeName: 'baseline-new', 
+          icon: 'bi bi-plus-square' 
+        },
+        { 
+          name: 'Saved Data', 
+          routeName: 'baseline-saved-data', 
+          icon: 'bi bi-floppy' 
+        },
+        // Example with submenu
+        {
+          name: 'Reports',
+          icon: 'bi bi-file-earmark-text',
+          submenu: [
+            { name: 'Summary', routeName: 'baseline-new', icon: 'bi bi-file-text' },
+            { name: 'Detailed', routeName: 'baseline-new', icon: 'bi bi-file-earmark-spreadsheet' },
+            { name: 'Analytics', routeName: 'baseline-new', icon: 'bi bi-graph-up' }
+          ]
+        },
+        // Another example with submenu
+        {
+          name: 'Settings',
+          icon: 'bi bi-gear',
+          submenu: [
+            { name: 'General', routeName: 'baseline-new', icon: 'bi bi-sliders' },
+            { name: 'Users', routeName: 'baseline-new', icon: 'bi bi-people' },
+            { name: 'Permissions', routeName: 'baseline-new', icon: 'bi bi-shield-lock' }
+          ]
+        }
       ]
     }
   },
@@ -79,20 +148,63 @@ export default {
       } else {
         document.body.style.overflow = ''
       }
+    },
+    collapsed(newVal) {
+      // Close all submenus when sidebar collapses
+      if (newVal) {
+        this.openSubmenus = []
+      }
     }
   },
+  mounted() {
+    // Auto-open submenu if current route is a submenu item
+    this.navItems.forEach(item => {
+      if (item.submenu) {
+        const hasActiveChild = item.submenu.some(subItem => 
+          this.isActive(subItem.routeName)
+        )
+        if (hasActiveChild) {
+          this.openSubmenus.push(item.name)
+        }
+      }
+    })
+  },
   methods: {
-
     isActive(routeName) {
-  return this.$page.props.routeName === routeName
-},
+      return this.$page.props.routeName === routeName
+    },
+    
+    isActiveParent(item) {
+      if (!item.submenu) return false
+      return item.submenu.some(subItem => this.isActive(subItem.routeName))
+    },
+
+    isSubmenuOpen(itemName) {
+      return this.openSubmenus.includes(itemName)
+    },
+
+    toggleSubmenu(itemName) {
+      // Don't toggle submenus when collapsed on desktop
+      if (this.collapsed && window.innerWidth >= 992) {
+        return
+      }
+
+      const index = this.openSubmenus.indexOf(itemName)
+      if (index > -1) {
+        this.openSubmenus.splice(index, 1)
+      } else {
+        this.openSubmenus.push(itemName)
+      }
+    },
     
     toggleCollapse() {
       this.collapsed = !this.collapsed
     },
+
     closeOffcanvas() {
       this.$emit('close-offcanvas')
     },
+
     onNavClick() {
       // Close off-canvas on mobile when navigation item is clicked
       if (window.innerWidth < 992) {
@@ -129,7 +241,7 @@ export default {
 
 /* Sidebar base styles */
 .sidebar {
-  width: 150px;
+  width: 250px;
   min-height: calc(100vh - 56px);
   background: rgb(10, 78, 18);
   color: #fff;
@@ -196,7 +308,9 @@ export default {
   padding: 0.75rem 1rem;
   border-left: 3px solid transparent;
   transition: all 0.3s;
-  display: block;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .nav-link:hover {
@@ -215,9 +329,64 @@ export default {
   margin-right: 0.5rem;
   width: 20px;
   text-align: center;
+  flex-shrink: 0;
 }
 
+.nav-link .nav-text {
+  flex: 1;
+}
+
+/* Submenu arrow */
+.submenu-arrow {
+  margin-left: auto;
+  margin-right: 0;
+  font-size: 0.75rem;
+  transition: transform 0.3s ease;
+}
+
+/* Submenu styles */
+.submenu {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  overflow: hidden;
+}
+
+.submenu-link {
+  padding-left: 2.5rem !important;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.submenu-link i {
+  font-size: 0.85rem;
+}
+
+/* Submenu transitions */
+.submenu-enter-active,
+.submenu-leave-active {
+  transition: all 0.3s ease;
+}
+
+.submenu-enter-from,
+.submenu-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+
+.submenu-enter-to,
+.submenu-leave-from {
+  max-height: 500px;
+  opacity: 1;
+}
+
+/* Collapsed sidebar styles */
 .sidebar-collapsed .nav-text {
+  display: none;
+}
+
+.sidebar-collapsed .submenu-arrow {
   display: none;
 }
 
@@ -229,9 +398,22 @@ export default {
   display: none;
 }
 
-/* Mobile - always show text */
+.sidebar-collapsed .submenu {
+  display: none;
+}
+
+/* Tooltip for collapsed items (optional enhancement) */
+.sidebar-collapsed .nav-link {
+  justify-content: center;
+}
+
+/* Mobile - always show text and submenus */
 @media (max-width: 991.98px) {
   .sidebar-collapsed .nav-text {
+    display: inline;
+  }
+
+  .sidebar-collapsed .submenu-arrow {
     display: inline;
   }
 
@@ -241,6 +423,14 @@ export default {
 
   .sidebar-collapsed .sidebar-header h6 {
     display: block;
+  }
+
+  .sidebar-collapsed .submenu {
+    display: block;
+  }
+
+  .sidebar-collapsed .nav-link {
+    justify-content: flex-start;
   }
 }
 

@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DashboardController;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 $baselineDomain = config('app.baseline_domain');
 
@@ -27,13 +29,7 @@ $baselineRoutes = function () {
     Route::get('/saved-data', function () {
     })->name('baseline-saved-data')->middleware('auth.custom');
 
-    Route::get('login', function () {
-        return Inertia::render('Baseline/Pages/Auth/Login', [
-            'canResetPassword' => Route::has('password.request'),
-            'status' => session('status'),
-        ]);
-    })->name('baseline-login')->middleware('guest.custom');
-
+    
 };
 
 
@@ -44,23 +40,31 @@ if ($baselineDomain == 'fmld-baseline.olimageserver.com') {
     Route::prefix('baseline')->group($baselineRoutes);
 }
 
+Route::get('login', function () {
+    return Inertia::render('Login', [
+        'canResetPassword' => Route::has('password.request'),
+        'status' => session('status'),
+    ]);
+})->name('baseline-login')->middleware('guest.custom');
 
 
-Route::post('/login', [LoginController::class, 'login'])->name('app.login');
+Route::post('/login', [LoginController::class, 'login'])->name('app.login')->middleware('guest.custom');
 
-Route::get('/', function () {
-    // return view('welcome');
+Route::get('/', "DashboardController@index")->name('home')->middleware('auth.custom');
 
-     return Inertia::render('Dashboard');
-    //  return Inertia::render('Welcome', [
-    //     'canLogin' => Route::has('login'),
-    //     'canRegister' => Route::has('register'),
-    //     'laravelVersion' => Application::VERSION,
-    //     'phpVersion' => PHP_VERSION,
-    // ]);
+// Route::get('/', function () {
+//     // return view('welcome');
 
-    return response()->json('hello world', 200);
-})->name('home');
+//      return Inertia::render('Dashboard');
+//     //  return Inertia::render('Welcome', [
+//     //     'canLogin' => Route::has('login'),
+//     //     'canRegister' => Route::has('register'),
+//     //     'laravelVersion' => Application::VERSION,
+//     //     'phpVersion' => PHP_VERSION,
+//     // ]);
+
+//     return response()->json('hello world', 200);
+// })->name('home');
 
 Route::get('/clear-cache', function () {
     Artisan::call('config:clear');
