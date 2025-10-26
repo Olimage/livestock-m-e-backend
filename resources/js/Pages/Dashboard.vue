@@ -1,7 +1,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
 
-import BeLayout from '../../../Layouts/BeLayout.vue'
+import BeLayout from '../Layouts/BeLayout.vue'
 import Statistics from '../components/Statistics.vue'
 </script>
 

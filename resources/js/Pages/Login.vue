@@ -1,8 +1,8 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useToast } from '@/composables/useToast'
-import Logo from '../../../../../images/logo.png'
-import Includes from '../../../../Layouts/Includes.vue'
+import Logo from '../../images/logo.png'
+import Includes from '../Layouts/Includes.vue'
 
 
 // Inertia form object
@@ -71,9 +71,9 @@ const submit = () => {
                     <div class="decor-panel h-100 d-flex align-items-center justify-content-center text-white p-4">
                         <div class="decor-content text-center px-4">
                             <h2 class="fw-bold mb-2">FMLD</h2>
-                            <p class="lead mb-4">Baseline Dashboard</p>
+                            <p class="lead mb-4">Information System Dashboard</p>
                             <p class="small opacity-85">
-                                Secure access to enumeration data and analytics tools.
+                                Secure access to  data and tools.
                             </p>
                         </div>
 

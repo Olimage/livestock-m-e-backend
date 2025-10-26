@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import { Head } from '@inertiajs/vue3'
-import TopBar from '../Pages/Baseline/components/user_layout/TopBar.vue'
-import NavSidebar from '../Pages/Baseline/components/user_layout/NavSidebar.vue'
-import Footer from '../Pages/Baseline/components/user_layout/FootBe.vue'
+import TopBar from './TopBar.vue'
+import NavSidebar from './NavSidebar.vue'
+import Footer from './FootBe.vue'
 import Includes from './Includes.vue'
 
 const showOffcanvas = ref(false)

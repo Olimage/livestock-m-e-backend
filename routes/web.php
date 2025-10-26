@@ -51,7 +51,7 @@ Route::post('/login', [LoginController::class, 'login'])->name('app.login');
 Route::get('/', function () {
     // return view('welcome');
 
-    //  return Inertia::render('Welcome');
+     return Inertia::render('Dashboard');
     //  return Inertia::render('Welcome', [
     //     'canLogin' => Route::has('login'),
     //     'canRegister' => Route::has('register'),
