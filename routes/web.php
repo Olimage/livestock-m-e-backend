@@ -21,7 +21,7 @@ $baselineRoutes = function () {
     })->name('baseline-dashboard')->middleware('auth.custom');
 
     Route::get('/new', function () {
-        return Inertia::render('Baseline/Pages/NewEnumeration', [
+        return Inertia::render('Enumeration/NewEnumeration', [
             'routeName' => Route::currentRouteName(),
         ]);
     })->name('baseline-new')->middleware('auth.custom');
@@ -49,8 +49,9 @@ Route::get('login', function () {
 
 
 Route::post('/login', [LoginController::class, 'login'])->name('app.login')->middleware('guest.custom');
+Route::get('/logout', [LoginController::class, 'logout'])->name('app.logout')->middleware('auth.custom');
 
-Route::get('/', "DashboardController@index")->name('home')->middleware('auth.custom');
+Route::get('/', [DashboardController::class, 'index'])->name('home')->middleware('auth.custom');
 
 // Route::get('/', function () {
 //     // return view('welcome');

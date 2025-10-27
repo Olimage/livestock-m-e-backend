@@ -17,6 +17,7 @@ class User extends Authenticatable implements JWTSubject
         'full_name',
         'email',
         'password',
+        'uuid'
 
     ];
 
@@ -48,6 +49,19 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
+
+    
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->uuid)) {
+                $model->uuid = (string) Str::uuid();
+            }
+        });
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      */
@@ -72,6 +86,10 @@ class User extends Authenticatable implements JWTSubject
     public function department(){
 
         return $this->hasMany(Department::class);
+    }
+
+    public function permision(){
+        return $this->hasMany(UserPermission::class);
     }
 
 

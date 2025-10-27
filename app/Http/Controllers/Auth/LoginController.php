@@ -11,50 +11,34 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Inertia\Inertia;
-use Illuminate\Validation\ValidationException;
-use App\Helper\Modules;
 
 class LoginController extends Controller
 {
-/// for web auth 
+/// for web auth
 
+public function login(Request $request)
+{
+    $credentials = $request->validate([
+        'email'    => 'required|email',
+        'password' => 'required',
+    ]);
 
-   public function login(Request $request)
-    {
+    if (Auth::guard('web')->attempt([
+        'email' => $credentials['email'],
+        'password' => $credentials['password'],
+    ], $request->boolean('remember'))) {
 
-        try{
+        $request->session()->regenerate();
 
-        
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-            'module'   => 'required|string|in:app,baseline',
-        ]);
-
-        $loginField = filter_var($credentials['email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-        
-        if (Auth::attempt([
-            $loginField => $credentials['email'],
-            'password' => $credentials['password']
-        ], $request->boolean('remember'))) {
-            $request->session()->regenerate();
-
-            return redirect()
-                ->intended(route(config('modules-routes')[$request->module].'dashboard'))
-                ->with('success', 'Welcome back, ' . Auth::user()->name . '!');
-        }
-
-          return back()->withErrors(['message' => 'Invalid login credentials']);
-
-    } catch (\Throwable $e) {
-
-        return back()->withErrors(['message' => $e->getMessage()]);
-
-        
-
+        return redirect()
+            ->intended(route('home'))
+            ->with('success', 'Welcome back, ' . auth()->user()->full_name . '!');
     }
-    }
+
+    return back()->withErrors([
+        'message' => 'Invalid login credentials',
+    ]);
+}
 
     /**
      * Handle logout request
@@ -62,19 +46,18 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         $name = Auth::user()->name;
-        
+
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
         return redirect()
-            ->route('login')
-            ->with('info', 'You have been logged out successfully.');
+            ->route('app.login')
+            ->with('success', 'You have been logged out successfully.');
     }
 
-
-    /// for api auth 
+    /// for api auth
 
     public function signIn(Request $request)
     {

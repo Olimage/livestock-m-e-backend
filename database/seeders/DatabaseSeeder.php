@@ -18,14 +18,16 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        ZonesSeeder::class;
-        UserSeeder::class;
-
-        ModuleSeeder::class;
-        PermissionSeeder::class;
-
+        
         $this->call([
 
+            ZonesSeeder::class,
+            UserSeeder::class,
+            ModuleSeeder::class,
+            DepartmentSeeder::class,
+            RoleSeeder::class,
+    
+            PermissionSeeder::class,
         ]);
     }
 }
