@@ -25,6 +25,9 @@ const closeOffcanvas = () => {
     <TopBar @toggle-sidebar="toggleSidebar" />
 
     <NavSidebar 
+
+      :nav-items="$page.props.navigation"
+      
       :showOffcanvas="showOffcanvas" 
       @close-offcanvas="closeOffcanvas"
     />

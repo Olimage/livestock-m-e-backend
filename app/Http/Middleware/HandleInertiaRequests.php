@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Services\NavigationService;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -41,6 +42,10 @@ class HandleInertiaRequests extends Middleware
                     'name' => auth()->user()->full_name,
                 ] : null,
             ],
+            'navigation' => auth()->user() 
+                ? NavigationService::getNavigation() 
+                : [],
+
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),

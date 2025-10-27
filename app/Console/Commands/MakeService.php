@@ -28,7 +28,7 @@ class MakeService extends Command
     public function handle()
     {
         $name = Str::studly($this->argument('name')); // Ensure proper class naming
-        $path = app_path('Service/' . str_replace('\\', '/', $name) . '.php');
+        $path = app_path('Services/' . str_replace('\\', '/', $name) . '.php');
 
         if (file_exists($path)) {
             $this->error("Service {$name} already exists!");
@@ -49,7 +49,7 @@ class MakeService extends Command
     {
         // Convert folder structure into a valid namespace
         $folder = trim(dirname($name), '.'); // Remove "." if no folder is present
-        $namespace = 'App\Service' . ($folder ? '\\' . Str::replace('/', '\\', $folder) : '');
+        $namespace = 'App\Services' . ($folder ? '\\' . Str::replace('/', '\\', $folder) : '');
         $namespace = trim($namespace, '\\'); // Remove trailing slash if present
         $className = class_basename($name);
 

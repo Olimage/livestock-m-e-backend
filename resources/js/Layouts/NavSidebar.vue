@@ -28,9 +28,9 @@
         <!-- Navigation items -->
         <nav class="sidebar-nav">
           <ul class="nav flex-column">
-            <template v-for="item in navItems" :key="item.name">
+            <template v-for="item in menuItems" :key="item.name">
               <!-- Items with submenus -->
-              <li class="nav-item" v-if="item.submenu">
+              <li class="nav-item" v-if="item.submenu && item.submenu.length > 0">
                 <a href="#" 
                    class="nav-link" 
                    :class="{ 
@@ -48,7 +48,7 @@
                 <transition name="submenu">
                   <ul class="submenu nav flex-column" v-show="isSubmenuOpen(item.name)">
                     <li class="nav-item" v-for="subItem in item.submenu" :key="subItem.name">
-                      <Link :href="route(subItem.routeName)" 
+                      <Link :href="subItem.url || route(subItem.routeName)" 
                             class="nav-link submenu-link" 
                             :class="{ active: isActive(subItem.routeName) }"
                             @click="onNavClick">
@@ -62,7 +62,7 @@
 
               <!-- Regular items without submenus -->
               <li class="nav-item" v-else>
-                <Link :href="route(item.routeName)" 
+                <Link :href="item.url || route(item.routeName)" 
                       class="nav-link" 
                       :class="{ active: isActive(item.routeName) }"
                       @click="onNavClick">
@@ -90,17 +90,30 @@ export default {
     showOffcanvas: {
       type: Boolean,
       default: false
+    },
+    navItems: {
+      type: Array,
+      default: () => []
     }
   },
   emits: ['close-offcanvas'],
   data() {
     return {
       collapsed: false,
-      openSubmenus: [],
-      navItems: [
+      openSubmenus: []
+    }
+  },
+  computed: {
+    // Use props if provided, otherwise fall back to default menu
+    menuItems() {
+      return this.navItems.length > 0 ? this.navItems : this.defaultNavItems
+    },
+    // Default menu items (fallback)
+    defaultNavItems() {
+      return [
         { 
           name: 'Dashboard', 
-          routeName: 'baseline-dashboard', 
+          routeName: 'home', 
           icon: 'bi bi-speedometer2' 
         },
         { 
@@ -112,31 +125,9 @@ export default {
           name: 'Saved Data', 
           routeName: 'baseline-saved-data', 
           icon: 'bi bi-floppy' 
-        },
-        // Example with submenu
-        {
-          name: 'Reports',
-          icon: 'bi bi-file-earmark-text',
-          submenu: [
-            { name: 'Summary', routeName: 'baseline-new', icon: 'bi bi-file-text' },
-            { name: 'Detailed', routeName: 'baseline-new', icon: 'bi bi-file-earmark-spreadsheet' },
-            { name: 'Analytics', routeName: 'baseline-new', icon: 'bi bi-graph-up' }
-          ]
-        },
-        // Another example with submenu
-        {
-          name: 'Settings',
-          icon: 'bi bi-gear',
-          submenu: [
-            { name: 'General', routeName: 'baseline-new', icon: 'bi bi-sliders' },
-            { name: 'Users', routeName: 'baseline-new', icon: 'bi bi-people' },
-            { name: 'Permissions', routeName: 'baseline-new', icon: 'bi bi-shield-lock' }
-          ]
         }
       ]
-    }
-  },
-  computed: {
+    },
     currentUrl() {
       return this.$page?.url || '/'
     }
@@ -158,7 +149,7 @@ export default {
   },
   mounted() {
     // Auto-open submenu if current route is a submenu item
-    this.navItems.forEach(item => {
+    this.menuItems.forEach(item => {
       if (item.submenu) {
         const hasActiveChild = item.submenu.some(subItem => 
           this.isActive(subItem.routeName)
@@ -171,6 +162,7 @@ export default {
   },
   methods: {
     isActive(routeName) {
+      if (!routeName) return false
       return this.$page.props.routeName === routeName
     },
     
