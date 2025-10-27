@@ -7,18 +7,11 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
-$baselineDomain = config('app.baseline_domain');
 
-$baselineRoutes = function () {
 
-    Route::get('/', function () {
 
-        return Inertia::render('Baseline/Pages/Dashboard', [
-            'routeName' => Route::currentRouteName(),
-            // 'users' => User::all()
-        ]);
-        
-    })->name('baseline-dashboard')->middleware('auth.custom');
+
+   
 
     Route::get('/new', function () {
         return Inertia::render('Enumeration/NewEnumeration', [
@@ -30,15 +23,9 @@ $baselineRoutes = function () {
     })->name('baseline-saved-data')->middleware('auth.custom');
 
     
-};
 
 
 
-if ($baselineDomain == 'fmld-baseline.olimageserver.com') {
-    Route::domain($baselineDomain)->group($baselineRoutes);
-} else {
-    Route::prefix('baseline')->group($baselineRoutes);
-}
 
 Route::get('login', function () {
     return Inertia::render('Login', [

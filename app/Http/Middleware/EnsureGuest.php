@@ -26,7 +26,6 @@ class EnsureGuest
             // Redirect authenticated users to dashboard
 
                         return (new DashboardController)->index($request);
-            // return redirect()->route('baseline-dashboard');
         }
 
         return $next($request);
