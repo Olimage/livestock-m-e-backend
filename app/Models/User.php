@@ -17,7 +17,8 @@ class User extends Authenticatable implements JWTSubject
         'full_name',
         'email',
         'password',
-        'uuid'
+        'uuid',
+        'is_admin'
 
     ];
 
@@ -35,6 +36,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     protected $casts = [
+         'is_admin' => 'boolean',
     ];
 
     /**
@@ -88,9 +90,67 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Department::class);
     }
 
-    public function permision(){
-        return $this->hasMany(UserPermission::class);
+ public function permissions()
+{
+    return $this->belongsToMany(Permission::class, 'user_permissions', 'user_id', 'permission_id');
+}
+
+    /**
+     * Check if user has a specific permission
+     */
+    public function hasPermission(string $permission): bool
+    {
+
+        if ($this->is_admin) {
+            return true;
+        }
+
+        return $this->permissions()->where('permission', $permission)->exists();
     }
 
+    /**
+     * Check if user has any of the given permissions
+     */
+    public function hasAnyPermission(array $permissions): bool
+    {
+        if ($this->is_admin) {
+            return true;
+        }
+        return $this->permissions()->whereIn('permission', $permissions)->exists();
+    }
+
+    /**
+     * Check if user has all of the given permissions
+     */
+    public function hasAllPermissions(array $permissions): bool
+    {
+
+        if ($this->is_admin) {
+            return true;
+        }
+        return $this->permissions()->whereIn('permission', $permissions)->count() === count($permissions);
+    }
+
+    /**
+     * Get all permission names as array
+     */
+    public function getPermissionNames(): array
+    {
+
+        if ($this->is_admin) {
+            // Return all available permissions for admins
+            return \App\Models\Permission::pluck('permission')->toArray();
+        }
+
+        return $this->permissions()->pluck('permission')->toArray();
+    }
+
+      /**
+     * Check if user is admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->is_admin === true;
+    }
 
 }
