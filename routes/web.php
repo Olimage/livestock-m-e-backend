@@ -6,8 +6,20 @@ use Inertia\Inertia;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use App\Http\Controllers\User\UserController;
 
 
+Route::get('/', [DashboardController::class, 'index'])->name('home')->middleware('auth.web');
+Route::post('/login', [LoginController::class, 'login'])->name('app.login')->middleware('guest.web');
+Route::get('/logout', [LoginController::class, 'logout'])->name('app.logout')->middleware('auth.web');
+
+
+Route::get('login', function () {
+    return Inertia::render('Login', [
+        'canResetPassword' => Route::has('password.request'),
+        'status' => session('status'),
+    ]);
+})->name('baseline-login')->middleware('guest.web');
 
 
 
@@ -17,42 +29,26 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
         return Inertia::render('Enumeration/NewEnumeration', [
             'routeName' => Route::currentRouteName(),
         ]);
-    })->name('baseline-new')->middleware('auth.custom');
+    })->name('baseline-new')->middleware('auth.web');
 
     Route::get('/saved-data', function () {
-    })->name('baseline-saved-data')->middleware('auth.custom');
+    })->name('baseline-saved-data')->middleware('auth.web');
 
     
+Route::middleware(['auth.web'])->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+});
 
 
 
 
-Route::get('login', function () {
-    return Inertia::render('Login', [
-        'canResetPassword' => Route::has('password.request'),
-        'status' => session('status'),
-    ]);
-})->name('baseline-login')->middleware('guest.custom');
 
 
-Route::post('/login', [LoginController::class, 'login'])->name('app.login')->middleware('guest.custom');
-Route::get('/logout', [LoginController::class, 'logout'])->name('app.logout')->middleware('auth.custom');
-
-Route::get('/', [DashboardController::class, 'index'])->name('home')->middleware('auth.custom');
-
-// Route::get('/', function () {
-//     // return view('welcome');
-
-//      return Inertia::render('Dashboard');
-//     //  return Inertia::render('Welcome', [
-//     //     'canLogin' => Route::has('login'),
-//     //     'canRegister' => Route::has('register'),
-//     //     'laravelVersion' => Application::VERSION,
-//     //     'phpVersion' => PHP_VERSION,
-//     // ]);
-
-//     return response()->json('hello world', 200);
-// })->name('home');
 
 Route::get('/clear-cache', function () {
     Artisan::call('config:clear');

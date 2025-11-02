@@ -18,7 +18,8 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'uuid',
-        'is_admin'
+        'is_admin',
+        'role'
 
     ];
 
@@ -29,10 +30,10 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $hidden = [
         'password',
-        'created_at',
+        // 'created_at',
         'updated_at',
         'deleted_at',
-        'id'
+        // 'id'
     ];
 
     protected $casts = [

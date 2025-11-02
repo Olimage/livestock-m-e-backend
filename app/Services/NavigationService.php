@@ -79,7 +79,7 @@ class NavigationService
         if ($user->isAdmin() || $user->can('manage-users')) {
             $settingsSubmenu[] = [
                 'name'      => 'Users',
-                'routeName' => 'baseline-saved-data',
+                'routeName' => 'users.index',
                 'icon'      => 'bi bi-people',
             ];
         }

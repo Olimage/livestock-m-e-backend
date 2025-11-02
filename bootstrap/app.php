@@ -50,8 +50,8 @@ $app = Application::configure(basePath: dirname(__DIR__))
             'phone.verify'     => \App\Http\Middleware\verifyPhone::class,
             'verify.pin'       => \App\Http\Middleware\VerifyPin::class,
             'json-response'    => \App\Http\Middleware\EnsureJsonResponseMiddleware::class,
-            'auth.custom'      => \App\Http\Middleware\EnsureAuthenticated::class,
-            'guest.custom'     => \App\Http\Middleware\EnsureGuest::class,
+            'auth.web'      => \App\Http\Middleware\EnsureAuthenticated::class,
+            'guest.web'     => \App\Http\Middleware\EnsureGuest::class,
              'permission' => \App\Http\Middleware\CheckPermission::class,
         ]);
     })

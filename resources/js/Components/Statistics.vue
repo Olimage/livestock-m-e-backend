@@ -47,7 +47,7 @@ const newSurvey =
 
                             <div class="col-md-4">
                                 <div class=" card text-bg-success mb-3" >
-                                    <div class="card-header">Records Synced</div>
+                                    <div class="card-header">Total Users</div>
                                     <div class="card-body">
                                         <h4 class="mont-font fs-3 fw-800  mb-8 text-start">
                                             1,200
@@ -59,7 +59,7 @@ const newSurvey =
 
                             <div class="col-md-4">
                                 <div class=" card text-bg-success  mb-3" >
-                                    <div class="card-header">Records Pending Sync</div>
+                                    <div class="card-header">Data Pending Sync</div>
                                     <div class="card-body">
                                         <h4 class="mont-font fs-3 fw-800  mb-8 text-start">
                                             1,200
