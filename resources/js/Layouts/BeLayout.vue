@@ -43,7 +43,7 @@ const closeOffcanvas = () => {
 <style scoped>
 .main-content {
   margin-top: 56px;
-  margin-left: 150px;
+  margin-left: 16em;
   min-height: calc(100vh - 56px);
   padding: 20px;
   padding-bottom: 60px;
@@ -53,7 +53,7 @@ const closeOffcanvas = () => {
 /* Adjust main content when sidebar is collapsed */
 @media (min-width: 992px) {
   .main-content {
-    margin-left: 150px;
+     margin-left: 16em;
   }
 }
 

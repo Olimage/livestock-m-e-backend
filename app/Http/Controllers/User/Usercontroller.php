@@ -17,7 +17,7 @@ class Usercontroller extends Controller
             ->when($request->search, function ($query, $search) {
                 $query->where('full_name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
-            })
+            })->where('role', '!=', 'super_admin')
             ->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
             ->paginate($request->per_page ?? 10)
             ->withQueryString();
