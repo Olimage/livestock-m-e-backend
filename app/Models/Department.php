@@ -9,7 +9,8 @@ class Department extends Model
     protected $fillable = [
         'name',
         'slug',
-        'is_technical'
+        'is_technical',
+        'parent_id'
     ];
 
     protected $casts =[
@@ -25,4 +26,65 @@ class Department extends Model
 {
     return $this->morphMany(Permission::class, 'callable');
 }
+
+/**
+ * Get all sub-departments of this department
+ *
+ * @return \Illuminate\Database\Eloquent\Relations\HasMany
+ */
+public function children()
+{
+    return $this->hasMany(Department::class, 'parent_id');
+}
+
+/**
+ * Get all descendants (sub-departments and their sub-departments)
+ *
+ * @return \Illuminate\Database\Eloquent\Relations\HasMany
+ */
+public function descendants()
+{
+    return $this->children()->with('descendants');
+}
+
+/**
+ * Get the parent department
+ *
+ * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+ */
+public function parent()
+{
+    return $this->belongsTo(Department::class, 'parent_id');
+}
+
+/**
+ * Get all ancestors (parent and its parent)
+ *
+ * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+ */
+public function ancestors()
+{
+    return $this->parent()->with('ancestors');
+}
+
+/**
+ * Check if department is a root department (has no parent)
+ *
+ * @return bool
+ */
+public function isRoot()
+{
+    return is_null($this->parent_id);
+}
+
+/**
+ * Check if department has children
+ *
+ * @return bool
+ */
+public function hasChildren()
+{
+    return $this->children()->count() > 0;
+}
+
 }

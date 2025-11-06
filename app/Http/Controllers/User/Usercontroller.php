@@ -8,12 +8,16 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Models\Role;
+use App\Models\Department;
+use App\Models\UserDepartment;
+
 
 class Usercontroller extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::query()
+        $users = User::with('departments')
             ->when($request->search, function ($query, $search) {
                 $query->where('full_name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
@@ -22,9 +26,12 @@ class Usercontroller extends Controller
             ->paginate($request->per_page ?? 10)
             ->withQueryString();
 
+            $usersCount = $users->where('role', '!=', 'super_admin')->count();
+
         return Inertia::render('Users/Index', [
             'users' => $users,
-            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order'])
+            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order']),
+            'userCount' => $usersCount
         ]);
     }
 
@@ -46,6 +53,64 @@ class Usercontroller extends Controller
             'data' => $me,
         ], 200);
 
+    }
+
+    
+
+    /**
+     * Show form to create a new user
+     */
+    public function create(Request $request)
+    {
+        $roles = Role::where('slug', '!=', 'super_admin')
+            ->orderBy('name')
+            ->get();
+
+        // load top level departments with their children for selector
+        $departments = Department::whereNull('parent_id')
+            ->with('children')
+            ->orderBy('name')
+            ->get();
+
+        return Inertia::render('Users/Create', [
+            'roles' => $roles,
+            'departments' => $departments,
+        ]);
+    }
+
+    /**
+     * Persist a new user
+     */
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'full_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'role' => 'required|string',
+            'department_ids' => 'required|array|min:1',
+            'department_ids.*' => 'integer|exists:departments,id',
+        ]);
+
+        // default password
+        $defaultPassword = '1234567890';
+
+        $user = User::create([
+            'full_name' => $data['full_name'],
+            'email' => $data['email'],
+            'role' => $data['role'],
+            'password' => Hash::make($defaultPassword),
+        ]);
+
+        // attach all selected department ids (path)
+        foreach ($data['department_ids'] as $deptId) {
+            UserDepartment::create([
+                'user_id' => $user->id,
+                'department_id' => $deptId,
+            ]);
+        }
+
+        return redirect()->route('users.index')
+            ->with('success', "User created successfully. Default password is {$defaultPassword}");
     }
 
 

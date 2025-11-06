@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->string('is_technical')->default(false);
+            $table->integer('parent_id')->nullable();
             $table->timestamps();
         });
     }

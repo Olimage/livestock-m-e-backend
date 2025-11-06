@@ -38,7 +38,7 @@ class DashboardController extends Controller
 
         $stats = [
             'recordsSaved' => 12344, // Replace Record with your actual model
-            'totalUsers' => User::count(),
+            'totalUsers' => User::where('role', '!=', 'super_admin')->count(),
             'dataPendingSync' => 23453 //Record::where('sync_status', 'pending')->count(), // Adjust based on your schema
         ];
 

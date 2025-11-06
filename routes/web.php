@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\User\UserController;
+use App\Models\Department;
 
 
 Route::get('/', [DashboardController::class, 'index'])->name('home')->middleware('auth.web');
@@ -42,6 +43,12 @@ Route::middleware(['auth.web'])->group(function () {
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    // Return immediate children of a department (used by cascading selectors)
+    Route::get('/departments/{id}/children', function ($id) {
+        $children = Department::where('parent_id', $id)->orderBy('name')->get();
+        return response()->json($children);
+    })->name('departments.children');
 });
 
 

@@ -5,7 +5,8 @@ import BeLayout from '../../Layouts/BeLayout.vue'
 
 const props = defineProps({
     users: Object,
-    filters: Object
+    filters: Object,
+    userCount: Number
 })
 
 const search = ref(props.filters.search || '')
@@ -30,15 +31,15 @@ const getUserName = (user) => {
 // Helper function to format date
 const formatDate = (dateString) => {
     if (!dateString) return 'N/A'
-    
+
     try {
         // Handle MySQL datetime format (YYYY-MM-DD HH:MM:SS)
         // Replace space with 'T' to make it ISO 8601 compatible
         const isoDate = dateString.replace(' ', 'T')
         const date = new Date(isoDate)
-        
+
         if (isNaN(date.getTime())) return 'N/A'
-        
+
         return date.toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'short',
@@ -91,7 +92,8 @@ const getSortIcon = (column) => {
 
 <template>
     <BeLayout>
-        <Head title="FMLD :: Users" />
+
+        <Head title=" Users" />
 
         <div class="row">
             <div class="col-lg-12">
@@ -100,32 +102,71 @@ const getSortIcon = (column) => {
             </div>
         </div>
 
-        <div class="row mb-3">
-            <div class="col-md-8">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input 
-                        v-model="search" 
-                        type="text" 
-                        class="form-control" 
-                        placeholder="Search by name or email..."
-                    />
-                </div>
-            </div>
-            <div class="col-md-2">
-                <select v-model="perPage" class="form-select">
-                    <option :value="10">10 per page</option>
-                    <option :value="25">25 per page</option>
-                    <option :value="50">50 per page</option>
-                    <option :value="100">100 per page</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <Link href="/users/create" class="btn btn-success w-100">
-                    <i class="bi bi-plus-circle"></i> Add User
-                </Link>
+        <div class="row mb-2">
+            <div class="col-lg-12">
+                <p class="text-muted">
+                    Manage all users of the application. Total Users: <strong>{{ userCount }}</strong>
+                </p>
             </div>
         </div>
+
+
+
+        <div class="row card  mb-2">
+
+
+
+            <div class=" col-sm-12 col-md-12 col-lg-12  ">
+
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class=" card text-bg-success mb-3">
+                                <div class="card-header">Total Users</div>
+                                <div class="card-body">
+                                    <h4 class="mont-font fs-3 fw-800  mb-8 text-start">
+                                        {{ userCount }}
+                                    </h4>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-8 mb-2">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input v-model="search" type="text" class="form-control"
+                            placeholder="Search by name or email..." />
+                    </div>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <select v-model="perPage" class="form-select">
+                        <option :value="10">10 per page</option>
+                        <option :value="25">25 per page</option>
+                        <option :value="50">50 per page</option>
+                        <option :value="100">100 per page</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <Link href="/users/create" class="btn btn-success w-100">
+                    <i class="bi bi-plus-circle"></i> Add User
+                    </Link>
+                </div>
+            </div>
+        </div>
+
+
+
+
 
         <div class="row">
             <div class="col-lg-12">
@@ -142,6 +183,9 @@ const getSortIcon = (column) => {
                                             Name <i :class="getSortIcon('full_name')"></i>
                                         </th>
                                         <th @click="toggleSort('email')" class="sortable">
+                                            Department <i :class="getSortIcon('email')"></i>
+                                        </th>
+                                        <th @click="toggleSort('email')" class="sortable">
                                             Email <i :class="getSortIcon('email')"></i>
                                         </th>
                                         <th @click="toggleSort('created_at')" class="sortable">
@@ -152,13 +196,13 @@ const getSortIcon = (column) => {
                                 </thead>
                                 <tbody>
                                     <tr v-if="!users?.data || users.data.length === 0">
-                                        <td colspan="5" class="text-center py-4">
+                                        <td colspan="6" class="text-center py-4">
                                             <i class="bi bi-inbox fs-1 text-muted"></i>
                                             <p class="text-muted mb-0">No users found</p>
                                         </td>
                                     </tr>
                                     <tr v-for="user in users?.data" :key="user.id">
-                                        <td>{{ user.role  }}</td>
+                                        <td>{{ user.role }}</td>
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar-circle me-2">
@@ -167,22 +211,19 @@ const getSortIcon = (column) => {
                                                 <strong>{{ getUserName(user) }}</strong>
                                             </div>
                                         </td>
+                                        <td>
+                                            {{ (user.departments || []).map(d => d.name).join(' - ') || 'N/A' }}
+                                        </td>
                                         <td>{{ user.email || 'N/A' }}</td>
                                         <td>{{ formatDate(user.created_at) }}</td>
                                         <td class="text-center">
                                             <div class="btn-group" role="group">
-                                                <Link 
-                                                    :href="`/users/${user.id}/edit`" 
-                                                    class="btn btn-sm btn-outline-primary"
-                                                    title="Edit"
-                                                >
-                                                    <i class="bi bi-pencil"></i>
+                                                <Link :href="`/users/${user.id}/edit`"
+                                                    class="btn btn-sm btn-outline-primary" title="Edit">
+                                                <i class="bi bi-pencil"></i>
                                                 </Link>
-                                                <button 
-                                                    @click="deleteUser(user.id)" 
-                                                    class="btn btn-sm btn-outline-danger"
-                                                    title="Delete"
-                                                >
+                                                <button @click="deleteUser(user.id)"
+                                                    class="btn btn-sm btn-outline-danger" title="Delete">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </div>
@@ -193,44 +234,28 @@ const getSortIcon = (column) => {
                         </div>
 
                         <!-- Pagination -->
-                        <div v-if="users?.data && users.data.length > 0" class="d-flex justify-content-between align-items-center mt-3">
+                        <div v-if="users?.data && users.data.length > 0"
+                            class="d-flex justify-content-between align-items-center mt-3">
                             <div class="text-muted small">
                                 Showing {{ users.from }} to {{ users.to }} of {{ users.total }} entries
                             </div>
                             <nav>
                                 <ul class="pagination mb-0">
                                     <li class="page-item" :class="{ disabled: !users.prev_page_url }">
-                                        <Link 
-                                            :href="users.prev_page_url || '#'" 
-                                            class="page-link"
-                                            preserve-state
-                                            preserve-scroll
-                                        >
-                                            Previous
+                                        <Link :href="users.prev_page_url || '#'" class="page-link" preserve-state
+                                            preserve-scroll>
+                                        Previous
                                         </Link>
                                     </li>
-                                    <li 
-                                        v-for="link in users?.links?.slice(1, -1) || []" 
-                                        :key="link.label"
-                                        class="page-item"
-                                        :class="{ active: link.active }"
-                                    >
-                                        <Link 
-                                            :href="link.url || '#'" 
-                                            class="page-link"
-                                            preserve-state
-                                            preserve-scroll
-                                            v-html="link.label"
-                                        />
+                                    <li v-for="link in users?.links?.slice(1, -1) || []" :key="link.label"
+                                        class="page-item" :class="{ active: link.active }">
+                                        <Link :href="link.url || '#'" class="page-link" preserve-state preserve-scroll
+                                            v-html="link.label" />
                                     </li>
                                     <li class="page-item" :class="{ disabled: !users.next_page_url }">
-                                        <Link 
-                                            :href="users.next_page_url || '#'" 
-                                            class="page-link"
-                                            preserve-state
-                                            preserve-scroll
-                                        >
-                                            Next
+                                        <Link :href="users.next_page_url || '#'" class="page-link" preserve-state
+                                            preserve-scroll>
+                                        Next
                                         </Link>
                                     </li>
                                 </ul>
@@ -303,12 +328,12 @@ const getSortIcon = (column) => {
     .table {
         font-size: 0.875rem;
     }
-    
+
     .btn-group {
         display: flex;
         flex-direction: column;
     }
-    
+
     .btn-group .btn {
         margin-bottom: 2px;
     }

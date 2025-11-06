@@ -12,7 +12,7 @@
 
       <!-- Brand -->
       <Link class="navbar-brand" href="/baseline/">
-        FMLD Enumeration
+        FMLD
       </Link>
 
       <!-- Right side items -->
