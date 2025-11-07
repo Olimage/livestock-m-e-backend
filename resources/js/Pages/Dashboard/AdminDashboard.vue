@@ -7,6 +7,8 @@ import { useGeolocation } from '../../composables/useGeolocation';
 
 import LocationTracker from '../../Components/LocationTracker.vue';
 
+import LiveLocationMap  from '@/Components/LiveLocationMap.vue';
+
 const props = defineProps({
     stats: {
         type: Object,
@@ -73,6 +75,7 @@ const {
     <div class="row">
       <div class="col-12">
         <LocationTracker />
+        <LiveLocationMap  />
       </div>
     </div>
 

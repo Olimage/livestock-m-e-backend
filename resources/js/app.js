@@ -2,6 +2,7 @@ import './bootstrap';
 import '../assets/main.css'
 import '../css/app.css'
 import 'animate.css'
+import 'leaflet/dist/leaflet.css'
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
