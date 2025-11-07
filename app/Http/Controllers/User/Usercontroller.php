@@ -13,7 +13,7 @@ use App\Models\Department;
 use App\Models\UserDepartment;
 
 
-class Usercontroller extends Controller
+class UserController extends Controller
 {
     public function index(Request $request)
     {
