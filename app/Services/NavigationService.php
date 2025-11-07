@@ -84,6 +84,18 @@ class NavigationService
             ];
         }
 
+
+        if ($user->isAdmin() || $user->can('manage-users')) {
+            $settingsSubmenu[] = [
+                'name'      => 'Supervisors & Enumerators',
+                'routeName' => 'supervisor-enumerators.index',
+                'icon'      => 'bi bi-arrow-right-circle-fill',
+            ];
+   
+
+
+        }
+
         if ($user->isAdmin() || $user->can('manage-permissions')) {
             $settingsSubmenu[] = [
                 'name'      => 'Permissions',

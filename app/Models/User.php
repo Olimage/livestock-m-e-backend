@@ -162,4 +162,24 @@ class User extends Authenticatable implements JWTSubject
         return $this->is_admin === true;
     }
 
+    public function supervisor()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'supervisor_enumerators',
+            'enumerator_id',
+            'supervisor_id'
+        );
+    }
+
+    public function enumerators()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'supervisor_enumerators',
+            'supervisor_id',
+            'enumerator_id'
+        );
+    }
+
 }

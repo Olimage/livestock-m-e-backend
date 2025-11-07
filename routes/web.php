@@ -44,6 +44,9 @@ Route::middleware(['auth.web'])->group(function () {
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
+    // Supervisor-Enumerator Management
+    require __DIR__.'/v1/web-supervisor-enumerator.php';
+
     // Return immediate children of a department (used by cascading selectors)
     Route::get('/departments/{id}/children', function ($id) {
         $children = Department::where('parent_id', $id)->orderBy('name')->get();

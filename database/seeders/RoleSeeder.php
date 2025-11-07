@@ -45,6 +45,18 @@ class RoleSeeder extends Seeder
             [
                 'name' => 'User',
                 'slug' => 'user'
+            ], 
+            [
+                'name' => 'Enumerator',
+                'slug' => 'enumerator'
+            ], 
+            [
+                'name' => 'Supervisor',
+                'slug' => 'supervisor'
+            ],
+            [
+                'name'=> 'Livestock Extension Officer',
+                'slug'=> 'livestock_extension_officer'
             ],
         ];
 
