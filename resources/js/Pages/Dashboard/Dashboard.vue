@@ -7,7 +7,7 @@ import Statistics from '../../Components/Statistics.vue'
 
 <template>
   <BeLayout>
-     <Head title="FMLD :: Dahboard" />
+     <Head title="Dashboard " />
 
     <div class="row">
       <div class="col-lg-12">

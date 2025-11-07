@@ -70,8 +70,8 @@ const submit = () => {
                 <div class="col-12 col-lg-6 d-none d-lg-block p-0">
                     <div class="decor-panel h-100 d-flex align-items-center justify-content-center text-white p-4">
                         <div class="decor-content text-center px-4">
-                            <h2 class="fw-bold mb-2">FMLD</h2>
-                            <p class="lead mb-4">Information System Dashboard</p>
+                            <h2 class="fw-bold mb-2"> N-LIMS </h2>
+                            <p class="lead mb-4">National Livestock Information Management System </p>
                             <p class="small opacity-85">
                                 Secure access to  data and tools.
                             </p>
