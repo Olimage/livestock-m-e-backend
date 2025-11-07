@@ -3,6 +3,9 @@ import { Head, Link } from '@inertiajs/vue3'
 
 import BeLayout from '../../Layouts/BeLayout.vue'
 import Statistics from '../../Components/AdminDashboardStatistics.vue'
+import { useGeolocation } from '../../composables/useGeolocation';
+
+import LocationTracker from '../../Components/LocationTracker.vue';
 
 const props = defineProps({
     stats: {
@@ -14,6 +17,15 @@ const props = defineProps({
         })
     }
 })
+
+const { 
+    position,
+    error,
+    isTracking,
+    startTracking,
+    stopTracking
+} = useGeolocation();
+
 </script>
 
 <template>
@@ -33,5 +45,37 @@ const props = defineProps({
 
 
     <Statistics  :stats="stats" />
+
+
+        <div>
+        <!-- Show current position -->
+        <div v-if="position">
+            Latitude: {{ position.latitude }}<br>
+            Longitude: {{ position.longitude }}<br>
+            Accuracy: {{ position.accuracy }}m
+        </div>
+
+        <!-- Error handling -->
+        <div v-if="error" class="text-danger">
+            {{ error.message }}
+        </div>
+
+        <!-- Controls -->
+        <button @click="startTracking" :disabled="isTracking">
+            Start Tracking
+        </button>
+        <button @click="stopTracking" :disabled="!isTracking">
+            Stop Tracking
+        </button>
+    </div>
+
+
+    <div class="row">
+      <div class="col-12">
+        <LocationTracker />
+      </div>
+    </div>
+
+
   </BeLayout>
 </template>
