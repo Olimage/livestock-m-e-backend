@@ -65,6 +65,7 @@ import { route } from 'ziggy-js';
                 </div>
                 <div class="col-4 text-end mt-3">
                     <Link :href="route('supervisor-enumerators.create')" class="btn btn-sm btn-primary">
+                        Creat new Assignment
                         <i class="bi bi-plus-circle"></i>
                     </Link>
                 </div>
