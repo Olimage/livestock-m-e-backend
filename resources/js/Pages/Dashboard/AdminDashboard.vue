@@ -49,35 +49,35 @@ const {
     <Statistics  :stats="stats" />
 
 
-        <div>
-        <!-- Show current position -->
+        <!-- <div>
+        <! -- Show current position - ->
         <div v-if="position">
             Latitude: {{ position.latitude }}<br>
             Longitude: {{ position.longitude }}<br>
             Accuracy: {{ position.accuracy }}m
         </div>
 
-        <!-- Error handling -->
+        <!- - Error handling - ->
         <div v-if="error" class="text-danger">
             {{ error.message }}
         </div>
 
-        <!-- Controls -->
+        <!- - Controls - ->
         <button @click="startTracking" :disabled="isTracking">
             Start Tracking
         </button>
         <button @click="stopTracking" :disabled="!isTracking">
             Stop Tracking
         </button>
-    </div>
+    </div> -->
 
 
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-12">
         <LocationTracker />
         <LiveLocationMap  />
       </div>
-    </div>
+    </div> -->
 
 
   </BeLayout>
