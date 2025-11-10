@@ -2,6 +2,7 @@
 import { Head, Link } from '@inertiajs/vue3'
 import { CountUp } from 'countup.js'
 import { onMounted, watch, ref } from 'vue' 
+import SocketListener from './SocketListener.vue'
 
 const props = defineProps({
   stats: {
@@ -14,11 +15,30 @@ const props = defineProps({
   }
 })
 
+// Reactive stats that can be updated in real-time
+const currentStats = ref({
+  recordsSaved: props.stats.recordsSaved,
+  totalUsers: props.stats.totalUsers,
+  dataPendingSync: props.stats.dataPendingSync
+})
+
 // Refs for stat elements
 const statRefs = {
   recordsSaved: ref(null),
   totalUsers: ref(null),
   dataPendingSync: ref(null)
+}
+
+// Handle incoming WebSocket updates
+const handleStatsUpdate = (e) => {
+  console.debug('Received stats update:', e.data);
+  if (e.data && typeof e.data === 'object') {
+    // Update only the stats that are present in the update
+    currentStats.value = {
+      ...currentStats.value,
+      ...e.data
+    };
+  }
 }
 
 const newSurvey = {

@@ -3,7 +3,7 @@
 use App\Http\Controllers\SupervisorEnumeratorController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth.web'])->group(function () {
     Route::get('/supervisor-enumerators', [SupervisorEnumeratorController::class, 'webIndex'])
         ->name('supervisor-enumerators.index');
         

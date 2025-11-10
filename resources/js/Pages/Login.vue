@@ -25,7 +25,7 @@ const submit = () => {
     <Includes />
     <div class="auth-root min-vh-100 d-flex align-items-center">
 
-        <Head title="Baseline Login" />
+        <Head title="NLIMS Login" />
 
 
         <div class="container py-5">

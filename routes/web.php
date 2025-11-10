@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\BroadcastController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\User\UserController;
 use App\Models\Department;
@@ -52,6 +53,10 @@ Route::middleware(['auth.web'])->group(function () {
         $children = Department::where('parent_id', $id)->orderBy('name')->get();
         return response()->json($children);
     })->name('departments.children');
+
+    // Lightweight broadcast/test endpoints (auth required)
+    Route::get('/broadcast/live', [BroadcastController::class, 'sendLiveData'])->name('broadcast.live');
+    Route::get('/broadcast/notify/{user}', [BroadcastController::class, 'notifyUser'])->name('broadcast.notify');
 });
 
 
@@ -97,4 +102,28 @@ Route::get('/run-worker', function () {
             'message' => $e->getMessage(),
         ], 500);
     }
+});
+
+// Test routes for WebSocket features
+Route::middleware(['auth.web'])->group(function () {
+    // Test notification
+    Route::get('/test-notification', function () {
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json(['error' => 'Not authenticated'], 401);
+        }
+        
+        event(new \App\Events\UserNotification($user->id, 'Test notification from web route'));
+        return response()->json(['status' => 'sent']);
+    });
+
+    // Test dashboard stats update
+    Route::get('/test-dashboard-stats', function () {
+        event(new \App\Events\DashboardStatsUpdated([
+            'recordsSaved' => rand(10000, 20000),
+            'totalUsers' => rand(100, 500),
+            'dataPendingSync' => rand(1000, 5000)
+        ]));
+        return response()->json(['status' => 'sent']);
+    });
 });

@@ -5,6 +5,9 @@ import TopBar from './TopBar.vue'
 import NavSidebar from './NavSidebar.vue'
 import Footer from './FootBe.vue'
 import Includes from './Includes.vue'
+import SocketListener from '@/Components/SocketListener.vue'
+import Toaster from '@/Components/Toaster.vue'
+import { usePage } from '@inertiajs/vue3'
 
 const showOffcanvas = ref(false)
 
@@ -15,6 +18,9 @@ const toggleSidebar = () => {
 const closeOffcanvas = () => {
   showOffcanvas.value = false
 }
+
+const page = usePage()
+const currentUserId = page.props.auth?.user?.id || page.props.user?.id || null
 </script>
 
 <template>
@@ -35,6 +41,9 @@ const closeOffcanvas = () => {
     <main class="main-content">
       <!-- This is where Inertia renders the actual page content -->
       <slot />
+      <!-- Global websocket listener + toasts -->
+      <!-- <SocketListener :userId="currentUserId" /> -->
+      <Toaster />
       <!-- <Footer /> -->
     </main>
   </div>
