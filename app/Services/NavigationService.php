@@ -26,16 +26,12 @@ class NavigationService
         // Data Creation Items
         if ($user->isAdmin() || $user->can('viewDataCreation', User::class)) {
             $navItems[] = [
-                'name'      => 'A New Input',
-                'routeName' => 'baseline-new',
+                'name'      => 'Enumeration',
+                'routeName' => 'enumerations.index',
                 'icon'      => 'bi bi-plus-square',
             ];
 
-            $navItems[] = [
-                'name'      => 'Saved Data',
-                'routeName' => 'baseline-saved-data',
-                'icon'      => 'bi bi-floppy',
-            ];
+
         }
 
         // Build Reports submenu based on permissions
@@ -73,6 +69,15 @@ class NavigationService
                 'name'    => 'Programs',
                 'icon'    => 'bi bi-diagram-3',
                 'submenu' => $programsSubmenu,
+            ];
+        }
+
+        // Enumerations (single entry; create actions available on index page)
+        if ($user->isAdmin() || $user->can('manage-enumerations')) {
+            $navItems[] = [
+                'name'      => 'Enumerations',
+                'routeName' => 'enumerations.index',
+                'icon'      => 'bi bi-list-check',
             ];
         }
 

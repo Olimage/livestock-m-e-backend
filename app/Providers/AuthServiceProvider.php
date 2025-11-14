@@ -62,6 +62,11 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('manage-permissions', function (User $user) {
             return $user->hasPermission('manage-permissions');
         });
+
+        // Enumeration permissions
+        Gate::define('manage-enumerations', function (User $user) {
+            return $user->hasPermission('manage-enumerations');
+        });
     }
 
     /**

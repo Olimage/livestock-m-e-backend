@@ -9,6 +9,8 @@ use App\Http\Controllers\BroadcastController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\User\UserController;
 use App\Models\Department;
+use App\Http\Controllers\EnumerationController;
+use App\Http\Controllers\LocationController;
 
 
 Route::get('/', [DashboardController::class, 'index'])->name('home')->middleware('auth.web');
@@ -39,6 +41,12 @@ Route::get('login', function () {
     
 Route::middleware(['auth.web'])->group(function () {
     
+    // Location API endpoints for cascading selectors
+    Route::prefix('location')->name('location.')->group(function () {
+        Route::get('/zones', [LocationController::class, 'zones'])->name('zones');
+        Route::get('/states', [LocationController::class, 'states'])->name('states');
+        Route::get('/lgas', [LocationController::class, 'lgas'])->name('lgas');
+    });
     
     // Return immediate children of a department (used by cascading selectors)
     Route::get('/departments/{id}/children', function ($id) {
@@ -96,6 +104,17 @@ Route::middleware(['auth.web'])->group(function () {
         Route::get('/nlgas-pillars/{pillar}/edit', [\App\Http\Controllers\ProgramController::class, 'editNlgasPillar'])->name('nlgas-pillars.edit');
         Route::put('/nlgas-pillars/{pillar}', [\App\Http\Controllers\ProgramController::class, 'updateNlgasPillar'])->name('nlgas-pillars.update');
         Route::delete('/nlgas-pillars/{pillar}', [\App\Http\Controllers\ProgramController::class, 'destroyNlgasPillar'])->name('nlgas-pillars.destroy');
+    });
+
+    // Enumeration Records Routes
+    Route::prefix('enumerations')->name('enumerations.')->group(function () {
+        Route::get('/', [EnumerationController::class, 'index'])->name('index');
+        Route::get('/create/{formType}', [EnumerationController::class, 'create'])->name('create');
+        Route::post('/{formType}', [EnumerationController::class, 'store'])->name('store');
+        Route::get('/record/{enumerationRecord}', [EnumerationController::class, 'show'])->name('show');
+        Route::put('/record/{enumerationRecord}/sync-status', [EnumerationController::class, 'updateSyncStatus'])->name('sync-status.update');
+        Route::delete('/record/{enumerationRecord}', [EnumerationController::class, 'destroy'])->name('destroy');
+        Route::get('/export/{format?}', [EnumerationController::class, 'export'])->name('export');
     });
 });
 

@@ -7,6 +7,11 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Models\Department;
+use App\Models\BondOutcome;
+use App\Models\PresidentialPriority;
+use App\Models\SectoralGoal;
+use App\Models\NlgasPillar;
 
 class DashboardController extends Controller
 {
@@ -33,6 +38,11 @@ class DashboardController extends Controller
             ->get()
             ->pluck('value', 'name');
 
+            $TotalbondOutcomesCount = BondOutcome::count();
+            $TotalpresidentialPrioritiesCount = PresidentialPriority::count();
+            $TotalsectoralGoalsCount = SectoralGoal::count();
+            $TotalnlgasPillarsCount = NlgasPillar::count();
+
         $stats = [
             [
                 'label' => 'Records Saved',
@@ -60,6 +70,42 @@ class DashboardController extends Controller
                 'bgColor' => 'bg-amber-50',
                 'iconColor' => 'text-amber-600',
                 'badge' => 'Pending'
+            ],
+            [
+                'label' => 'Bond Outcomes',
+                'value' => $TotalbondOutcomesCount,
+                'icon' => 'bi bi-flag-fill',
+                'gradient' => 'from-purple-500 to-pink-600',
+                'bgColor' => 'bg-purple-50',
+                'iconColor' => 'text-purple-600',
+                'badge' => 'Active'
+            ],
+            [
+                'label' => 'Presidential Priorities',
+                'value' => $TotalpresidentialPrioritiesCount,
+                'icon' => 'bi bi-star-fill',
+                'gradient' => 'from-yellow-500 to-red-600',
+                'bgColor' => 'bg-yellow-50',
+                'iconColor' => 'text-yellow-600',
+                'badge' => 'Active'
+            ],
+            [
+                'label' => 'Sectoral Goals',
+                'value' => $TotalsectoralGoalsCount,
+                'icon' => 'bi bi-target-fill',
+                'gradient' => 'from-cyan-500 to-sky-600',
+                'bgColor' => 'bg-cyan-50',
+                'iconColor' => 'text-cyan-600',
+                'badge' => 'Active'
+            ],
+            [
+                'label' => 'NLGAS Pillars',
+                'value' => $TotalnlgasPillarsCount,
+                'icon' => 'bi bi-building-fill',
+                'gradient' => 'from-lime-500 to-green-600',
+                'bgColor' => 'bg-lime-50',
+                'iconColor' => 'text-lime-600',
+                'badge' => 'Active'
             ]
         ];
 
@@ -75,6 +121,12 @@ class DashboardController extends Controller
             ->get()
             ->pluck('value', 'name');
 
+            
+            $TotalbondOutcomesCount = BondOutcome::count();
+            $TotalpresidentialPrioritiesCount = PresidentialPriority::count();
+            $TotalsectoralGoalsCount = SectoralGoal::count();
+            $TotalnlgasPillarsCount = NlgasPillar::count();
+
         $stats = [
             [
                 'label' => 'Records Saved',
@@ -102,6 +154,42 @@ class DashboardController extends Controller
                 'bgColor' => 'bg-amber-50',
                 'iconColor' => 'text-amber-600',
                 'badge' => 'Pending'
+            ],
+            [
+                'label' => 'Bond Outcomes',
+                'value' => $TotalbondOutcomesCount,
+                'icon' => 'bi bi-flag-fill',
+                'gradient' => 'from-purple-500 to-pink-600',
+                'bgColor' => 'bg-purple-50',
+                'iconColor' => 'text-purple-600',
+                'badge' => 'Active'
+            ],
+            [
+                'label' => 'Presidential Priorities',
+                'value' => $TotalpresidentialPrioritiesCount,
+                'icon' => 'bi bi-star-fill',
+                'gradient' => 'from-yellow-500 to-red-600',
+                'bgColor' => 'bg-yellow-50',
+                'iconColor' => 'text-yellow-600',
+                'badge' => 'Active'
+            ],
+            [
+                'label' => 'Sectoral Goals',
+                'value' => $TotalsectoralGoalsCount,
+                'icon' => 'bi bi-target-fill',
+                'gradient' => 'from-cyan-500 to-sky-600',
+                'bgColor' => 'bg-cyan-50',
+                'iconColor' => 'text-cyan-600',
+                'badge' => 'Active'
+            ],
+            [
+                'label' => 'NLGAS Pillars',
+                'value' => $TotalnlgasPillarsCount,
+                'icon' => 'bi bi-building-fill',
+                'gradient' => 'from-lime-500 to-green-600',
+                'bgColor' => 'bg-lime-50',
+                'iconColor' => 'text-lime-600',
+                'badge' => 'Active'
             ]
         ];
 
