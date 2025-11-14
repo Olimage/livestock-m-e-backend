@@ -21,13 +21,13 @@ class DatabaseSeeder extends Seeder
         
         $this->call([
 
-            // ZonesSeeder::class,
-            // UserSeeder::class,
-            // ModuleSeeder::class,
-            // DepartmentSeeder::class,
-            // RoleSeeder::class,
+            ZonesSeeder::class,
+            UserSeeder::class,
+            ModuleSeeder::class,
+            DepartmentSeeder::class,
+            RoleSeeder::class,
     
-            // PermissionSeeder::class,
+            PermissionSeeder::class,
             StrategicAlignmentSeeder::class
         ]);
     }
