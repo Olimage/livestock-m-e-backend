@@ -18,5 +18,14 @@ Route::group([
 
 });
 
+// Dashboard API endpoints (session auth required)
+Route::middleware([
+    \Illuminate\Cookie\Middleware\EncryptCookies::class,
+    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+    'api.session.auth'
+])->group(function () {
+    Route::get('/dashboard/stats', [App\Http\Controllers\DashboardController::class, 'getStats']);
+});
+
 
 

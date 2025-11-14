@@ -54,7 +54,12 @@ function submit() {
         return
     }
 
-    form.post('/users')
+    form.post(route('users.store'), {
+        onSuccess: () => {
+            // optionally, could reset form here
+            // form.reset()
+        },
+    })
 }
 </script>
 
@@ -107,7 +112,7 @@ function submit() {
 
                             <div class="d-flex gap-2">
                                 <button type="submit" class="btn btn-success" :disabled="form.processing">Create User</button>
-                                <Link href="/users" class="btn btn-outline-secondary">Cancel</Link>
+                                <Link :href="route('users.index')" class="btn btn-outline-secondary">Cancel</Link>
                             </div>
                         </form>
                     </div>

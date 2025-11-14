@@ -53,6 +53,7 @@ $app = Application::configure(basePath: dirname(__DIR__))
             'auth.web'      => \App\Http\Middleware\EnsureAuthenticated::class,
             'guest.web'     => \App\Http\Middleware\EnsureGuest::class,
              'permission' => \App\Http\Middleware\CheckPermission::class,
+            'api.session.auth' => \App\Http\Middleware\ApiSessionAuth::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

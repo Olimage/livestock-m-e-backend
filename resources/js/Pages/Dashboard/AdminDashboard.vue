@@ -2,7 +2,7 @@
 import { Head, Link } from '@inertiajs/vue3'
 
 import BeLayout from '../../Layouts/BeLayout.vue'
-import Statistics from '../../Components/AdminDashboardStatistics.vue'
+import DashboardStatistics from '../../Components/DashboardStatistics.vue'
 import { useGeolocation } from '../../composables/useGeolocation';
 
 import LocationTracker from '../../Components/LocationTracker.vue';
@@ -11,12 +11,8 @@ import LiveLocationMap  from '@/Components/LiveLocationMap.vue';
 
 const props = defineProps({
     stats: {
-        type: Object,
-        default: () => ({
-            recordsSaved: 0,
-            totalUsers: 0,
-            dataPendingSync: 0
-        })
+        type: Array,
+        default: () => []
     }
 })
 
@@ -46,7 +42,16 @@ const {
     <div class="clearfix"></div>
 
 
-    <Statistics  :stats="stats" />
+    <DashboardStatistics  
+      :stats="stats" 
+      title="Admin Dashboard Statistics"
+      subtitle="Real-time overview of system data"
+      :show-new-button="true"
+      new-button-route="baseline-new"
+      new-button-text="New Input"
+      :auto-refresh="true"
+      refresh-url="/api/dashboard/stats"
+    />
 
 
         <!-- <div>

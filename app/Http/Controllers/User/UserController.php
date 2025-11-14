@@ -83,6 +83,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        try{
         $data = $request->validate([
             'full_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -111,7 +112,10 @@ class UserController extends Controller
 
         return redirect()->route('users.index')
             ->with('success', "User created successfully. Default password is {$defaultPassword}");
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error',  $e->getMessage());
     }
+}
 
 
 }

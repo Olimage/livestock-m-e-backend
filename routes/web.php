@@ -38,25 +38,65 @@ Route::get('login', function () {
 
     
 Route::middleware(['auth.web'])->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-    Route::post('/users', [UserController::class, 'store'])->name('users.store');
-    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-
-    // Supervisor-Enumerator Management
-    require __DIR__.'/v1/web-supervisor-enumerator.php';
-
+    
+    
     // Return immediate children of a department (used by cascading selectors)
     Route::get('/departments/{id}/children', function ($id) {
         $children = Department::where('parent_id', $id)->orderBy('name')->get();
         return response()->json($children);
     })->name('departments.children');
-
+    
     // Lightweight broadcast/test endpoints (auth required)
     Route::get('/broadcast/live', [BroadcastController::class, 'sendLiveData'])->name('broadcast.live');
     Route::get('/broadcast/notify/{user}', [BroadcastController::class, 'notifyUser'])->name('broadcast.notify');
+    
+    
+    Route::prefix('settings')->group(function () {
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        
+        // Supervisor-Enumerator Management
+        require __DIR__.'/v1/web-supervisor-enumerator.php';
+    });
+
+    // Program Management Routes
+    Route::prefix('programs')->name('programs.')->group(function () {
+        // Presidential Priorities
+        Route::get('/presidential-priorities', [\App\Http\Controllers\ProgramController::class, 'presidentialPriorities'])->name('presidential-priorities.index');
+        Route::get('/presidential-priorities/create', [\App\Http\Controllers\ProgramController::class, 'createPresidentialPriority'])->name('presidential-priorities.create');
+        Route::post('/presidential-priorities', [\App\Http\Controllers\ProgramController::class, 'storePresidentialPriority'])->name('presidential-priorities.store');
+        Route::get('/presidential-priorities/{priority}/edit', [\App\Http\Controllers\ProgramController::class, 'editPresidentialPriority'])->name('presidential-priorities.edit');
+        Route::put('/presidential-priorities/{priority}', [\App\Http\Controllers\ProgramController::class, 'updatePresidentialPriority'])->name('presidential-priorities.update');
+        Route::delete('/presidential-priorities/{priority}', [\App\Http\Controllers\ProgramController::class, 'destroyPresidentialPriority'])->name('presidential-priorities.destroy');
+
+        // Sectoral Goals
+        Route::get('/sectoral-goals', [\App\Http\Controllers\ProgramController::class, 'sectoralGoals'])->name('sectoral-goals.index');
+        Route::get('/sectoral-goals/create', [\App\Http\Controllers\ProgramController::class, 'createSectoralGoal'])->name('sectoral-goals.create');
+        Route::post('/sectoral-goals', [\App\Http\Controllers\ProgramController::class, 'storeSectoralGoal'])->name('sectoral-goals.store');
+        Route::get('/sectoral-goals/{goal}/edit', [\App\Http\Controllers\ProgramController::class, 'editSectoralGoal'])->name('sectoral-goals.edit');
+        Route::put('/sectoral-goals/{goal}', [\App\Http\Controllers\ProgramController::class, 'updateSectoralGoal'])->name('sectoral-goals.update');
+        Route::delete('/sectoral-goals/{goal}', [\App\Http\Controllers\ProgramController::class, 'destroySectoralGoal'])->name('sectoral-goals.destroy');
+
+        // Bond Outcomes
+        Route::get('/bond-outcomes', [\App\Http\Controllers\ProgramController::class, 'bondOutcomes'])->name('bond-outcomes.index');
+        Route::get('/bond-outcomes/create', [\App\Http\Controllers\ProgramController::class, 'createBondOutcome'])->name('bond-outcomes.create');
+        Route::post('/bond-outcomes', [\App\Http\Controllers\ProgramController::class, 'storeBondOutcome'])->name('bond-outcomes.store');
+        Route::get('/bond-outcomes/{outcome}/edit', [\App\Http\Controllers\ProgramController::class, 'editBondOutcome'])->name('bond-outcomes.edit');
+        Route::put('/bond-outcomes/{outcome}', [\App\Http\Controllers\ProgramController::class, 'updateBondOutcome'])->name('bond-outcomes.update');
+        Route::delete('/bond-outcomes/{outcome}', [\App\Http\Controllers\ProgramController::class, 'destroyBondOutcome'])->name('bond-outcomes.destroy');
+
+        // NLGAS Pillars
+        Route::get('/nlgas-pillars', [\App\Http\Controllers\ProgramController::class, 'nlgasPillars'])->name('nlgas-pillars.index');
+        Route::get('/nlgas-pillars/create', [\App\Http\Controllers\ProgramController::class, 'createNlgasPillar'])->name('nlgas-pillars.create');
+        Route::post('/nlgas-pillars', [\App\Http\Controllers\ProgramController::class, 'storeNlgasPillar'])->name('nlgas-pillars.store');
+        Route::get('/nlgas-pillars/{pillar}/edit', [\App\Http\Controllers\ProgramController::class, 'editNlgasPillar'])->name('nlgas-pillars.edit');
+        Route::put('/nlgas-pillars/{pillar}', [\App\Http\Controllers\ProgramController::class, 'updateNlgasPillar'])->name('nlgas-pillars.update');
+        Route::delete('/nlgas-pillars/{pillar}', [\App\Http\Controllers\ProgramController::class, 'destroyNlgasPillar'])->name('nlgas-pillars.destroy');
+    });
 });
 
 

@@ -157,7 +157,7 @@ const getSortIcon = (column) => {
                     </select>
                 </div>
                 <div class="col-md-2 mb-2">
-                    <Link href="/users/create" class="btn btn-success w-100">
+                    <Link :href="route('users.create')" class="btn btn-success w-100">
                     <i class="bi bi-plus-circle"></i> Add User
                     </Link>
                 </div>

@@ -65,10 +65,40 @@ class NavigationService
             ];
         }
 
+        // Programs (with submenus)
+        $programsSubmenu = self::programsMenu($user);
+
+        if (!empty($programsSubmenu)) {
+            $navItems[] = [
+                'name'    => 'Programs',
+                'icon'    => 'bi bi-diagram-3',
+                'submenu' => $programsSubmenu,
+            ];
+        }
+
         // Settings (with submenus)
+        $settingsSubmenu = self::settingMenu($user);
+
+    
+
+        if (!empty($settingsSubmenu)) {
+            $navItems[] = [
+                'name'    => 'Settings',
+                'icon'    => 'bi bi-gear',
+                'submenu' => $settingsSubmenu,
+            ];
+        }
+
+        return $navItems;
+    }
+
+
+      public static function settingMenu($user){
+
+        
         $settingsSubmenu = [];
 
-        if ($user->isAdmin() || $user->can('manage-settings')) {
+           if ($user->isAdmin() || $user->can('manage-settings')) {
             $settingsSubmenu[] = [
                 'name'      => 'General',
                 'routeName' => 'baseline-saved-data',
@@ -104,15 +134,41 @@ class NavigationService
             ];
         }
 
-        // Only add Settings menu if user has at least one settings permission
-        if (!empty($settingsSubmenu)) {
-            $navItems[] = [
-                'name'    => 'Settings',
-                'icon'    => 'bi bi-gear',
-                'submenu' => $settingsSubmenu,
+        return $settingsSubmenu;
+
+
+    }
+
+    public static function programsMenu($user)
+    {
+        $programsSubmenu = [];
+
+        if ($user->isAdmin() || $user->can('manage-programs')) {
+            $programsSubmenu[] = [
+                'name'      => 'Presidential Priorities',
+                'routeName' => 'programs.presidential-priorities.index',
+                'icon'      => 'bi bi-star',
+            ];
+
+            $programsSubmenu[] = [
+                'name'      => 'Sectoral Goals',
+                'routeName' => 'programs.sectoral-goals.index',
+                'icon'      => 'bi bi-bullseye',
+            ];
+
+            $programsSubmenu[] = [
+                'name'      => 'Bond Outcomes',
+                'routeName' => 'programs.bond-outcomes.index',
+                'icon'      => 'bi bi-trophy',
+            ];
+
+            $programsSubmenu[] = [
+                'name'      => 'NLGAS Pillars',
+                'routeName' => 'programs.nlgas-pillars.index',
+                'icon'      => 'bi bi-columns',
             ];
         }
 
-        return $navItems;
+        return $programsSubmenu;
     }
 }

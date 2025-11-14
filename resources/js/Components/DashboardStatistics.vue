@@ -1,102 +1,114 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
 import { CountUp } from 'countup.js'
-import { onMounted, watch, ref } from 'vue' 
-import SocketListener from './SocketListener.vue'
+import { onMounted, watch, ref, onUnmounted } from 'vue'
 
 const props = defineProps({
   stats: {
-    type: Object,
-    default: () => ({
-      recordsSaved: 0,
-      totalUsers: 0,
-      dataPendingSync: 0
-    })
+    type: Array,
+    default: () => []
+  },
+  title: {
+    type: String,
+    default: 'Dashboard Statistics'
+  },
+  subtitle: {
+    type: String,
+    default: 'Real-time overview of your data'
+  },
+  showNewButton: {
+    type: Boolean,
+    default: true
+  },
+  newButtonRoute: {
+    type: String,
+    default: 'baseline-new'
+  },
+  newButtonText: {
+    type: String,
+    default: 'New Input'
+  },
+  autoRefresh: {
+    type: Boolean,
+    default: false
+  },
+  refreshUrl: {
+    type: String,
+    default: '/api/dashboard/stats'
   }
 })
 
 // Reactive stats that can be updated in real-time
-const currentStats = ref({
-  recordsSaved: props.stats.recordsSaved,
-  totalUsers: props.stats.totalUsers,
-  dataPendingSync: props.stats.dataPendingSync
-})
+const currentStats = ref([...props.stats])
+
+// Auto-refresh interval ID
+let refreshInterval = null
 
 // Refs for stat elements
-const statRefs = {
-  recordsSaved: ref(null),
-  totalUsers: ref(null),
-  dataPendingSync: ref(null)
-}
+// const statRefs = {
+//   recordsSaved: ref(null),
+//   totalUsers: ref(null),
+//   dataPendingSync: ref(null)
+// }
 
-// Handle incoming WebSocket updates
-const handleStatsUpdate = (e) => {
-  console.debug('Received stats update:', e.data);
-  if (e.data && typeof e.data === 'object') {
-    // Update only the stats that are present in the update
-    currentStats.value = {
-      ...currentStats.value,
-      ...e.data
-    };
+// Refs for stat elements
+const statRefs = ref({})
+
+// Fetch fresh stats from the server
+const fetchStats = async () => {
+  if (!props.autoRefresh) return
+  
+  try {
+    const response = await fetch(props.refreshUrl)
+    if (response.ok) {
+      const data = await response.json()
+      currentStats.value = data
+    }
+  } catch (error) {
+    console.error('Failed to fetch dashboard stats:', error)
   }
-}
-
-const newSurvey = {
-  title: 'New Survey',
-  icon: 'bi bi-plus-square',
-  route: 'baseline-new'
 }
 
 const formatNumber = (num) => {
   return new Intl.NumberFormat('en-US').format(num)
 }
 
-const statsCards = [
-  {
-    title: 'Records Saved',
-    key: 'recordsSaved', 
-    icon: 'bi bi-database-fill-check',
-    gradient: 'from-emerald-500 to-teal-600',
-    bgColor: 'bg-emerald-50',
-    iconColor: 'text-emerald-600'
-  },
-  {
-    title: 'Total Users',
-    key: 'totalUsers',
-    icon: 'bi bi-people-fill',
-    gradient: 'from-blue-500 to-indigo-600',
-    bgColor: 'bg-blue-50',
-    iconColor: 'text-blue-600'
-  },
-  {
-    title: 'Data Pending Sync',
-    key: 'dataPendingSync',
-    icon: 'bi bi-cloud-arrow-up-fill',
-    gradient: 'from-amber-500 to-orange-600',
-    bgColor: 'bg-amber-50',
-    iconColor: 'text-amber-600'
-  }
-]
-
 onMounted(() => {
-  statsCards.forEach((card) => {
-    const el = statRefs[card.key].value
+  // Animate initial values
+  currentStats.value.forEach((stat, index) => {
+    const el = statRefs.value[`stat-${index}`]
     if (el) {
-      const countUp = new CountUp(el, props.stats[card.key], {
+      const countUp = new CountUp(el, stat.value, {
         duration: 2,
         separator: ','
       })
       countUp.start()
     }
   })
+  
+  // Set up auto-refresh if enabled
+  if (props.autoRefresh) {
+    refreshInterval = setInterval(() => {
+      fetchStats()
+    }, 5000)
+  }
 })
 
-watch(() => props.stats, (newStats) => {
-  statsCards.forEach((card) => {
-    const el = statRefs[card.key].value
+onUnmounted(() => {
+  // Clean up interval when component unmounts
+  if (refreshInterval) {
+    clearInterval(refreshInterval)
+  }
+})
+
+watch(() => currentStats.value, (newStats) => {
+  newStats.forEach((stat, index) => {
+    const el = statRefs.value[`stat-${index}`]
     if (el) {
-      const countUp = new CountUp(el, newStats[card.key], {
-        duration: 2,
+      const currentValue = parseInt(el.textContent.replace(/,/g, '')) || 0
+      const countUp = new CountUp(el, stat.value, {
+        startVal: currentValue,
+        duration: 1.5,
         separator: ','
       })
       countUp.start()
@@ -115,37 +127,36 @@ watch(() => props.stats, (newStats) => {
             <div class="header-content">
               <h5 class="header-title">
                 <i class="bi bi-graph-up-arrow me-2"></i>
-                Dashboard Statistics
+                {{ title }}
               </h5>
-              <p class="header-subtitle">Real-time overview of your data</p>
+              <p class="header-subtitle">{{ subtitle }}</p>
             </div>
-            <Link :href="route(newSurvey.route)" class="btn-modern">
-              <i :class="newSurvey.icon" class="me-2"></i>
-              New Input
+            <Link v-if="showNewButton" :href="route(newButtonRoute)" class="btn-modern">
+              <i class="bi bi-plus-square me-2"></i>
+              {{ newButtonText }}
             </Link>
           </div>
 
           <div class="card-body-modern">
             <div class="stats-grid">
               <div 
-                v-for="(card, index) in statsCards" 
+                v-for="(stat, index) in currentStats" 
                 :key="index"
                 class="stat-card"
               >
-                <div class="stat-icon-wrapper" :class="card.bgColor">
-                  <i :class="[card.icon, card.iconColor]" class="stat-icon"></i>
+                <div class="stat-icon-wrapper" :class="stat.bgColor || 'bg-blue-50'">
+                  <i :class="[stat.icon || 'bi bi-star', stat.iconColor || 'text-blue-600']" class="stat-icon"></i>
                 </div>
                 <div class="stat-content">
-                  <p class="stat-label">{{ card.title }}</p>
-                  <!-- Bind ref dynamically -->
+                  <p class="stat-label">{{ stat.label }}</p>
                   <h3 
                     class="stat-value" 
-                    :ref="(el) => statRefs[card.key].value = el"
+                    :ref="(el) => { if (el) statRefs[`stat-${index}`] = el }"
                   >
-                    {{ formatNumber(props.stats[card.key]) }}
+                    {{ formatNumber(stat.value) }}
                   </h3>
-                  <div class="stat-badge" :class="`bg-gradient-to-r ${card.gradient}`">
-                    <span class="badge-text">Active</span>
+                  <div class="stat-badge" :class="`bg-gradient-to-r ${stat.gradient || 'from-blue-500 to-indigo-600'}`">
+                    <span class="badge-text">{{ stat.badge || 'Active' }}</span>
                   </div>
                 </div>
               </div>
