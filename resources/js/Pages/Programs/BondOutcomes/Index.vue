@@ -78,7 +78,7 @@ const getSortIcon = (column) => {
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
-                            <div class="card text-bg-warning mb-3">
+                            <div class="card text-bg-success mb-3">
                                 <div class="card-header">Total Bond Outcomes</div>
                                 <div class="card-body">
                                     <h3 class="card-title text-white">{{ totalCount }}</h3>
@@ -138,7 +138,7 @@ const getSortIcon = (column) => {
                                         <td colspan="6" class="text-center text-muted">No outcomes found</td>
                                     </tr>
                                     <tr v-for="outcome in outcomes?.data" :key="outcome.id">
-                                        <td><span class="badge bg-warning">{{ outcome.code }}</span></td>
+                                        <td><span class="badge bg-success">{{ outcome.code }}</span></td>
                                         <td><strong>{{ outcome.title }}</strong></td>
                                         <td>
                                             <small>{{ outcome.description ? outcome.description.substring(0, 60) + '...' : 'N/A' }}</small>

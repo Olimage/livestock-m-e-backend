@@ -78,7 +78,7 @@ const getSortIcon = (column) => {
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
-                            <div class="card text-bg-info mb-3">
+                            <div class="card text-bg-success mb-3">
                                 <div class="card-header">Total Sectoral Goals</div>
                                 <div class="card-body">
                                     <h3 class="card-title text-white">{{ totalCount }}</h3>
@@ -138,7 +138,7 @@ const getSortIcon = (column) => {
                                         <td colspan="6" class="text-center text-muted">No goals found</td>
                                     </tr>
                                     <tr v-for="goal in goals?.data" :key="goal.id">
-                                        <td><span class="badge bg-info">{{ goal.code }}</span></td>
+                                        <td><span class="badge bg-success">{{ goal.code }}</span></td>
                                         <td><strong>{{ goal.title }}</strong></td>
                                         <td>
                                             <small>{{ goal.description ? goal.description.substring(0, 60) + '...' : 'N/A' }}</small>

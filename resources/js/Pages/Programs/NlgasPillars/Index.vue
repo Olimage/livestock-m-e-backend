@@ -78,7 +78,7 @@ const getSortIcon = (column) => {
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
-                            <div class="card text-bg-secondary mb-3">
+                            <div class="card text-bg-success mb-3">
                                 <div class="card-header">Total NLGAS Pillars</div>
                                 <div class="card-body">
                                     <h3 class="card-title text-white">{{ totalCount }}</h3>
@@ -138,7 +138,7 @@ const getSortIcon = (column) => {
                                         <td colspan="6" class="text-center text-muted">No pillars found</td>
                                     </tr>
                                     <tr v-for="pillar in pillars?.data" :key="pillar.id">
-                                        <td><span class="badge bg-secondary">{{ pillar.code }}</span></td>
+                                        <td><span class="badge bg-success">{{ pillar.code }}</span></td>
                                         <td><strong>{{ pillar.title }}</strong></td>
                                         <td>
                                             <small>{{ pillar.description ? pillar.description.substring(0, 60) + '...' : 'N/A' }}</small>
