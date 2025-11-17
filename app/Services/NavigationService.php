@@ -23,15 +23,14 @@ class NavigationService
             'icon'      => 'bi bi-speedometer2',
         ];
 
-        // Data Creation Items
-        if ($user->isAdmin() || $user->can('viewDataCreation', User::class)) {
+ 
+        // Enumerations (single entry; create actions available on index page)
+        if ($user->isAdmin() || $user->can('manage-enumerations')) {
             $navItems[] = [
-                'name'      => 'Enumeration',
+                'name'      => 'Enumerations',
                 'routeName' => 'enumerations.index',
-                'icon'      => 'bi bi-plus-square',
+                'icon'      => 'bi bi-list-check',
             ];
-
-
         }
 
         // Build Reports submenu based on permissions
@@ -72,14 +71,6 @@ class NavigationService
             ];
         }
 
-        // Enumerations (single entry; create actions available on index page)
-        if ($user->isAdmin() || $user->can('manage-enumerations')) {
-            $navItems[] = [
-                'name'      => 'Enumerations',
-                'routeName' => 'enumerations.index',
-                'icon'      => 'bi bi-list-check',
-            ];
-        }
 
         // Settings (with submenus)
         $settingsSubmenu = self::settingMenu($user);
