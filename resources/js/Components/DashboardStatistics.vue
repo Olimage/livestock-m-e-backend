@@ -131,10 +131,10 @@ watch(() => currentStats.value, (newStats) => {
               </h5>
               <p class="header-subtitle">{{ subtitle }}</p>
             </div>
-            <Link v-if="showNewButton" :href="route(newButtonRoute)" class="btn-modern">
+            <!-- <Link v-if="showNewButton" :href="route(newButtonRoute)" class="btn-modern">
               <i class="bi bi-plus-square me-2"></i>
               {{ newButtonText }}
-            </Link>
+            </Link> -->
           </div>
 
           <div class="card-body-modern">

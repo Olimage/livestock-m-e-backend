@@ -24,7 +24,7 @@ Route::middleware([
     \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
     'api.session.auth'
 ])->group(function () {
-    Route::get('/dashboard/stats', [App\Http\Controllers\DashboardController::class, 'getStats']);
+    Route::get('/dashboard/stats', [App\Http\Controllers\DashboardController::class, 'getStats'])->name('api.dashboard.stats');
 });
 
 

@@ -50,7 +50,7 @@ const {
       new-button-route="baseline-new"
       new-button-text="New Input"
       :auto-refresh="true"
-      refresh-url="/api/dashboard/stats"
+      :refresh-url="route('api.dashboard.stats')"
     />
 
 
