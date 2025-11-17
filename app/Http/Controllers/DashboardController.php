@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BondOutcome;
+use App\Models\Department;
+use App\Models\EnumerationRecord;
 use App\Models\MokData;
+use App\Models\NlgasPillar;
+use App\Models\PresidentialPriority;
+use App\Models\SectoralGoal;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use App\Models\Department;
-use App\Models\BondOutcome;
-use App\Models\PresidentialPriority;
-use App\Models\SectoralGoal;
-use App\Models\NlgasPillar;
 
 class DashboardController extends Controller
 {
@@ -38,21 +39,15 @@ class DashboardController extends Controller
             ->get()
             ->pluck('value', 'name');
 
-            $TotalbondOutcomesCount = BondOutcome::count();
-            $TotalpresidentialPrioritiesCount = PresidentialPriority::count();
-            $TotalsectoralGoalsCount = SectoralGoal::count();
-            $TotalnlgasPillarsCount = NlgasPillar::count();
+        $totalDataPendingSync = EnumerationRecord::where('sync_status', EnumerationRecord::SYNC_PENDING)->count();
+        $totalDataSaved = EnumerationRecord::count();
+
+        $TotalbondOutcomesCount = BondOutcome::count();
+        $TotalpresidentialPrioritiesCount = PresidentialPriority::count();
+        $TotalsectoralGoalsCount = SectoralGoal::count();
+        $TotalnlgasPillarsCount = NlgasPillar::count();
 
         $stats = [
-            [
-                'label' => 'Records Saved',
-                'value' => $data['stat_recordsSaved'] ?? 0,
-                'icon' => 'bi bi-database-fill-check',
-                'gradient' => 'from-emerald-500 to-teal-600',
-                'bgColor' => 'bg-emerald-50',
-                'iconColor' => 'text-emerald-600',
-                'badge' => 'Active'
-            ],
             [
                 'label' => 'Total Users',
                 'value' => User::where('role', '!=', 'super_admin')->count(),
@@ -63,8 +58,17 @@ class DashboardController extends Controller
                 'badge' => 'Active'
             ],
             [
+                'label' => 'Records Saved',
+                'value' => $totalDataSaved,
+                'icon' => 'bi bi-database-fill-check',
+                'gradient' => 'from-emerald-500 to-teal-600',
+                'bgColor' => 'bg-emerald-50',
+                'iconColor' => 'text-emerald-600',
+                'badge' => 'Active'
+            ],
+            [
                 'label' => 'Data Pending Sync',
-                'value' => $data['stat_dataPendingSync'] ?? 0,
+                'value' => $totalDataPendingSync,
                 'icon' => 'bi bi-cloud-arrow-up-fill',
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
@@ -121,22 +125,14 @@ class DashboardController extends Controller
             ->get()
             ->pluck('value', 'name');
 
-            
-            $TotalbondOutcomesCount = BondOutcome::count();
-            $TotalpresidentialPrioritiesCount = PresidentialPriority::count();
-            $TotalsectoralGoalsCount = SectoralGoal::count();
-            $TotalnlgasPillarsCount = NlgasPillar::count();
+        $totalDataPendingSync = EnumerationRecord::where('sync_status', EnumerationRecord::SYNC_PENDING)->count();
+        $totalDataSaved = EnumerationRecord::count();
+        $TotalbondOutcomesCount = BondOutcome::count();
+        $TotalpresidentialPrioritiesCount = PresidentialPriority::count();
+        $TotalsectoralGoalsCount = SectoralGoal::count();
+        $TotalnlgasPillarsCount = NlgasPillar::count();
 
         $stats = [
-            [
-                'label' => 'Records Saved',
-                'value' => $data['stat_recordsSaved'] ?? 0,
-                'icon' => 'bi bi-database-fill-check',
-                'gradient' => 'from-emerald-500 to-teal-600',
-                'bgColor' => 'bg-emerald-50',
-                'iconColor' => 'text-emerald-600',
-                'badge' => 'Active'
-            ],
             [
                 'label' => 'Total Users',
                 'value' => User::where('role', '!=', 'super_admin')->count(),
@@ -147,8 +143,17 @@ class DashboardController extends Controller
                 'badge' => 'Active'
             ],
             [
+                'label' => 'Records Saved',
+                'value' => $totalDataSaved,
+                'icon' => 'bi bi-database-fill-check',
+                'gradient' => 'from-emerald-500 to-teal-600',
+                'bgColor' => 'bg-emerald-50',
+                'iconColor' => 'text-emerald-600',
+                'badge' => 'Active'
+            ],
+            [
                 'label' => 'Data Pending Sync',
-                'value' => $data['stat_dataPendingSync'] ?? 0,
+                'value' => $totalDataPendingSync,
                 'icon' => 'bi bi-cloud-arrow-up-fill',
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
