@@ -58,6 +58,10 @@ Route::middleware(['auth.web'])->group(function () {
     Route::get('/broadcast/live', [BroadcastController::class, 'sendLiveData'])->name('broadcast.live');
     Route::get('/broadcast/notify/{user}', [BroadcastController::class, 'notifyUser'])->name('broadcast.notify');
     
+    // Profile Routes
+    Route::get('/profile', [UserController::class, 'profile'])->name('profile.show');
+    Route::get('/profile/password', [UserController::class, 'editPassword'])->name('profile.password.edit');
+    Route::put('/profile/password', [UserController::class, 'updatePassword'])->name('profile.password.update');
     
     Route::prefix('settings')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
