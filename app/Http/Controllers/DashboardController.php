@@ -78,7 +78,7 @@ class DashboardController extends Controller
             [
                 'label' => 'Bond Outcomes',
                 'value' => $TotalbondOutcomesCount,
-                'icon' => 'bi bi-flag-fill',
+                'icon' => 'bi bi-trophy',
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
                 'iconColor' => 'text-emerald-600',
@@ -105,7 +105,7 @@ class DashboardController extends Controller
             [
                 'label' => 'NLGAS Pillars',
                 'value' => $TotalnlgasPillarsCount,
-                'icon' => 'bi bi-building-fill',
+                'icon' => 'bi bi-columns',
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
                 'iconColor' => 'text-emerald-600',
@@ -163,7 +163,7 @@ class DashboardController extends Controller
             [
                 'label' => 'Bond Outcomes',
                 'value' => $TotalbondOutcomesCount,
-                'icon' => 'bi bi-flag-fill',
+                'icon' => 'bi bi-trophy',
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
                 'iconColor' => 'text-emerald-600',
@@ -190,7 +190,7 @@ class DashboardController extends Controller
             [
                 'label' => 'NLGAS Pillars',
                 'value' => $TotalnlgasPillarsCount,
-                'icon' => 'bi bi-building-fill',
+                'icon' => 'bi bi-columns',
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
                 'iconColor' => 'text-emerald-600',
