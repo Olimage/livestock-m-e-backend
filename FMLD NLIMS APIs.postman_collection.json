@@ -1,0 +1,416 @@
+{
+	"info": {
+		"_postman_id": "147a3bb3-cc2d-4312-bce3-3d6c652206cf",
+		"name": "FMLD NLIMS APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47679558",
+		"_collection_link": "https://deolimagecompany-3130208.postman.co/workspace/Olimage's-Workspace~2fde95b1-3a10-43a7-88b9-3617d740cf5c/collection/47679558-147a3bb3-cc2d-4312-bce3-3d6c652206cf?action=share&source=collection_link&creator=47679558"
+	},
+	"item": [
+		{
+			"name": "Location",
+			"item": [
+				{
+					"name": "Get Zones",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}locations/zones",
+							"host": [
+								"{{baseUrl}}locations"
+							],
+							"path": [
+								"zones"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}locations/zones",
+									"host": [
+										"{{baseUrl}}locations"
+									],
+									"path": [
+										"zones"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.14"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 18 Nov 2025 09:35:43 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "200"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "199"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "national_livestock_information_management_system_n_lims_session=HbejYSU9eiYkFzcPSIi4m3TxfdWgzhyjz2p4R148; expires=Tue, 18 Nov 2025 11:35:43 GMT; Max-Age=7200; path=/; httponly; samesite=lax"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Zones fetched successfully\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"North Central\",\n            \"code\": \"NC\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"North East\",\n            \"code\": \"NE\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"North West\",\n            \"code\": \"NW\"\n        },\n        {\n            \"id\": 4,\n            \"name\": \"South East\",\n            \"code\": \"SE\"\n        },\n        {\n            \"id\": 5,\n            \"name\": \"South South\",\n            \"code\": \"SS\"\n        },\n        {\n            \"id\": 6,\n            \"name\": \"South West\",\n            \"code\": \"SW\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get States",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}locations/states?zone_id={{zone_id}}",
+							"host": [
+								"{{baseUrl}}locations"
+							],
+							"path": [
+								"states"
+							],
+							"query": [
+								{
+									"key": "zone_id",
+									"value": "{{zone_id}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}locations/states?zone_id={{zone_id}}",
+									"host": [
+										"{{baseUrl}}locations"
+									],
+									"path": [
+										"states"
+									],
+									"query": [
+										{
+											"key": "zone_id",
+											"value": "{{zone_id}}"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.14"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 18 Nov 2025 09:43:11 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "200"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "197"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "national_livestock_information_management_system_n_lims_session=HbejYSU9eiYkFzcPSIi4m3TxfdWgzhyjz2p4R148; expires=Tue, 18 Nov 2025 11:43:11 GMT; Max-Age=7200; path=/; httponly; samesite=lax"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"States fetched successfully\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Benue\",\n            \"zone_id\": 1\n        },\n        {\n            \"id\": 2,\n            \"name\": \"FCT\",\n            \"zone_id\": 1\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Kogi\",\n            \"zone_id\": 1\n        },\n        {\n            \"id\": 4,\n            \"name\": \"Kwara\",\n            \"zone_id\": 1\n        },\n        {\n            \"id\": 5,\n            \"name\": \"Nasarawa\",\n            \"zone_id\": 1\n        },\n        {\n            \"id\": 6,\n            \"name\": \"Niger\",\n            \"zone_id\": 1\n        },\n        {\n            \"id\": 7,\n            \"name\": \"Plateau\",\n            \"zone_id\": 1\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get LGAs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}locations/lgas?state_id={{state_id}}",
+							"host": [
+								"{{baseUrl}}locations"
+							],
+							"path": [
+								"lgas"
+							],
+							"query": [
+								{
+									"key": "state_id",
+									"value": "{{state_id}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}locations/lgas?state_id={{state_id}}",
+									"host": [
+										"{{baseUrl}}locations"
+									],
+									"path": [
+										"lgas"
+									],
+									"query": [
+										{
+											"key": "state_id",
+											"value": "{{state_id}}"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.14"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 18 Nov 2025 09:43:21 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "200"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "196"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "national_livestock_information_management_system_n_lims_session=HbejYSU9eiYkFzcPSIi4m3TxfdWgzhyjz2p4R148; expires=Tue, 18 Nov 2025 11:43:21 GMT; Max-Age=7200; path=/; httponly; samesite=lax"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Lgas fetched successfully\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Ado\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Agatu\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Apa\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 4,\n            \"name\": \"Buruku\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 5,\n            \"name\": \"Gboko\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 6,\n            \"name\": \"Guma\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 7,\n            \"name\": \"Gwer East\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 8,\n            \"name\": \"Gwer West\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 9,\n            \"name\": \"Katsina-Ala\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 10,\n            \"name\": \"Konshisha\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 11,\n            \"name\": \"Kwande\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 12,\n            \"name\": \"Logo\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 13,\n            \"name\": \"Makurdi\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 14,\n            \"name\": \"Obi\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 15,\n            \"name\": \"Ogbadibo\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 18,\n            \"name\": \"Ohimini\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 16,\n            \"name\": \"Oju\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 17,\n            \"name\": \"Okpokwu\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 19,\n            \"name\": \"Oturkpo\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 20,\n            \"name\": \"Tarka\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 21,\n            \"name\": \"Ukum\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 22,\n            \"name\": \"Ushongo\",\n            \"state_id\": 1\n        },\n        {\n            \"id\": 23,\n            \"name\": \"Vandeikya\",\n            \"state_id\": 1\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "App Setup Routes",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"david@fmld.gov\",\r\n    \"password\": \"1234567890\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}auth/sign-in",
+									"host": [
+										"{{baseUrl}}auth"
+									],
+									"path": [
+										"sign-in"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"david@fmld.gov\",\r\n    \"password\": \"1234567890\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}auth/sign-in",
+											"host": [
+												"{{baseUrl}}auth"
+											],
+											"path": [
+												"sign-in"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "Text",
+									"header": [
+										{
+											"key": "Host",
+											"value": "127.0.0.1:8000"
+										},
+										{
+											"key": "Connection",
+											"value": "close"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "PHP/8.3.14"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, private"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 18 Nov 2025 10:21:39 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Access-Control-Allow-Methods",
+											"value": "POST, GET, OPTIONS, PUT, DELETE"
+										},
+										{
+											"key": "Access-Control-Allow-Headers",
+											"value": "Content-Type, X-Auth-Token, Authorization, Origin"
+										},
+										{
+											"key": "Access-Control-Expose-Headers",
+											"value": "Content-Length, Content-Range, X-Content-Range, X-Requested-With, X-Progress"
+										},
+										{
+											"key": "X-RateLimit-Limit",
+											"value": "200"
+										},
+										{
+											"key": "X-RateLimit-Remaining",
+											"value": "197"
+										},
+										{
+											"key": "Set-Cookie",
+											"value": "national_livestock_information_management_system_n_lims_session=HbejYSU9eiYkFzcPSIi4m3TxfdWgzhyjz2p4R148; expires=Tue, 18 Nov 2025 12:21:39 GMT; Max-Age=7200; path=/; httponly; samesite=lax"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": true,\n    \"message\": \"Login successful\",\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3YxL2F1dGgvc2lnbi1pbiIsImlhdCI6MTc2MzQ2MTI5OSwiZXhwIjoxNzYzNTQ3Njk5LCJuYmYiOjE3NjM0NjEyOTksImp0aSI6IkNZY3A0VVhVNDhkQ0tzajAiLCJzdWIiOiIzIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.-M8-IUlSxVSBlTr-S1fRPXETIibiCXeMaip4Krztz24\",\n    \"refresh_token\": \"WUFqxOgtJbyIbUjxN1IDS41TaF1S1d3dwlLAtu6uUxnaxYtLqjHhUmBBk821\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 86400,\n    \"user\": {\n        \"id\": 3,\n        \"full_name\": \"David\",\n        \"email\": \"david@fmld.gov\",\n        \"role\": \"enumerator\"\n    }\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "zone_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "state_id",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

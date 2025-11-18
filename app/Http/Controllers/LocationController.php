@@ -33,4 +33,80 @@ class LocationController extends Controller
         }
         return response()->json($query->get());
     }
+
+    public function ApiGetZones(){
+
+        try{
+
+            $zones =  Zone::select('id', 'name', 'code')->orderBy('name')->get();
+            return response()->json([
+                'status' => true,
+                'message' => 'Zones fetched successfully',
+                'data'=> $zones
+            ], 200);
+
+        } catch (\Exception $e){
+
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred while fetching data',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+    }
+    public function ApiGetStates(Request $request  ){
+
+        try{
+
+            $request->validate([
+                'zone_id' => 'required|exists:zones,id',
+            ]);
+            
+             $query = State::select('id', 'name', 'zone_id')->orderBy('name')->where('zone_id', $request->zone_id)->get();
+
+
+            return response()->json([
+                'status' => true,
+                'message' => 'States fetched successfully',
+                'data'=> $query
+            ], 200);
+
+        } catch (\Exception $e){
+
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred while fetching data',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+    }   
+    
+    public function ApiGetLgas(Request $request  ){
+
+        try{
+
+            $request->validate([
+                'state_id' => 'required|exists:states,id',
+            ]);
+            
+             $query = Lga::select('id', 'name', 'state_id')->orderBy('name')->where('state_id', $request->state_id)->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Lgas fetched successfully',
+                'data'=> $query
+            ], 200);
+
+        } catch (\Exception $e){
+
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred while fetching data',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+    }
 }

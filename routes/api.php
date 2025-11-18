@@ -16,6 +16,11 @@ Route::group([
     require __DIR__ . '/v1/auth.php';
     require __DIR__ . '/v1/user.php';
 
+    Route::prefix('locations')->name('api.locations.')->group(function () {
+        Route::get('/zones', [App\Http\Controllers\LocationController::class, 'ApiGetZones'])->name('zones');
+        Route::get('/states', [App\Http\Controllers\LocationController::class, 'ApiGetStates'])->name('states');
+        Route::get('/lgas', [App\Http\Controllers\LocationController::class, 'ApiGetLgas'])->name('lgas');
+    });
 });
 
 // Dashboard API endpoints (session auth required)
@@ -25,6 +30,12 @@ Route::middleware([
     'api.session.auth'
 ])->group(function () {
     Route::get('/dashboard/stats', [App\Http\Controllers\DashboardController::class, 'getStats'])->name('api.dashboard.stats');
+});
+
+
+Route::prefix('app-setup')->group(function () {
+    Route::get('/departments', [App\Http\Controllers\AppSetupController::class, 'getDepartments'])->name('api.app-setup.departments');
+    Route::get('/sectors', [App\Http\Controllers\AppSetupController::class, 'getSectors'])->name('api.app-setup.sectors');
 });
 
 

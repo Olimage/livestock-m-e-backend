@@ -69,27 +69,48 @@ public function login(Request $request)
                 'password' => 'required',
             ]);
 
-            $email = $credentials['email'];
+            // Debug: Check if user exists
+            $user = User::where('email', $credentials['email'])->first();
+            
+            if (!$user) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => "User not found with the provided email",
+                    'error'   => 'Invalid credentials',
+                ], 401);
+            }
 
-            $token = (new AuthService)->signIn($credentials);
+
+
+            $token = auth('api')->attempt($credentials);
 
             if (! $token) {
 
                 return response()->json([
                     'status'  => false,
-                    'message' => "login failed,",
-                    'error'   => 'sign in failed',
-                ], 400);
+                    'message' => "Invalid credentials - password mismatch",
+                    'error'   => 'Authentication failed',
+                ], 401);
             }
 
-            $user = auth()->user();
+            $user = auth('api')->user();
+
+            // Generate refresh token
+            $refreshToken = self::generateRefreshToken($user->id);
 
             return response()->json([
-                'status'     => true,
-                'message'    => 'Login successful',
-                'token'      => $token,
-                'token_type' => 'bearer',
-                'expires_in' => auth('api')->factory()->getTTL() * 60,
+                'status'        => true,
+                'message'       => 'Login successful',
+                'token'         => $token,
+                'refresh_token' => $refreshToken,
+                'token_type'    => 'bearer',
+                'expires_in'    => JWTAuth::factory()->getTTL() * 60,
+                'user'          => [
+                    'id' => $user->id,
+                    'full_name' => $user->full_name,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                ],
             ], 200);
 
         } catch (\Throwable $e) {
