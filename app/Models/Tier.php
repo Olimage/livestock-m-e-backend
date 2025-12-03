@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class IndicatorTierClassification extends Model
+class Tier extends Model
 {
     protected $fillable = [
         'tier',

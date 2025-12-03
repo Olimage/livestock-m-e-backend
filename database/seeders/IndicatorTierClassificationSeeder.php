@@ -23,14 +23,14 @@ class IndicatorTierClassificationSeeder extends Seeder
         IndicatorTierClassification::firstOrCreate([
             'tier' => 'Tier 2',
             'level' => 'Outcome',
-            'measurement_frequency' => 'Quaterly/Annual',
+            'measurement_frequency' => 'Quarterly, Annual',
             'attribution' => 'Strong contribution to moderate attribution'
         ]);
 
         IndicatorTierClassification::firstOrCreate([
             'tier' => 'Tier 3',
             'level' => 'Output',
-            'measurement_frequency' => 'Weekly / Monthly / Quarterly',
+            'measurement_frequency' => 'Weekly, Monthly, Quarterly',
             'attribution' => 'Direct attribution'
         ]);
     }

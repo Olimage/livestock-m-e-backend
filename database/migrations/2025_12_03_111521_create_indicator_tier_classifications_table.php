@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('indicator_tier_classifications', function (Blueprint $table) {
+        Schema::create('tiers', function (Blueprint $table) {
             $table->id();
             $table->string('tier');
             $table->string('level');
