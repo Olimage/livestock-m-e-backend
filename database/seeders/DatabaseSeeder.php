@@ -28,8 +28,10 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
     
             PermissionSeeder::class,
+            MockDataSeeder::class,
+            IndicatorTierClassificationSeeder::class,
             StrategicAlignmentSeeder::class,
-            MockDataSeeder::class
+            IndicatorSeeder::class,
         ]);
     }
 }

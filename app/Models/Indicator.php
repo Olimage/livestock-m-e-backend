@@ -14,11 +14,7 @@ class Indicator extends Model
         'code',
         'title',
         'description',
-        'sectoral_goal_id',
-        'bond_outcome_id',
-        'nlgas_pillar_id',
-        'presidential_priority_id',
-        'department_id',
+
         'indicator_type',
         'measurement_unit',
         'baseline_value',
@@ -27,7 +23,6 @@ class Indicator extends Model
         'target_year',
         'data_source',
         'collection_frequency',
-        'responsible_entity',
         'tier_level'
     ];
 
@@ -39,28 +34,5 @@ class Indicator extends Model
         'tier_level' => 'integer',
     ];
 
-    public function presidentialPriority(): BelongsTo
-    {
-        return $this->belongsTo(PresidentialPriority::class);
-    }
 
-    public function sectoralGoal(): BelongsTo
-    {
-        return $this->belongsTo(SectoralGoal::class);
-    }
-
-    public function bondOutcome(): BelongsTo
-    {
-        return $this->belongsTo(BondOutcome::class);
-    }
-
-    public function nlgasPillar(): BelongsTo
-    {
-        return $this->belongsTo(NlgasPillar::class);
-    }
-
-    public function department(): BelongsTo
-    {
-        return $this->belongsTo(Department::class);
-    }
 }

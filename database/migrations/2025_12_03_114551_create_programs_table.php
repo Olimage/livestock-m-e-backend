@@ -13,17 +13,11 @@ return new class extends Migration
     {
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('nlgas_pillar_id')->nullable();
             $table->string('code')->unique();
             $table->string('title');
-            $table->text('description')->nullable();
-            $table->foreignId('nlgas_pillar_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('department_id')->nullable()->constrained()->nullOnDelete();
-            $table->integer('baseline_year')->nullable();
-            $table->integer('target_year')->nullable();
-            $table->decimal('budget_allocation', 15, 2)->nullable();
-            $table->enum('priority_level', ['high', 'medium', 'low'])->default('medium');
-            $table->string('source_document')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

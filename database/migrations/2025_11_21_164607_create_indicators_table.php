@@ -16,11 +16,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->foreignId('program_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('sectoral_goal_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('bond_outcome_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('nlgas_pillar_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('department_id')->nullable()->constrained()->nullOnDelete();
+
             $table->enum('indicator_type', ['outcome', 'output', 'impact'])->default('output');
             $table->string('measurement_unit')->nullable();
             $table->decimal('baseline_value', 15, 2)->nullable();
@@ -29,8 +25,6 @@ return new class extends Migration
             $table->integer('target_year')->nullable();
             $table->string('data_source')->nullable();
             $table->string('collection_frequency')->nullable();
-            $table->string('responsible_entity')->nullable();
-            $table->integer('tier_level')->default(2);
             $table->timestamps();
         });
     }

@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sectoral_goals', function (Blueprint $table) {
+        Schema::create('indicator_tier_classifications', function (Blueprint $table) {
             $table->id();
-                        $table->string('code')->unique();
-            $table->string('title');
-            $table->text('description');
+            $table->string('tier');
+            $table->string('level');
+            $table->string('measurement_frequency');
+            $table->string('attribution');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sectoral_goals');
+        Schema::dropIfExists('indicator_tier_classifications');
     }
 };

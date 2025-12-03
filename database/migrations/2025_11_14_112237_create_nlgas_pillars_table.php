@@ -16,10 +16,7 @@ return new class extends Migration
                         $table->string('code')->unique();
             $table->string('title');
             $table->text('description');
-            $table->year('baseline_year');
-            $table->year('target_year');
-            $table->string('source_document');
-            $table->string('responsible_entity');
+
             $table->timestamps();
         });
     }
