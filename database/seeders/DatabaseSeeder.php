@@ -32,6 +32,8 @@ class DatabaseSeeder extends Seeder
             IndicatorTierClassificationSeeder::class,
             StrategicAlignmentSeeder::class,
             IndicatorSeeder::class,
+            ProgramSeeder::class,
+            CrossCuttingMetricSeeder::class,
         ]);
     }
 }

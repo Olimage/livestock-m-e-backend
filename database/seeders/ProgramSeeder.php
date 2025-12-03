@@ -86,12 +86,27 @@ class ProgramSeeder extends Seeder
         // Pillar 3 Programs: Feed & Nutrition
         Program::firstOrCreate(['code' => 'P3.1'], [
             'nlgas_pillar_id' => $pillar('P3'),
-            'title' => 'Feed Production & Processing Infrastructure',
+            'title' => 'Pasture Seeds',
         ]);
 
         Program::firstOrCreate(['code' => 'P3.2'], [
             'nlgas_pillar_id' => $pillar('P3'),
-            'title' => 'Pasture Development & Management',
+            'title' => 'Land Allocation',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P3.3'], [
+            'nlgas_pillar_id' => $pillar('P3'),
+            'title' => 'Feed Budgeting',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P3.4'], [
+            'nlgas_pillar_id' => $pillar('P3'),
+            'title' => 'Year-Round Production',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P3.6'], [
+            'nlgas_pillar_id' => $pillar('P3'),
+            'title' => 'Grazing Reserves',
         ]);
 
         // Pillar 4 Programs: Water Resource Development
@@ -118,67 +133,147 @@ class ProgramSeeder extends Seeder
         // Pillar 5 Programs: Investment & Finance
         Program::firstOrCreate(['code' => 'P5.1'], [
             'nlgas_pillar_id' => $pillar('P5'),
-            'title' => 'Livestock Credit & Guarantee Scheme',
+            'title' => 'Product Development',
         ]);
 
-        Program::firstOrCreate(['code' => 'P5.2'], [
+        Program::firstOrCreate(['code' => 'P5.5'], [
             'nlgas_pillar_id' => $pillar('P5'),
-            'title' => 'Livestock Insurance Scheme',
+            'title' => 'Credit Scheme',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P5.6'], [
+            'nlgas_pillar_id' => $pillar('P5'),
+            'title' => 'Insurance',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P5.3'], [
+            'nlgas_pillar_id' => $pillar('P5'),
+            'title' => 'Market Access',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P5.12'], [
+            'nlgas_pillar_id' => $pillar('P5'),
+            'title' => 'PPP Coordination',
         ]);
 
         // Pillar 6 Programs: Conflict Resolution
         Program::firstOrCreate(['code' => 'P6.1'], [
             'nlgas_pillar_id' => $pillar('P6'),
-            'title' => 'Farmer-Herder Dialogue & Mediation',
+            'title' => 'Institutional Strengthening',
         ]);
 
-        Program::firstOrCreate(['code' => 'P6.2'], [
+        Program::firstOrCreate(['code' => 'P6.3'], [
             'nlgas_pillar_id' => $pillar('P6'),
-            'title' => 'Transhumance Route Mapping & Gazettement',
+            'title' => 'Capacity Building',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P6.5'], [
+            'nlgas_pillar_id' => $pillar('P6'),
+            'title' => 'Transhumance Coordination',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P6.6'], [
+            'nlgas_pillar_id' => $pillar('P6'),
+            'title' => 'Rangers Deployment',
         ]);
 
         // Pillar 7 Programs: Infrastructure Development
         Program::firstOrCreate(['code' => 'P7.1'], [
             'nlgas_pillar_id' => $pillar('P7'),
-            'title' => 'Modern Abattoir Construction',
+            'title' => 'Production Facilities',
         ]);
 
         Program::firstOrCreate(['code' => 'P7.2'], [
             'nlgas_pillar_id' => $pillar('P7'),
-            'title' => 'Cold Chain & Storage Infrastructure',
+            'title' => 'Health Infrastructure',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P7.6'], [
+            'nlgas_pillar_id' => $pillar('P7'),
+            'title' => 'Processing',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P7.5'], [
+            'nlgas_pillar_id' => $pillar('P7'),
+            'title' => 'Transport',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P7.9'], [
+            'nlgas_pillar_id' => $pillar('P7'),
+            'title' => 'Waste Management',
         ]);
 
         // Pillar 8 Programs: Extension Services
         Program::firstOrCreate(['code' => 'P8.1'], [
             'nlgas_pillar_id' => $pillar('P8'),
-            'title' => 'Extension Worker Training & Deployment',
+            'title' => 'National Policy',
         ]);
 
         Program::firstOrCreate(['code' => 'P8.2'], [
             'nlgas_pillar_id' => $pillar('P8'),
-            'title' => 'Farmer Training & Demonstration Centers',
+            'title' => 'LEW Formalization',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P8.3'], [
+            'nlgas_pillar_id' => $pillar('P8'),
+            'title' => 'Training Modules',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P8.4'], [
+            'nlgas_pillar_id' => $pillar('P8'),
+            'title' => 'LEW Recruitment',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P8.5'], [
+            'nlgas_pillar_id' => $pillar('P8'),
+            'title' => 'Service Delivery',
         ]);
 
         // Pillar 9 Programs: Gender & Youth Empowerment
         Program::firstOrCreate(['code' => 'P9.1'], [
             'nlgas_pillar_id' => $pillar('P9'),
-            'title' => 'Women in Livestock Entrepreneurship',
+            'title' => 'Cooperatives',
         ]);
 
         Program::firstOrCreate(['code' => 'P9.2'], [
             'nlgas_pillar_id' => $pillar('P9'),
-            'title' => 'Youth Livestock Skills & Employment',
+            'title' => 'Gender Mainstreaming',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P9.3'], [
+            'nlgas_pillar_id' => $pillar('P9'),
+            'title' => 'Credit Incentives',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P9.4'], [
+            'nlgas_pillar_id' => $pillar('P9'),
+            'title' => 'Cottage Industries',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P9.5'], [
+            'nlgas_pillar_id' => $pillar('P9'),
+            'title' => 'Agribusiness Training',
         ]);
 
         // Pillar 10 Programs: Data & M&E
         Program::firstOrCreate(['code' => 'P10.1'], [
             'nlgas_pillar_id' => $pillar('P10'),
-            'title' => 'National Livestock Information Management System (NLIMS)',
+            'title' => 'Census & Survey',
         ]);
 
         Program::firstOrCreate(['code' => 'P10.2'], [
             'nlgas_pillar_id' => $pillar('P10'),
-            'title' => 'National Animal Identification & Traceability System (NAITS)',
+            'title' => 'Traceability/NAITS',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P10.3'], [
+            'nlgas_pillar_id' => $pillar('P10'),
+            'title' => 'NLIMS',
+        ]);
+
+        Program::firstOrCreate(['code' => 'P10.4'], [
+            'nlgas_pillar_id' => $pillar('P10'),
+            'title' => 'Capacity Building',
         ]);
 
         $this->command->info('✓ Pillar Programs seeded successfully!');
