@@ -109,6 +109,9 @@ const formatDate = (dt) => {
               <th>ID</th>
               <th>Form Type</th>
               <th>Enumerator</th>
+              <th>Zone</th>
+              <th>State</th>
+              <th>LGA</th>
               <th>Sync Status</th>
               <th>Submitted</th>
               <th></th>
@@ -116,12 +119,15 @@ const formatDate = (dt) => {
           </thead>
           <tbody>
             <tr v-if="records.data.length === 0">
-              <td colspan="6" class="text-center text-muted">No records found</td>
+              <td colspan="9" class="text-center text-muted">No records found</td>
             </tr>
             <tr v-for="r in records.data" :key="r.id">
               <td>{{ r.id }}</td>
               <td><span class="badge bg-primary">{{ r.form_type }}</span></td>
               <td>{{ r.enumerator ? r.enumerator.full_name : r.enumerator_name }}</td>
+              <td><small>{{ r.zone ? r.zone.name : '—' }}</small></td>
+              <td><small>{{ r.state ? r.state.name : '—' }}</small></td>
+              <td><small>{{ r.lga ? r.lga.name : '—' }}</small></td>
               <td><span class="badge" :class="syncBadgeClass(r.sync_status)">{{ r.sync_status }}</span></td>
               <td><small>{{ formatDate(r.created_at) }}</small></td>
               <td>

@@ -226,8 +226,31 @@ const formatValue = (value, key = '') => {
 }
 
 const geographicFields = computed(() => {
-  const fields = ['geopolitical_zone', 'state', 'lga', 'gps_coordinates']
-  return fields.filter(f => payload.value[f]).map(f => ({ key: f, value: payload.value[f] }))
+  const fields = []
+  // Prefer relational names when available
+  if (props.record.zone) {
+    fields.push({ key: 'geopolitical_zone', value: props.record.zone.name })
+  } else if (payload.value['geopolitical_zone']) {
+    fields.push({ key: 'geopolitical_zone', value: payload.value['geopolitical_zone'] })
+  }
+
+  if (props.record.state) {
+    fields.push({ key: 'state', value: props.record.state.name })
+  } else if (payload.value['state']) {
+    fields.push({ key: 'state', value: payload.value['state'] })
+  }
+
+  if (props.record.lga) {
+    fields.push({ key: 'lga', value: props.record.lga.name })
+  } else if (payload.value['lga']) {
+    fields.push({ key: 'lga', value: payload.value['lga'] })
+  }
+
+  if (payload.value['gps_coordinates']) {
+    fields.push({ key: 'gps_coordinates', value: payload.value['gps_coordinates'] })
+  }
+
+  return fields
 })
 
 const respondentFields = computed(() => {

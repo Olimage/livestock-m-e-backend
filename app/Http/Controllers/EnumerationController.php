@@ -14,7 +14,7 @@ class EnumerationController extends Controller
 {
     public function index(Request $request): Response
     {
-        $query = EnumerationRecord::query()->with('enumerator');
+        $query = EnumerationRecord::query()->with(['enumerator','zone','state','lga']);
 
         if ($request->filled('form_type')) {
             $query->where('form_type', $request->string('form_type'));
@@ -101,7 +101,7 @@ class EnumerationController extends Controller
     public function show(EnumerationRecord $enumerationRecord): Response
     {
         return Inertia::render('Enumeration/Show', [
-            'record' => $enumerationRecord->load('enumerator')
+            'record' => $enumerationRecord->load(['enumerator','zone','state','lga'])
         ]);
     }
 
