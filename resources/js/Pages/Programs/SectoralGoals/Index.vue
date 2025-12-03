@@ -128,8 +128,10 @@ const getSortIcon = (column) => {
                                             Title <i :class="getSortIcon('title')"></i>
                                         </th>
                                         <th>Description</th>
-                                        <th>Responsible Entity</th>
-                                        <th>Relationships</th>
+                                        <th>Tiers</th>
+                                        <th @click="toggleSort('created_at')" class="sortable">
+                                            Created <i :class="getSortIcon('created_at')"></i>
+                                        </th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -141,16 +143,17 @@ const getSortIcon = (column) => {
                                         <td><span class="badge bg-success">{{ goal.code }}</span></td>
                                         <td><strong>{{ goal.title }}</strong></td>
                                         <td>
-                                            <small>{{ goal.description ? goal.description.substring(0, 60) + '...' : 'N/A' }}</small>
+                                            <small>{{ goal.description ? goal.description.substring(0, 80) + '...' : 'N/A' }}</small>
                                         </td>
-                                        <td><small>{{ goal.responsible_entity || 'N/A' }}</small></td>
                                         <td>
                                             <small>
-                                                <span class="badge bg-primary me-1">{{ goal.presidential_priorities?.length || 0 }} Priorities</span>
-                                                <span class="badge bg-warning me-1">{{ goal.bond_outcomes?.length || 0 }} Outcomes</span>
-                                                <span class="badge bg-secondary">{{ goal.nlgas_pillars?.length || 0 }} Pillars</span>
+                                                <span v-if="goal.tiers && goal.tiers.length > 0" 
+                                                      v-for="tier in goal.tiers" :key="tier.id" 
+                                                      class="badge bg-info me-1">{{ tier.tier }}</span>
+                                                <span v-else class="text-muted">No tiers</span>
                                             </small>
                                         </td>
+                                        <td><small>{{ new Date(goal.created_at).toLocaleDateString() }}</small></td>
                                         <td>
                                             <div class="btn-group" role="group">
                                                 <Link :href="route('programs.sectoral-goals.edit', goal.id)"
