@@ -128,31 +128,32 @@ const getSortIcon = (column) => {
                                             Title <i :class="getSortIcon('title')"></i>
                                         </th>
                                         <th>Description</th>
-                                        <th>Baseline Year</th>
-                                        <th>Target Year</th>
-                                        <th>Relationships</th>
+                                        <th>Tiers</th>
+                                        <th @click="toggleSort('created_at')" class="sortable">
+                                            Created <i :class="getSortIcon('created_at')"></i>
+                                        </th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-if="priorities?.data && priorities.data.length === 0">
-                                        <td colspan="7" class="text-center text-muted">No priorities found</td>
+                                        <td colspan="6" class="text-center text-muted">No priorities found</td>
                                     </tr>
                                     <tr v-for="priority in priorities?.data" :key="priority.id">
                                         <td><span class="badge bg-success">{{ priority.code }}</span></td>
                                         <td><strong>{{ priority.title }}</strong></td>
                                         <td>
-                                            <small>{{ priority.description ? priority.description.substring(0, 60) + '...' : 'N/A' }}</small>
+                                            <small>{{ priority.description ? priority.description.substring(0, 80) + '...' : 'N/A' }}</small>
                                         </td>
-                                        <td>{{ priority.baseline_year || 'N/A' }}</td>
-                                        <td>{{ priority.target_year || 'N/A' }}</td>
                                         <td>
                                             <small>
-                                                <span class="badge bg-info me-1">{{ priority.sectoral_goals?.length || 0 }} Goals</span>
-                                                <span class="badge bg-warning me-1">{{ priority.bond_outcomes?.length || 0 }} Outcomes</span>
-                                                <span class="badge bg-secondary">{{ priority.nlgas_pillars?.length || 0 }} Pillars</span>
+                                                <span v-if="priority.tiers && priority.tiers.length > 0" 
+                                                      v-for="tier in priority.tiers" :key="tier.id" 
+                                                      class="badge bg-info me-1">{{ tier.tier }}</span>
+                                                <span v-else class="text-muted">No tiers</span>
                                             </small>
                                         </td>
+                                        <td><small>{{ new Date(priority.created_at).toLocaleDateString() }}</small></td>
                                         <td>
                                             <div class="btn-group" role="group">
                                                 <Link :href="route('programs.presidential-priorities.edit', priority.id)"

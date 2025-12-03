@@ -5,21 +5,14 @@ import BeLayout from '../../../Layouts/BeLayout.vue'
 
 const props = defineProps({
     priority: Object,
-    sectoralGoals: Array,
-    bondOutcomes: Array,
-    nlgasPillars: Array,
+    tiers: Array,
 })
 
 const form = useForm({
     code: props.priority.code,
     title: props.priority.title,
     description: props.priority.description,
-    baseline_year: props.priority.baseline_year,
-    target_year: props.priority.target_year,
-    source_document: props.priority.source_document,
-    sectoral_goal_ids: props.priority.sectoral_goals?.map(g => g.id) || [],
-    bond_outcome_ids: props.priority.bond_outcomes?.map(o => o.id) || [],
-    nlgas_pillar_ids: props.priority.nlgas_pillars?.map(p => p.id) || [],
+    tier_ids: props.priority.tiers?.map(t => t.id) || [],
 })
 
 const submit = () => {
@@ -60,63 +53,15 @@ const submit = () => {
                                 <small class="text-danger">{{ form.errors.description }}</small>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Baseline Year</label>
-                                    <input v-model="form.baseline_year" type="number" class="form-control" 
-                                        placeholder="e.g., 2023" min="2000" max="2100" />
-                                    <small class="text-danger">{{ form.errors.baseline_year }}</small>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Target Year</label>
-                                    <input v-model="form.target_year" type="number" class="form-control" 
-                                        placeholder="e.g., 2027" min="2000" max="2100" />
-                                    <small class="text-danger">{{ form.errors.target_year }}</small>
-                                </div>
-                            </div>
-
                             <div class="mb-3">
-                                <label class="form-label">Source Document</label>
-                                <input v-model="form.source_document" type="text" class="form-control" 
-                                    placeholder="e.g., Renewed Hope Agenda 2023" />
-                                <small class="text-danger">{{ form.errors.source_document }}</small>
-                            </div>
-
-                            <hr class="my-4" />
-                            <h6 class="mb-3">Relationships</h6>
-
-                            <div class="mb-3">
-                                <label class="form-label">Sectoral Goals</label>
-                                <select v-model="form.sectoral_goal_ids" class="form-select" multiple size="5">
-                                    <option v-for="goal in props.sectoralGoals" :key="goal.id" :value="goal.id">
-                                        {{ goal.code }} - {{ goal.title }}
+                                <label class="form-label">Tiers</label>
+                                <select v-model="form.tier_ids" class="form-select" multiple size="5">
+                                    <option v-for="tier in props.tiers" :key="tier.id" :value="tier.id">
+                                        {{ tier.tier }} - {{ tier.level }}
                                     </option>
                                 </select>
                                 <small class="text-muted">Hold Ctrl/Cmd to select multiple</small><br>
-                                <small class="text-danger">{{ form.errors.sectoral_goal_ids }}</small>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Bond Outcomes</label>
-                                <select v-model="form.bond_outcome_ids" class="form-select" multiple size="5">
-                                    <option v-for="outcome in props.bondOutcomes" :key="outcome.id" :value="outcome.id">
-                                        {{ outcome.code }} - {{ outcome.title }}
-                                    </option>
-                                </select>
-                                <small class="text-muted">Hold Ctrl/Cmd to select multiple</small><br>
-                                <small class="text-danger">{{ form.errors.bond_outcome_ids }}</small>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">NLGAS Pillars</label>
-                                <select v-model="form.nlgas_pillar_ids" class="form-select" multiple size="5">
-                                    <option v-for="pillar in props.nlgasPillars" :key="pillar.id" :value="pillar.id">
-                                        {{ pillar.code }} - {{ pillar.title }}
-                                    </option>
-                                </select>
-                                <small class="text-muted">Hold Ctrl/Cmd to select multiple</small><br>
-                                <small class="text-danger">{{ form.errors.nlgas_pillar_ids }}</small>
+                                <small class="text-danger">{{ form.errors.tier_ids }}</small>
                             </div>
 
                             <div class="d-flex gap-2 mt-4">
