@@ -19,7 +19,10 @@ class EnumerationRecord extends Model
         'longitude',
         'device_id',
         'payload',
-        'submitted_at'
+        'submitted_at',
+        'zone_id',
+        'state_id',
+        'lga_id'
     ];
 
     protected $casts = [
@@ -71,5 +74,17 @@ class EnumerationRecord extends Model
             'last_sync_at' => now(),
             'sync_error' => $error,
         ])->save();
+    }
+
+    public function zone(): BelongsTo{
+        return $this->belongsTo(Zone::class);
+    }
+
+    public function state(): BelongsTo{
+        return $this->belongsTo(State::class);
+    }
+
+    public function lga(): BelongsTo{
+        return $this->belongsTo(Lga::class);
     }
 }

@@ -21,6 +21,9 @@ class EnumerationRecordController extends Controller
             'device_id' => ['nullable','string','max:255'],
             'form_data' => ['required','array'],
             'submitted_at' => ['nullable','date'],
+            'zone_id' => 'required|exists:zones,id',
+            'state_id' => 'required|exists:states,id',
+            'lga_id' => 'required|exists:lgas,id',
         ]);
 
         $record = new EnumerationRecord();
@@ -34,6 +37,9 @@ class EnumerationRecordController extends Controller
             'payload' => $validated['form_data'],
             'submitted_at' => $validated['submitted_at'] ?? now(),
             'sync_status' => EnumerationRecord::SYNC_SYNCED,
+            'zone_id' => $validated['zone_id'],
+            'state_id' => $validated['state_id'],
+            'lga_id' => $validated['lga_id'],
         ]);
 
         $record->save();
