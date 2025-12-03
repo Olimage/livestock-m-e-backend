@@ -19,14 +19,14 @@ class NlgasPillar extends Model
     ];
 
     /**
-     * Get the pillar programs associated with this pillar
+     * Get the programs associated with this pillar
      */
-    public function pillarPrograms(): HasMany
+    public function programs(): HasMany
     {
         return $this->hasMany(Program::class);
     }
 
-        public function tiers(): MorphToMany
+    public function tiers(): MorphToMany
     {
         return $this->morphToMany(Tier::class, 'tierable');
     }

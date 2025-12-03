@@ -109,6 +109,14 @@ Route::middleware(['auth.web'])->group(function () {
         Route::put('/nlgas-pillars/{pillar}', [\App\Http\Controllers\ProgramController::class, 'updateNlgasPillar'])->name('nlgas-pillars.update');
         Route::delete('/nlgas-pillars/{pillar}', [\App\Http\Controllers\ProgramController::class, 'destroyNlgasPillar'])->name('nlgas-pillars.destroy');
 
+        // Programs
+        Route::get('/programs', [\App\Http\Controllers\ProgramController::class, 'programs'])->name('programs.index');
+        Route::get('/programs/create', [\App\Http\Controllers\ProgramController::class, 'createProgram'])->name('programs.create');
+        Route::post('/programs', [\App\Http\Controllers\ProgramController::class, 'storeProgram'])->name('programs.store');
+        Route::get('/programs/{program}/edit', [\App\Http\Controllers\ProgramController::class, 'editProgram'])->name('programs.edit');
+        Route::put('/programs/{program}', [\App\Http\Controllers\ProgramController::class, 'updateProgram'])->name('programs.update');
+        Route::delete('/programs/{program}', [\App\Http\Controllers\ProgramController::class, 'destroyProgram'])->name('programs.destroy');
+
         // Indicators
         Route::get('/indicators', [\App\Http\Controllers\ProgramController::class, 'indicators'])->name('indicators.index');
         Route::get('/indicators/create', [\App\Http\Controllers\ProgramController::class, 'createIndicator'])->name('indicators.create');
@@ -116,6 +124,22 @@ Route::middleware(['auth.web'])->group(function () {
         Route::get('/indicators/{indicator}/edit', [\App\Http\Controllers\ProgramController::class, 'editIndicator'])->name('indicators.edit');
         Route::put('/indicators/{indicator}', [\App\Http\Controllers\ProgramController::class, 'updateIndicator'])->name('indicators.update');
         Route::delete('/indicators/{indicator}', [\App\Http\Controllers\ProgramController::class, 'destroyIndicator'])->name('indicators.destroy');
+
+        // Tiers
+        Route::get('/tiers', [\App\Http\Controllers\ProgramController::class, 'tiers'])->name('tiers.index');
+        Route::get('/tiers/create', [\App\Http\Controllers\ProgramController::class, 'createTier'])->name('tiers.create');
+        Route::post('/tiers', [\App\Http\Controllers\ProgramController::class, 'storeTier'])->name('tiers.store');
+        Route::get('/tiers/{tier}/edit', [\App\Http\Controllers\ProgramController::class, 'editTier'])->name('tiers.edit');
+        Route::put('/tiers/{tier}', [\App\Http\Controllers\ProgramController::class, 'updateTier'])->name('tiers.update');
+        Route::delete('/tiers/{tier}', [\App\Http\Controllers\ProgramController::class, 'destroyTier'])->name('tiers.destroy');
+
+        // Cross-Cutting Metrics
+        Route::get('/cross-cutting-metrics', [\App\Http\Controllers\ProgramController::class, 'crossCuttingMetrics'])->name('cross-cutting-metrics.index');
+        Route::get('/cross-cutting-metrics/create', [\App\Http\Controllers\ProgramController::class, 'createCrossCuttingMetric'])->name('cross-cutting-metrics.create');
+        Route::post('/cross-cutting-metrics', [\App\Http\Controllers\ProgramController::class, 'storeCrossCuttingMetric'])->name('cross-cutting-metrics.store');
+        Route::get('/cross-cutting-metrics/{crossCuttingMetric}/edit', [\App\Http\Controllers\ProgramController::class, 'editCrossCuttingMetric'])->name('cross-cutting-metrics.edit');
+        Route::put('/cross-cutting-metrics/{crossCuttingMetric}', [\App\Http\Controllers\ProgramController::class, 'updateCrossCuttingMetric'])->name('cross-cutting-metrics.update');
+        Route::delete('/cross-cutting-metrics/{crossCuttingMetric}', [\App\Http\Controllers\ProgramController::class, 'destroyCrossCuttingMetric'])->name('cross-cutting-metrics.destroy');
     });
 
     // Enumeration Records Routes

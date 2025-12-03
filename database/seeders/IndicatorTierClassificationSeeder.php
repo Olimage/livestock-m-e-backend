@@ -16,14 +16,14 @@ class IndicatorTierClassificationSeeder extends Seeder
         Tier::firstOrCreate([
             'tier' => 'Tier 0',
             'level' => 'Impact',
-            'measurement_frequency' => 'Annual/Multi-year',
+            'measurement_frequency' => 'Annual,Multi-year',
             'attribution' => 'Contribution (many external factors)'
         ]);
         
         Tier::firstOrCreate([
             'tier' => 'Tier 1',
             'level' => 'Impact',
-            'measurement_frequency' => 'Annual/Multi-year',
+            'measurement_frequency' => 'Quarterly, Annual',
             'attribution' => 'Contribution (many external factors)'
         ]);
 

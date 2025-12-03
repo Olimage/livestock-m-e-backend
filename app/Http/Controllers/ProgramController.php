@@ -7,25 +7,25 @@ use App\Models\SectoralGoal;
 use App\Models\BondOutcome;
 use App\Models\NlgasPillar;
 use App\Models\Program;
+use App\Models\Tier;
 use App\Models\Indicator;
 use App\Models\CrossCuttingMetric;
 use App\Models\Department;
-use App\Models\StrategicAlignment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ProgramController extends Controller
 {
-    // Presidential Priorities
+    // ==================== Presidential Priorities ====================
     public function presidentialPriorities(Request $request)
     {
-        $query = PresidentialPriority::query()->with(['sectoralGoals', 'bondOutcomes', 'nlgasPillars']);
+        $query = PresidentialPriority::query()->with(['tiers']);
 
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('code', 'like', "%{$search}%")
+                $q->where('code', 'like', "%{$search}%")
+                  ->orWhere('title', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%");
             });
         }
@@ -43,9 +43,7 @@ class ProgramController extends Controller
     public function createPresidentialPriority()
     {
         return Inertia::render('Programs/PresidentialPriorities/Create', [
-            'sectoralGoals' => SectoralGoal::all(),
-            'bondOutcomes' => BondOutcome::all(),
-            'nlgasPillars' => NlgasPillar::all()
+            'tiers' => Tier::all()
         ]);
     }
 
@@ -55,24 +53,13 @@ class ProgramController extends Controller
             'code' => 'required|string|max:255|unique:presidential_priorities',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'baseline_year' => 'nullable|integer',
-            'target_year' => 'nullable|integer',
-            'source_document' => 'nullable|string',
-            'sectoral_goal_ids' => 'nullable|array',
-            'bond_outcome_ids' => 'nullable|array',
-            'nlgas_pillar_ids' => 'nullable|array',
+            'tier_ids' => 'nullable|array',
         ]);
 
         $priority = PresidentialPriority::create($validated);
 
-        if ($request->has('sectoral_goal_ids')) {
-            $priority->sectoralGoals()->attach($request->sectoral_goal_ids);
-        }
-        if ($request->has('bond_outcome_ids')) {
-            $priority->bondOutcomes()->attach($request->bond_outcome_ids);
-        }
-        if ($request->has('nlgas_pillar_ids')) {
-            $priority->nlgasPillars()->attach($request->nlgas_pillar_ids);
+        if ($request->has('tier_ids')) {
+            $priority->tiers()->attach($request->tier_ids);
         }
 
         return redirect()->route('programs.presidential-priorities.index')
@@ -82,10 +69,8 @@ class ProgramController extends Controller
     public function editPresidentialPriority(PresidentialPriority $priority)
     {
         return Inertia::render('Programs/PresidentialPriorities/Edit', [
-            'priority' => $priority->load(['sectoralGoals', 'bondOutcomes', 'nlgasPillars']),
-            'sectoralGoals' => SectoralGoal::all(),
-            'bondOutcomes' => BondOutcome::all(),
-            'nlgasPillars' => NlgasPillar::all()
+            'priority' => $priority->load(['tiers']),
+            'tiers' => Tier::all()
         ]);
     }
 
@@ -95,19 +80,11 @@ class ProgramController extends Controller
             'code' => 'required|string|max:255|unique:presidential_priorities,code,' . $priority->id,
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'baseline_year' => 'nullable|integer',
-            'target_year' => 'nullable|integer',
-            'source_document' => 'nullable|string',
-            'sectoral_goal_ids' => 'nullable|array',
-            'bond_outcome_ids' => 'nullable|array',
-            'nlgas_pillar_ids' => 'nullable|array',
+            'tier_ids' => 'nullable|array',
         ]);
 
         $priority->update($validated);
-
-        $priority->sectoralGoals()->sync($request->sectoral_goal_ids ?? []);
-        $priority->bondOutcomes()->sync($request->bond_outcome_ids ?? []);
-        $priority->nlgasPillars()->sync($request->nlgas_pillar_ids ?? []);
+        $priority->tiers()->sync($request->tier_ids ?? []);
 
         return redirect()->route('programs.presidential-priorities.index')
                         ->with('success', 'Presidential Priority updated successfully');
@@ -120,16 +97,16 @@ class ProgramController extends Controller
                         ->with('success', 'Presidential Priority deleted successfully');
     }
 
-    // Sectoral Goals
+    // ==================== Sectoral Goals ====================
     public function sectoralGoals(Request $request)
     {
-        $query = SectoralGoal::query()->with(['presidentialPriorities', 'bondOutcomes', 'nlgasPillars']);
+        $query = SectoralGoal::query()->with(['tiers']);
 
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('code', 'like', "%{$search}%")
+                $q->where('code', 'like', "%{$search}%")
+                  ->orWhere('title', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%");
             });
         }
@@ -147,9 +124,7 @@ class ProgramController extends Controller
     public function createSectoralGoal()
     {
         return Inertia::render('Programs/SectoralGoals/Create', [
-            'presidentialPriorities' => PresidentialPriority::all(),
-            'bondOutcomes' => BondOutcome::all(),
-            'nlgasPillars' => NlgasPillar::all()
+            'tiers' => Tier::all()
         ]);
     }
 
@@ -159,25 +134,13 @@ class ProgramController extends Controller
             'code' => 'required|string|max:255|unique:sectoral_goals',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'baseline_year' => 'nullable|integer',
-            'target_year' => 'nullable|integer',
-            'source_document' => 'nullable|string',
-            'responsible_entity' => 'nullable|string',
-            'presidential_priority_ids' => 'nullable|array',
-            'bond_outcome_ids' => 'nullable|array',
-            'nlgas_pillar_ids' => 'nullable|array',
+            'tier_ids' => 'nullable|array',
         ]);
 
         $goal = SectoralGoal::create($validated);
 
-        if ($request->has('presidential_priority_ids')) {
-            $goal->presidentialPriorities()->attach($request->presidential_priority_ids);
-        }
-        if ($request->has('bond_outcome_ids')) {
-            $goal->bondOutcomes()->attach($request->bond_outcome_ids);
-        }
-        if ($request->has('nlgas_pillar_ids')) {
-            $goal->nlgasPillars()->attach($request->nlgas_pillar_ids);
+        if ($request->has('tier_ids')) {
+            $goal->tiers()->attach($request->tier_ids);
         }
 
         return redirect()->route('programs.sectoral-goals.index')
@@ -187,10 +150,8 @@ class ProgramController extends Controller
     public function editSectoralGoal(SectoralGoal $goal)
     {
         return Inertia::render('Programs/SectoralGoals/Edit', [
-            'goal' => $goal->load(['presidentialPriorities', 'bondOutcomes', 'nlgasPillars']),
-            'presidentialPriorities' => PresidentialPriority::all(),
-            'bondOutcomes' => BondOutcome::all(),
-            'nlgasPillars' => NlgasPillar::all()
+            'goal' => $goal->load(['tiers']),
+            'tiers' => Tier::all()
         ]);
     }
 
@@ -200,20 +161,11 @@ class ProgramController extends Controller
             'code' => 'required|string|max:255|unique:sectoral_goals,code,' . $goal->id,
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'baseline_year' => 'nullable|integer',
-            'target_year' => 'nullable|integer',
-            'source_document' => 'nullable|string',
-            'responsible_entity' => 'nullable|string',
-            'presidential_priority_ids' => 'nullable|array',
-            'bond_outcome_ids' => 'nullable|array',
-            'nlgas_pillar_ids' => 'nullable|array',
+            'tier_ids' => 'nullable|array',
         ]);
 
         $goal->update($validated);
-
-        $goal->presidentialPriorities()->sync($request->presidential_priority_ids ?? []);
-        $goal->bondOutcomes()->sync($request->bond_outcome_ids ?? []);
-        $goal->nlgasPillars()->sync($request->nlgas_pillar_ids ?? []);
+        $goal->tiers()->sync($request->tier_ids ?? []);
 
         return redirect()->route('programs.sectoral-goals.index')
                         ->with('success', 'Sectoral Goal updated successfully');
@@ -226,16 +178,16 @@ class ProgramController extends Controller
                         ->with('success', 'Sectoral Goal deleted successfully');
     }
 
-    // Bond Outcomes
+    // ==================== Bond Outcomes ====================
     public function bondOutcomes(Request $request)
     {
-        $query = BondOutcome::query()->with(['presidentialPriorities', 'sectoralGoals', 'nlgasPillars']);
+        $query = BondOutcome::query()->with(['tiers']);
 
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('code', 'like', "%{$search}%")
+                $q->where('code', 'like', "%{$search}%")
+                  ->orWhere('title', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%");
             });
         }
@@ -253,9 +205,7 @@ class ProgramController extends Controller
     public function createBondOutcome()
     {
         return Inertia::render('Programs/BondOutcomes/Create', [
-            'presidentialPriorities' => PresidentialPriority::all(),
-            'sectoralGoals' => SectoralGoal::all(),
-            'nlgasPillars' => NlgasPillar::all()
+            'tiers' => Tier::all()
         ]);
     }
 
@@ -265,25 +215,13 @@ class ProgramController extends Controller
             'code' => 'required|string|max:255|unique:bond_outcomes',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'baseline_year' => 'nullable|integer',
-            'target_year' => 'nullable|integer',
-            'source_document' => 'nullable|string',
-            'responsible_entity' => 'nullable|string',
-            'presidential_priority_ids' => 'nullable|array',
-            'sectoral_goal_ids' => 'nullable|array',
-            'nlgas_pillar_ids' => 'nullable|array',
+            'tier_ids' => 'nullable|array',
         ]);
 
         $outcome = BondOutcome::create($validated);
 
-        if ($request->has('presidential_priority_ids')) {
-            $outcome->presidentialPriorities()->attach($request->presidential_priority_ids);
-        }
-        if ($request->has('sectoral_goal_ids')) {
-            $outcome->sectoralGoals()->attach($request->sectoral_goal_ids);
-        }
-        if ($request->has('nlgas_pillar_ids')) {
-            $outcome->nlgasPillars()->attach($request->nlgas_pillar_ids);
+        if ($request->has('tier_ids')) {
+            $outcome->tiers()->attach($request->tier_ids);
         }
 
         return redirect()->route('programs.bond-outcomes.index')
@@ -293,10 +231,8 @@ class ProgramController extends Controller
     public function editBondOutcome(BondOutcome $outcome)
     {
         return Inertia::render('Programs/BondOutcomes/Edit', [
-            'outcome' => $outcome->load(['presidentialPriorities', 'sectoralGoals', 'nlgasPillars']),
-            'presidentialPriorities' => PresidentialPriority::all(),
-            'sectoralGoals' => SectoralGoal::all(),
-            'nlgasPillars' => NlgasPillar::all()
+            'outcome' => $outcome->load(['tiers']),
+            'tiers' => Tier::all()
         ]);
     }
 
@@ -306,20 +242,11 @@ class ProgramController extends Controller
             'code' => 'required|string|max:255|unique:bond_outcomes,code,' . $outcome->id,
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'baseline_year' => 'nullable|integer',
-            'target_year' => 'nullable|integer',
-            'source_document' => 'nullable|string',
-            'responsible_entity' => 'nullable|string',
-            'presidential_priority_ids' => 'nullable|array',
-            'sectoral_goal_ids' => 'nullable|array',
-            'nlgas_pillar_ids' => 'nullable|array',
+            'tier_ids' => 'nullable|array',
         ]);
 
         $outcome->update($validated);
-
-        $outcome->presidentialPriorities()->sync($request->presidential_priority_ids ?? []);
-        $outcome->sectoralGoals()->sync($request->sectoral_goal_ids ?? []);
-        $outcome->nlgasPillars()->sync($request->nlgas_pillar_ids ?? []);
+        $outcome->tiers()->sync($request->tier_ids ?? []);
 
         return redirect()->route('programs.bond-outcomes.index')
                         ->with('success', 'Bond Outcome updated successfully');
@@ -332,16 +259,16 @@ class ProgramController extends Controller
                         ->with('success', 'Bond Outcome deleted successfully');
     }
 
-    // NLGAS Pillars
+    // ==================== NLGAS Pillars ====================
     public function nlgasPillars(Request $request)
     {
-        $query = NlgasPillar::query()->with(['presidentialPriorities', 'sectoralGoals', 'bondOutcomes']);
+        $query = NlgasPillar::query()->with(['tiers', 'programs']);
 
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('code', 'like', "%{$search}%")
+                $q->where('code', 'like', "%{$search}%")
+                  ->orWhere('title', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%");
             });
         }
@@ -359,9 +286,7 @@ class ProgramController extends Controller
     public function createNlgasPillar()
     {
         return Inertia::render('Programs/NlgasPillars/Create', [
-            'presidentialPriorities' => PresidentialPriority::all(),
-            'sectoralGoals' => SectoralGoal::all(),
-            'bondOutcomes' => BondOutcome::all()
+            'tiers' => Tier::all()
         ]);
     }
 
@@ -371,25 +296,13 @@ class ProgramController extends Controller
             'code' => 'required|string|max:255|unique:nlgas_pillars',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'baseline_year' => 'nullable|integer',
-            'target_year' => 'nullable|integer',
-            'source_document' => 'nullable|string',
-            'responsible_entity' => 'nullable|string',
-            'presidential_priority_ids' => 'nullable|array',
-            'sectoral_goal_ids' => 'nullable|array',
-            'bond_outcome_ids' => 'nullable|array',
+            'tier_ids' => 'nullable|array',
         ]);
 
         $pillar = NlgasPillar::create($validated);
 
-        if ($request->has('presidential_priority_ids')) {
-            $pillar->presidentialPriorities()->attach($request->presidential_priority_ids);
-        }
-        if ($request->has('sectoral_goal_ids')) {
-            $pillar->sectoralGoals()->attach($request->sectoral_goal_ids);
-        }
-        if ($request->has('bond_outcome_ids')) {
-            $pillar->bondOutcomes()->attach($request->bond_outcome_ids);
+        if ($request->has('tier_ids')) {
+            $pillar->tiers()->attach($request->tier_ids);
         }
 
         return redirect()->route('programs.nlgas-pillars.index')
@@ -399,10 +312,8 @@ class ProgramController extends Controller
     public function editNlgasPillar(NlgasPillar $pillar)
     {
         return Inertia::render('Programs/NlgasPillars/Edit', [
-            'pillar' => $pillar->load(['presidentialPriorities', 'sectoralGoals', 'bondOutcomes']),
-            'presidentialPriorities' => PresidentialPriority::all(),
-            'sectoralGoals' => SectoralGoal::all(),
-            'bondOutcomes' => BondOutcome::all()
+            'pillar' => $pillar->load(['tiers']),
+            'tiers' => Tier::all()
         ]);
     }
 
@@ -412,20 +323,11 @@ class ProgramController extends Controller
             'code' => 'required|string|max:255|unique:nlgas_pillars,code,' . $pillar->id,
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'baseline_year' => 'nullable|integer',
-            'target_year' => 'nullable|integer',
-            'source_document' => 'nullable|string',
-            'responsible_entity' => 'nullable|string',
-            'presidential_priority_ids' => 'nullable|array',
-            'sectoral_goal_ids' => 'nullable|array',
-            'bond_outcome_ids' => 'nullable|array',
+            'tier_ids' => 'nullable|array',
         ]);
 
         $pillar->update($validated);
-
-        $pillar->presidentialPriorities()->sync($request->presidential_priority_ids ?? []);
-        $pillar->sectoralGoals()->sync($request->sectoral_goal_ids ?? []);
-        $pillar->bondOutcomes()->sync($request->bond_outcome_ids ?? []);
+        $pillar->tiers()->sync($request->tier_ids ?? []);
 
         return redirect()->route('programs.nlgas-pillars.index')
                         ->with('success', 'NLGAS Pillar updated successfully');
@@ -438,10 +340,10 @@ class ProgramController extends Controller
                         ->with('success', 'NLGAS Pillar deleted successfully');
     }
 
-    // Indicators
-    public function indicators(Request $request)
+    // ==================== Programs ====================
+    public function programs(Request $request)
     {
-        $query = Indicator::query()->with(['presidentialPriority', 'sectoralGoal', 'bondOutcome', 'nlgasPillar', 'department']);
+        $query = Program::query()->with(['nlgasPillar']);
 
         if ($request->has('search')) {
             $search = $request->search;
@@ -451,12 +353,95 @@ class ProgramController extends Controller
             });
         }
 
+        if ($request->has('pillar_id')) {
+            $query->where('nlgas_pillar_id', $request->pillar_id);
+        }
+
+        $programs = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
+                         ->paginate($request->per_page ?? 10);
+
+        return Inertia::render('Programs/Programs/Index', [
+            'programs' => $programs,
+            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order', 'pillar_id']),
+            'pillars' => NlgasPillar::all(),
+            'totalCount' => Program::count()
+        ]);
+    }
+
+    public function createProgram()
+    {
+        return Inertia::render('Programs/Programs/Create', [
+            'pillars' => NlgasPillar::all()
+        ]);
+    }
+
+    public function storeProgram(Request $request)
+    {
+        $validated = $request->validate([
+            'nlgas_pillar_id' => 'required|exists:nlgas_pillars,id',
+            'code' => 'required|string|max:255|unique:programs',
+            'title' => 'required|string|max:255',
+        ]);
+
+        Program::create($validated);
+
+        return redirect()->route('programs.programs.index')
+                        ->with('success', 'Program created successfully');
+    }
+
+    public function editProgram(Program $program)
+    {
+        return Inertia::render('Programs/Programs/Edit', [
+            'program' => $program->load(['nlgasPillar']),
+            'pillars' => NlgasPillar::all()
+        ]);
+    }
+
+    public function updateProgram(Request $request, Program $program)
+    {
+        $validated = $request->validate([
+            'nlgas_pillar_id' => 'required|exists:nlgas_pillars,id',
+            'code' => 'required|string|max:255|unique:programs,code,' . $program->id,
+            'title' => 'required|string|max:255',
+        ]);
+
+        $program->update($validated);
+
+        return redirect()->route('programs.programs.index')
+                        ->with('success', 'Program updated successfully');
+    }
+
+    public function destroyProgram(Program $program)
+    {
+        $program->delete();
+        return redirect()->route('programs.programs.index')
+                        ->with('success', 'Program deleted successfully');
+    }
+
+    // ==================== Indicators ====================
+    public function indicators(Request $request)
+    {
+        $query = Indicator::query()->with(['tiers']);
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('code', 'like', "%{$search}%")
+                  ->orWhere('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->has('indicator_type')) {
+            $query->where('indicator_type', $request->indicator_type);
+        }
+
         $indicators = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
                            ->paginate($request->per_page ?? 10);
 
         return Inertia::render('Programs/Indicators/Index', [
             'indicators' => $indicators,
-            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order']),
+            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order', 'indicator_type']),
             'totalCount' => Indicator::count()
         ]);
     }
@@ -464,11 +449,7 @@ class ProgramController extends Controller
     public function createIndicator()
     {
         return Inertia::render('Programs/Indicators/Create', [
-            'presidentialPriorities' => PresidentialPriority::all(),
-            'sectoralGoals' => SectoralGoal::all(),
-            'bondOutcomes' => BondOutcome::all(),
-            'nlgasPillars' => NlgasPillar::all(),
-            'departments' => Department::all()
+            'tiers' => Tier::all()
         ]);
     }
 
@@ -478,12 +459,7 @@ class ProgramController extends Controller
             'code' => 'required|string|max:255|unique:indicators',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'presidential_priority_id' => 'nullable|exists:presidential_priorities,id',
-            'sectoral_goal_id' => 'nullable|exists:sectoral_goals,id',
-            'bond_outcome_id' => 'nullable|exists:bond_outcomes,id',
-            'nlgas_pillar_id' => 'nullable|exists:nlgas_pillars,id',
-            'department_id' => 'nullable|exists:departments,id',
-            'indicator_type' => 'nullable|in:outcome,output,impact',
+            'indicator_type' => 'required|in:outcome,output,impact',
             'measurement_unit' => 'nullable|string',
             'baseline_value' => 'nullable|numeric',
             'baseline_year' => 'nullable|integer',
@@ -491,11 +467,14 @@ class ProgramController extends Controller
             'target_year' => 'nullable|integer',
             'data_source' => 'nullable|string',
             'collection_frequency' => 'nullable|string',
-            'responsible_entity' => 'nullable|string',
-            'tier_level' => 'nullable|integer',
+            'tier_ids' => 'nullable|array',
         ]);
 
-        Indicator::create($validated);
+        $indicator = Indicator::create($validated);
+
+        if ($request->has('tier_ids')) {
+            $indicator->tiers()->attach($request->tier_ids);
+        }
 
         return redirect()->route('programs.indicators.index')
                         ->with('success', 'Indicator created successfully');
@@ -504,12 +483,8 @@ class ProgramController extends Controller
     public function editIndicator(Indicator $indicator)
     {
         return Inertia::render('Programs/Indicators/Edit', [
-            'indicator' => $indicator->load(['presidentialPriority', 'sectoralGoal', 'bondOutcome', 'nlgasPillar', 'department']),
-            'presidentialPriorities' => PresidentialPriority::all(),
-            'sectoralGoals' => SectoralGoal::all(),
-            'bondOutcomes' => BondOutcome::all(),
-            'nlgasPillars' => NlgasPillar::all(),
-            'departments' => Department::all()
+            'indicator' => $indicator->load(['tiers']),
+            'tiers' => Tier::all()
         ]);
     }
 
@@ -519,12 +494,7 @@ class ProgramController extends Controller
             'code' => 'required|string|max:255|unique:indicators,code,' . $indicator->id,
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'presidential_priority_id' => 'nullable|exists:presidential_priorities,id',
-            'sectoral_goal_id' => 'nullable|exists:sectoral_goals,id',
-            'bond_outcome_id' => 'nullable|exists:bond_outcomes,id',
-            'nlgas_pillar_id' => 'nullable|exists:nlgas_pillars,id',
-            'department_id' => 'nullable|exists:departments,id',
-            'indicator_type' => 'nullable|in:outcome,output,impact',
+            'indicator_type' => 'required|in:outcome,output,impact',
             'measurement_unit' => 'nullable|string',
             'baseline_value' => 'nullable|numeric',
             'baseline_year' => 'nullable|integer',
@@ -532,11 +502,11 @@ class ProgramController extends Controller
             'target_year' => 'nullable|integer',
             'data_source' => 'nullable|string',
             'collection_frequency' => 'nullable|string',
-            'responsible_entity' => 'nullable|string',
-            'tier_level' => 'nullable|integer',
+            'tier_ids' => 'nullable|array',
         ]);
 
         $indicator->update($validated);
+        $indicator->tiers()->sync($request->tier_ids ?? []);
 
         return redirect()->route('programs.indicators.index')
                         ->with('success', 'Indicator updated successfully');
@@ -549,4 +519,151 @@ class ProgramController extends Controller
                         ->with('success', 'Indicator deleted successfully');
     }
 
+    // ==================== Tiers ====================
+    public function tiers(Request $request)
+    {
+        $query = Tier::query()
+            ->withCount(['indicators', 'sectoralGoals', 'presidentialPriorities', 'bondOutcomes']);
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('tier', 'like', "%{$search}%")
+                  ->orWhere('level', 'like', "%{$search}%")
+                  ->orWhere('attribution', 'like', "%{$search}%");
+            });
+        }
+
+        $tiers = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
+                      ->paginate($request->per_page ?? 10);
+
+        return Inertia::render('Programs/Tiers/Index', [
+            'tiers' => $tiers,
+            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order']),
+            'totalCount' => Tier::count()
+        ]);
+    }
+
+    public function createTier()
+    {
+        return Inertia::render('Programs/Tiers/Create');
+    }
+
+    public function storeTier(Request $request)
+    {
+        $validated = $request->validate([
+            'tier' => 'required|string|max:255|unique:tiers',
+            'level' => 'required|string|max:255',
+            'measurement_frequency' => 'required|string|max:255',
+            'attribution' => 'required|string|max:255',
+        ]);
+
+        Tier::create($validated);
+
+        return redirect()->route('programs.tiers.index')
+                        ->with('success', 'Tier created successfully');
+    }
+
+    public function editTier(Tier $tier)
+    {
+        return Inertia::render('Programs/Tiers/Edit', [
+            'tier' => $tier
+        ]);
+    }
+
+    public function updateTier(Request $request, Tier $tier)
+    {
+        $validated = $request->validate([
+            'tier' => 'required|string|max:255|unique:tiers,tier,' . $tier->id,
+            'level' => 'required|string|max:255',
+            'measurement_frequency' => 'required|string|max:255',
+            'attribution' => 'required|string|max:255',
+        ]);
+
+        $tier->update($validated);
+
+        return redirect()->route('programs.tiers.index')
+                        ->with('success', 'Tier updated successfully');
+    }
+
+    public function destroyTier(Tier $tier)
+    {
+        $tier->delete();
+        return redirect()->route('programs.tiers.index')
+                        ->with('success', 'Tier deleted successfully');
+    }
+
+    // ==================== Cross-Cutting Metrics ====================
+    public function crossCuttingMetrics(Request $request)
+    {
+        $query = CrossCuttingMetric::query();
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('code', 'like', "%{$search}%")
+                  ->orWhere('area', 'like', "%{$search}%")
+                  ->orWhere('key_metric', 'like', "%{$search}%")
+                  ->orWhere('purpose', 'like', "%{$search}%");
+            });
+        }
+
+        $metrics = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
+                        ->paginate($request->per_page ?? 10);
+
+        return Inertia::render('Programs/CrossCuttingMetrics/Index', [
+            'metrics' => $metrics,
+            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order']),
+            'totalCount' => CrossCuttingMetric::count()
+        ]);
+    }
+
+    public function createCrossCuttingMetric()
+    {
+        return Inertia::render('Programs/CrossCuttingMetrics/Create');
+    }
+
+    public function storeCrossCuttingMetric(Request $request)
+    {
+        $validated = $request->validate([
+            'code' => 'required|string|max:255|unique:cross_cutting_metrics',
+            'area' => 'required|string|max:255',
+            'key_metric' => 'required|string|max:255',
+            'purpose' => 'required|string',
+        ]);
+
+        CrossCuttingMetric::create($validated);
+
+        return redirect()->route('programs.cross-cutting-metrics.index')
+                        ->with('success', 'Cross-Cutting Metric created successfully');
+    }
+
+    public function editCrossCuttingMetric(CrossCuttingMetric $crossCuttingMetric)
+    {
+        return Inertia::render('Programs/CrossCuttingMetrics/Edit', [
+            'metric' => $crossCuttingMetric
+        ]);
+    }
+
+    public function updateCrossCuttingMetric(Request $request, CrossCuttingMetric $crossCuttingMetric)
+    {
+        $validated = $request->validate([
+            'code' => 'required|string|max:255|unique:cross_cutting_metrics,code,' . $crossCuttingMetric->id,
+            'area' => 'required|string|max:255',
+            'key_metric' => 'required|string|max:255',
+            'purpose' => 'required|string',
+        ]);
+
+        $crossCuttingMetric->update($validated);
+
+        return redirect()->route('programs.cross-cutting-metrics.index')
+                        ->with('success', 'Cross-Cutting Metric updated successfully');
+    }
+
+    public function destroyCrossCuttingMetric(CrossCuttingMetric $crossCuttingMetric)
+    {
+        $crossCuttingMetric->delete();
+        return redirect()->route('programs.cross-cutting-metrics.index')
+                        ->with('success', 'Cross-Cutting Metric deleted successfully');
+    }
 }

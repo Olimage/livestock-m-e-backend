@@ -163,10 +163,29 @@ class NavigationService
                 'routeName' => 'programs.nlgas-pillars.index',
                 'icon'      => 'bi bi-columns',
             ];
+
+            $programsSubmenu[] = [
+                'name'      => 'Programs',
+                'routeName' => 'programs.programs.index',
+                'icon'      => 'bi bi-folder',
+            ];
+
             $programsSubmenu[] = [
                 'name'      => 'Indicators',
                 'routeName' => 'programs.indicators.index',
                 'icon'      => 'bi bi-graph-up',
+            ];
+
+            $programsSubmenu[] = [
+                'name'      => 'Tiers',
+                'routeName' => 'programs.tiers.index',
+                'icon'      => 'bi bi-layers',
+            ];
+
+            $programsSubmenu[] = [
+                'name'      => 'Cross-Cutting Metrics',
+                'routeName' => 'programs.cross-cutting-metrics.index',
+                'icon'      => 'bi bi-grid-3x3',
             ];
         }
 
