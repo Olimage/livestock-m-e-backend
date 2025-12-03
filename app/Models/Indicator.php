@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Indicator extends Model
 {
@@ -34,5 +35,8 @@ class Indicator extends Model
         'tier_level' => 'integer',
     ];
 
-
+    public function tiers(): MorphToMany
+    {
+        return $this->morphToMany(Tier::class, 'tierable');
+    }
 }
