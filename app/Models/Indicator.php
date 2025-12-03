@@ -15,7 +15,6 @@ class Indicator extends Model
         'code',
         'title',
         'description',
-
         'indicator_type',
         'measurement_unit',
         'baseline_value',
@@ -23,8 +22,7 @@ class Indicator extends Model
         'target_value',
         'target_year',
         'data_source',
-        'collection_frequency',
-        'tier_level'
+        'collection_frequency'
     ];
 
     protected $casts = [
@@ -32,7 +30,6 @@ class Indicator extends Model
         'target_value' => 'decimal:2',
         'baseline_year' => 'integer',
         'target_year' => 'integer',
-        'tier_level' => 'integer',
     ];
 
     public function tiers(): MorphToMany
