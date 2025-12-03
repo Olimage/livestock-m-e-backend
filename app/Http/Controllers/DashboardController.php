@@ -66,15 +66,7 @@ class DashboardController extends Controller
                 'iconColor' => 'text-emerald-600',
                 'badge' => 'Active'
             ],
-            [
-                'label' => 'Data Pending Sync',
-                'value' => $totalDataPendingSync,
-                'icon' => 'bi bi-cloud-arrow-up-fill',
-                'gradient' => 'from-emerald-500 to-teal-600',
-                'bgColor' => 'bg-emerald-50',
-                'iconColor' => 'text-emerald-600',
-                'badge' => 'Pending'
-            ],
+
             [
                 'label' => 'Bond Outcomes',
                 'value' => $TotalbondOutcomesCount,
@@ -151,15 +143,7 @@ class DashboardController extends Controller
                 'iconColor' => 'text-emerald-600',
                 'badge' => 'Active'
             ],
-            [
-                'label' => 'Data Pending Sync',
-                'value' => $totalDataPendingSync,
-                'icon' => 'bi bi-cloud-arrow-up-fill',
-                'gradient' => 'from-emerald-500 to-teal-600',
-                'bgColor' => 'bg-emerald-50',
-                'iconColor' => 'text-emerald-600',
-                'badge' => 'Pending'
-            ],
+
             [
                 'label' => 'Bond Outcomes',
                 'value' => $TotalbondOutcomesCount,
