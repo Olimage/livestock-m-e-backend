@@ -44,7 +44,7 @@ const {
 
     <DashboardStatistics  
       :stats="stats" 
-      title="Admin Dashboard Statistics"
+      title="Admin Overview Statistics"
       subtitle="Real-time overview of system data"
       :show-new-button="true"
       new-button-route="baseline-new"

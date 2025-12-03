@@ -18,7 +18,7 @@ class NavigationService
 
         // Base navigation items available to all authenticated users
         $navItems[] = [
-            'name'      => 'Dashboard',
+            'name'      => 'Overview',
             'routeName' => 'home',
             'icon'      => 'bi bi-speedometer2',
         ];
