@@ -48,106 +48,120 @@ const toggleSort = (column) => {
     }
 }
 
+const getSortIcon = (column) => {
+    if (sortBy.value !== column) return 'bi bi-arrow-down-up'
+    return sortOrder.value === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'
+}
 </script>
 
 <template>
     <BeLayout>
         <Head title="Tiers" />
 
-        <div class="container-fluid mt-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2 class="h3 mb-1">Tiers</h2>
-                    <p class="text-muted mb-0">Manage measurement tiers for indicators and frameworks</p>
-                </div>
-                <Link :href="'/programs/tiers/create'" class="btn btn-primary">
-                    <i class="bi bi-plus-circle me-2"></i>Add Tier
-                </Link>
+        <div class="row">
+            <div class="col-lg-12">
+                <h5 class="mt-4 fw-400">Tiers Management</h5>
+                <hr />
             </div>
+        </div>
 
-            <!-- Filters -->
-            <div class="card shadow-sm mb-4">
+        <div class="row mb-2">
+            <div class="col-lg-12">
+                <p class="text-muted">
+                    Manage measurement tiers for indicators and frameworks. Total: <strong>{{ totalCount }}</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="row card mb-2">
+            <div class="col-sm-12 col-md-12 col-lg-12">
                 <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Search</label>
-                            <input
-                                v-model="search"
-                                type="text"
-                                class="form-control"
-                                placeholder="Search by tier, level, or attribution..."
-                            />
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Per Page</label>
-                            <select v-model="perPage" class="form-select">
-                                <option :value="10">10</option>
-                                <option :value="25">25</option>
-                                <option :value="50">50</option>
-                                <option :value="100">100</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Total Count</label>
-                            <div class="form-control bg-light">{{ totalCount }} tiers</div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card text-bg-success mb-3">
+                                <div class="card-header">Total Tiers</div>
+                                <div class="card-body">
+                                    <h3 class="card-title text-white">{{ totalCount }}</h3>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Table -->
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
+            <div class="row mb-3">
+                <div class="col-md-8 mb-2">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input v-model="search" type="text" class="form-control"
+                            placeholder="Search by tier, level, or attribution..." />
+                    </div>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <select v-model="perPage" class="form-select">
+                        <option :value="10">10 per page</option>
+                        <option :value="25">25 per page</option>
+                        <option :value="50">50 per page</option>
+                        <option :value="100">100 per page</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <Link :href="route('programs.tiers.create')" class="btn btn-success w-100">
+                    <i class="bi bi-plus-circle"></i> Add Tier
+                    </Link>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                        <table class="table table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th @click="toggleSort('tier')" style="cursor: pointer;">
-                                        Tier
-                                        <i v-if="sortBy === 'tier'" :class="sortOrder === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+                                    <th @click="toggleSort('tier')" class="sortable">
+                                        Tier <i :class="getSortIcon('tier')"></i>
                                     </th>
-                                    <th @click="toggleSort('level')" style="cursor: pointer;">
-                                        Level
-                                        <i v-if="sortBy === 'level'" :class="sortOrder === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+                                    <th @click="toggleSort('level')" class="sortable">
+                                        Level <i :class="getSortIcon('level')"></i>
                                     </th>
                                     <th>Measurement Frequency</th>
                                     <th>Attribution</th>
                                     <th>Usage</th>
-                                    <th @click="toggleSort('created_at')" style="cursor: pointer;">
-                                        Created
-                                        <i v-if="sortBy === 'created_at'" :class="sortOrder === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+                                    <th @click="toggleSort('created_at')" class="sortable">
+                                        Created <i :class="getSortIcon('created_at')"></i>
                                     </th>
-                                    <th class="text-end">Actions</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-if="tiers.data.length === 0">
-                                    <td colspan="7" class="text-center text-muted py-4">
-                                        No tiers found
-                                    </td>
+                                <tr v-if="tiers?.data && tiers.data.length === 0">
+                                    <td colspan="7" class="text-center text-muted">No tiers found</td>
                                 </tr>
-                                <tr v-for="tier in tiers.data" :key="tier.id">
+                                <tr v-for="tier in tiers?.data" :key="tier.id">
+                                    <td><span class="badge bg-info">{{ tier.tier }}</span></td>
+                                    <td><strong>{{ tier.level }}</strong></td>
+                                    <td><small>{{ tier.measurement_frequency }}</small></td>
+                                    <td><small>{{ tier.attribution }}</small></td>
                                     <td>
-                                        <span class="badge bg-info">{{ tier.tier }}</span>
-                                    </td>
-                                    <td>{{ tier.level }}</td>
-                                    <td>{{ tier.measurement_frequency }}</td>
-                                    <td>{{ tier.attribution }}</td>
-                                    <td>
-                                        <div class="small">
+                                        <small>
                                             <span class="badge bg-secondary me-1">{{ tier.indicators_count || 0 }} indicators</span>
                                             <span class="badge bg-secondary me-1">{{ tier.sectoral_goals_count || 0 }} goals</span>
                                             <span class="badge bg-secondary me-1">{{ tier.presidential_priorities_count || 0 }} priorities</span>
                                             <span class="badge bg-secondary">{{ tier.bond_outcomes_count || 0 }} outcomes</span>
-                                        </div>
+                                        </small>
                                     </td>
-                                    <td>{{ new Date(tier.created_at).toLocaleDateString() }}</td>
-                                    <td class="text-end">
-                                        <div class="btn-group btn-group-sm">
-                                            <Link :href="`/programs/tiers/${tier.id}/edit`" class="btn btn-outline-primary">
-                                                <i class="bi bi-pencil"></i>
+                                    <td><small>{{ new Date(tier.created_at).toLocaleDateString() }}</small></td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <Link :href="route('programs.tiers.edit', tier.id)"
+                                                class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
                                             </Link>
-                                            <button @click="deleteTier(tier.id)" class="btn btn-outline-danger">
+                                            <button @click="deleteTier(tier.id)"
+                                                class="btn btn-sm btn-outline-danger">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -158,22 +172,84 @@ const toggleSort = (column) => {
                     </div>
 
                     <!-- Pagination -->
-                    <nav v-if="tiers.last_page > 1" class="mt-4">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item" :class="{ disabled: !tiers.prev_page_url }">
-                                <Link :href="tiers.prev_page_url || '#'" class="page-link">Previous</Link>
-                            </li>
-                            <li v-for="page in tiers.links.slice(1, -1)" :key="page.label" 
-                                class="page-item" :class="{ active: page.active }">
-                                <Link :href="page.url" class="page-link" v-html="page.label"></Link>
-                            </li>
-                            <li class="page-item" :class="{ disabled: !tiers.next_page_url }">
-                                <Link :href="tiers.next_page_url || '#'" class="page-link">Next</Link>
-                            </li>
-                        </ul>
-                    </nav>
+                    <div v-if="tiers?.data && tiers.data.length > 0"
+                        class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted small">
+                            Showing {{ tiers.from }} to {{ tiers.to }} of {{ tiers.total }} entries
+                        </div>
+                        <nav>
+                            <ul class="pagination mb-0">
+                                <li v-for="link in tiers.links" :key="link.label"
+                                    :class="['page-item', { active: link.active, disabled: !link.url }]">
+                                    <Link v-if="link.url" :href="link.url" class="page-link"
+                                        v-html="link.label"></Link>
+                                    <span v-else class="page-link" v-html="link.label"></span>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
         </div>
+        </div>
     </BeLayout>
 </template>
+
+<style scoped>
+.fw-400 {
+    font-weight: 400;
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s;
+}
+
+.sortable:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.sortable i {
+    font-size: 0.8rem;
+    opacity: 0.6;
+}
+
+.btn-success {
+    background-color: rgb(11, 109, 23);
+    border-color: rgb(11, 109, 23);
+}
+
+.btn-success:hover {
+    background-color: rgb(9, 87, 18);
+    border-color: rgb(9, 87, 18);
+}
+
+.btn-group .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+.table-responsive {
+    min-height: 300px;
+}
+
+@media (max-width: 768px) {
+    .table {
+        font-size: 0.875rem;
+    }
+
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .btn-group .btn {
+        margin-bottom: 2px;
+    }
+}
+</style>
