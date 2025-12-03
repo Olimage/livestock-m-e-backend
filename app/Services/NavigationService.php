@@ -163,6 +163,11 @@ class NavigationService
                 'routeName' => 'programs.nlgas-pillars.index',
                 'icon'      => 'bi bi-columns',
             ];
+            $programsSubmenu[] = [
+                'name'      => 'Indicators',
+                'routeName' => 'programs.indicators.index',
+                'icon'      => 'bi bi-graph-up',
+            ];
         }
 
         return $programsSubmenu;

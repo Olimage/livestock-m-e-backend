@@ -87,4 +87,35 @@ public function hasChildren()
     return $this->children()->count() > 0;
 }
 
+// Strategic alignment relationships
+public function sectoralGoals()
+{
+    return $this->hasMany(SectoralGoal::class);
+}
+
+public function bondOutcomes()
+{
+    return $this->hasMany(BondOutcome::class);
+}
+
+public function nlgasPillars()
+{
+    return $this->hasMany(NlgasPillar::class);
+}
+
+public function programs()
+{
+    return $this->hasMany(Program::class);
+}
+
+public function indicators()
+{
+    return $this->hasMany(Indicator::class);
+}
+
+public function crossCuttingMetrics()
+{
+    return $this->hasMany(CrossCuttingMetric::class);
+}
+
 }

@@ -108,6 +108,14 @@ Route::middleware(['auth.web'])->group(function () {
         Route::get('/nlgas-pillars/{pillar}/edit', [\App\Http\Controllers\ProgramController::class, 'editNlgasPillar'])->name('nlgas-pillars.edit');
         Route::put('/nlgas-pillars/{pillar}', [\App\Http\Controllers\ProgramController::class, 'updateNlgasPillar'])->name('nlgas-pillars.update');
         Route::delete('/nlgas-pillars/{pillar}', [\App\Http\Controllers\ProgramController::class, 'destroyNlgasPillar'])->name('nlgas-pillars.destroy');
+
+        // Indicators
+        Route::get('/indicators', [\App\Http\Controllers\ProgramController::class, 'indicators'])->name('indicators.index');
+        Route::get('/indicators/create', [\App\Http\Controllers\ProgramController::class, 'createIndicator'])->name('indicators.create');
+        Route::post('/indicators', [\App\Http\Controllers\ProgramController::class, 'storeIndicator'])->name('indicators.store');
+        Route::get('/indicators/{indicator}/edit', [\App\Http\Controllers\ProgramController::class, 'editIndicator'])->name('indicators.edit');
+        Route::put('/indicators/{indicator}', [\App\Http\Controllers\ProgramController::class, 'updateIndicator'])->name('indicators.update');
+        Route::delete('/indicators/{indicator}', [\App\Http\Controllers\ProgramController::class, 'destroyIndicator'])->name('indicators.destroy');
     });
 
     // Enumeration Records Routes

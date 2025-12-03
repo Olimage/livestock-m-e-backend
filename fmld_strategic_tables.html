@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FMLD Strategic Alignment Tables</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            overflow-x: auto;
+        }
+        
+        .nav-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .nav-tab:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+        
+        .nav-tab.active {
+            color: #1e3c72;
+            border-bottom-color: #1e3c72;
+            background: white;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-size: 20px;
+            color: #1e3c72;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 13px;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        th {
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .tier-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .tier-0 {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .tier-1 {
+            background: #4ecdc4;
+            color: white;
+        }
+        
+        .tier-2 {
+            background: #45b7d1;
+            color: white;
+        }
+        
+        .tier-3 {
+            background: #96ceb4;
+            color: white;
+        }
+        
+        .code-tag {
+            background: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .priority-high {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .priority-medium {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .priority-low {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .info-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-card h3 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+            padding: 12px;
+            width: 100%;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-tab {
+                padding: 12px 15px;
+                font-size: 12px;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            table {
+                font-size: 11px;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐄 FMLD Strategic Alignment Matrices</h1>
+            <p>Results Hierarchy: PP (Tier 0) → SG (Tier 1) → BO (Tier 1-2) → Pillar (Tier 1-2) → Program (Tier 2-3) → Indicator (Tier 1-3)</p>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('overview')">📊 Overview</button>
+            <button class="nav-tab" onclick="showTab('pp1')">🌾 PP1: Food Security</button>
+            <button class="nav-tab" onclick="showTab('pp2')">💰 PP2: Economic Growth</button>
+            <button class="nav-tab" onclick="showTab('pp3')">🛡️ PP3: Security</button>
+            <button class="nav-tab" onclick="showTab('pp4')">🏛️ PP4: Governance</button>
+            <button class="nav-tab" onclick="showTab('pillars')">🏗️ Pillars Summary</button>
+            <button class="nav-tab" onclick="showTab('leverage')">⚡ Leverage Points</button>
+            <button class="nav-tab" onclick="showTab('codes')">📋 Quick Reference</button>
+        </div>
+        
+        <div class="content">
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-pane active">
+                <div class="info-card">
+                    <h3>Strategic Framework Overview</h3>
+                    <p>This framework links <strong>4 Presidential Priorities</strong> to <strong>8 Sectoral Goals</strong>, <strong>8 Bond Outcomes</strong>, <strong>10 NLGAS Pillars</strong>, and <strong>400+ indicators</strong> across 3 tiers.</p>
+                </div>
+                
+                <div class="legend">
+                    <div class="legend-item">
+                        <span class="tier-badge tier-0">Tier 0</span>
+                        <span>Impact (National)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="tier-badge tier-1">Tier 1-2</span>
+                        <span>Outcome (Sectoral)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="tier-badge tier-3">Tier 3</span>
+                        <span>Output (Program)</span>
+                    </div>
+                </div>
+                
+                <h2 class="section-title">Presidential Priorities & Impact Indicators</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Presidential Priority</th>
+                                <th>Impact Indicators</th>
+                                <th>Linked Sectoral Goals</th>
+                                <th>Key Pillars</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="code-tag">PP1</span></td>
+                                <td><strong>Boost Agriculture to Achieve Food Security</strong></td>
+                                <td><span class="tier-badge tier-0">II2</span> Daily Animal Protein Consumption</td>
+                                <td>SG1, SG2, SG3, SG6</td>
+                                <td>P1, P2, P3, P4, P8</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">PP2</span></td>
+                                <td><strong>Reform the Economy for Sustained Growth</strong></td>
+                                <td><span class="tier-badge tier-0">II1</span> GDP Contribution<br><span class="tier-badge tier-0">II4</span> Export Earnings</td>
+                                <td>SG4, SG5</td>
+                                <td>P5, P7, P10</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">PP3</span></td>
+                                <td><strong>Strengthen National Security</strong></td>
+                                <td><span class="tier-badge tier-0">II5</span> Conflict Reduction</td>
+                                <td>SG6</td>
+                                <td>P4, P6</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">PP4</span></td>
+                                <td><strong>Improve Governance & Service Delivery</strong></td>
+                                <td><span class="tier-badge tier-0">II3</span> Employment<br><span class="tier-badge tier-0">II1</span> GDP (via efficiency)</td>
+                                <td>SG7, SG8</td>
+                                <td>P9, P10</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h2 class="section-title">Bond Outcomes Summary</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Bond Outcome</th>
+                                <th>Tier</th>
+                                <th>Primary PP</th>
+                                <th>Key Pillars</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="code-tag">BO1</span></td>
+                                <td>Improved livestock productivity and enhanced health</td>
+                                <td><span class="tier-badge tier-1">Tier 1-2</span></td>
+                                <td>PP1</td>
+                                <td>P1, P2, P3, P4, P8</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO2</span></td>
+                                <td>Transformed livestock value chain infrastructure</td>
+                                <td><span class="tier-badge tier-1">Tier 1-2</span></td>
+                                <td>PP2</td>
+                                <td>P5, P7</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO3</span></td>
+                                <td>Enhanced export orientation</td>
+                                <td><span class="tier-badge tier-1">Tier 1-2</span></td>
+                                <td>PP2</td>
+                                <td>P1, P5, P10</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO4</span></td>
+                                <td>Reduced incidences of conflicts</td>
+                                <td><span class="tier-badge tier-1">Tier 1-2</span></td>
+                                <td>PP3</td>
+                                <td>P4, P6</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO5</span></td>
+                                <td>Enhanced livestock innovation and information system</td>
+                                <td><span class="tier-badge tier-1">Tier 1-2</span></td>
+                                <td>PP4</td>
+                                <td>P9, P10</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO6</span></td>
+                                <td>Improved nutrition</td>
+                                <td><span class="tier-badge tier-1">Tier 1-2</span></td>
+                                <td>PP1</td>
+                                <td>P1, P2, P10</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO7</span></td>
+                                <td>Efficient service delivery</td>
+                                <td><span class="tier-badge tier-1">Tier 1-2</span></td>
+                                <td>PP4</td>
+                                <td>P10</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO8</span></td>
+                                <td>E-government and citizens engagement</td>
+                                <td><span class="tier-badge tier-1">Tier 1-2</span></td>
+                                <td>PP4</td>
+                                <td>P10</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- PP1 Tab -->
+            <div id="pp1" class="tab-pane">
+                <h2 class="section-title">PP1: Boost Agriculture to Achieve Food Security</h2>
+                
+                <input type="text" class="search-box" placeholder="🔍 Search PP1 content..." onkeyup="searchTable(this, 'pp1-table')">
+                
+                <div class="info-card">
+                    <h3>Impact Indicator: II2 - Daily Animal Protein Consumption Per Capita</h3>
+                    <p><strong>Target:</strong> Increase from current baseline through enhanced production and nutrition security</p>
+                </div>
+                
+                <h3 class="section-title">SG1: Increased Livestock Production and Productivity</h3>
+                <div class="table-container">
+                    <table id="pp1-table">
+                        <thead>
+                            <tr>
+                                <th>Bond Outcome</th>
+                                <th>Pillar</th>
+                                <th>Key Programs</th>
+                                <th>Outcome Indicators</th>
+                                <th>Output Indicators (Sample)</th>
+                                <th>Linkage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="code-tag">BO1</span> Productivity</td>
+                                <td><strong>P1:</strong> Value Chain Development</td>
+                                <td>P1.1-P1.7 (Dairy, Poultry, Small Ruminant, Beef, Pig, Leather, Micro-Livestock)</td>
+                                <td><span class="tier-badge tier-1">OI1</span> Livestock Population<br><span class="tier-badge tier-1">OI2-4</span> Production Efficiency</td>
+                                <td><span class="tier-badge tier-3">BOI3-6</span> Meat, Milk, Eggs Production<br><span class="tier-badge tier-3">BOI1</span> Farmers Supported</td>
+                                <td>Genetics + Husbandry → Production → Food Security</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO1</span> Health</td>
+                                <td><strong>P2:</strong> Animal Health</td>
+                                <td>P2.1-P2.10 (Supplies, Surveillance, TADs, Diagnostics, Trade Standards)</td>
+                                <td><span class="tier-badge tier-1">OI5</span> Mortality Rate<br><span class="tier-badge tier-1">OI6-7</span> Vaccination & TADs</td>
+                                <td><span class="tier-badge tier-3">BOI13-18</span> Vaccines, Vaccinations, Campaigns</td>
+                                <td>Disease Control → Lower Mortality → Sustained Production</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO1</span> Inputs</td>
+                                <td><strong>P3:</strong> Feed & Fodder</td>
+                                <td>P3.1-P3.8 (Seeds, Land, Budgeting, Year-Round, Reserves)</td>
+                                <td><span class="tier-badge tier-1">OI9</span> Year-Round Feed Access<br><span class="tier-badge tier-1">OI10</span> Water Points</td>
+                                <td><span class="tier-badge tier-3">BOI19-23</span> Hectares, Seeds, Reserves</td>
+                                <td>Feed Security → Nutrition → Productivity</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO1</span> Water</td>
+                                <td><strong>P4:</strong> Water Resources</td>
+                                <td>P4.1-P4.5 (Access, Management, Conflict, Climate)</td>
+                                <td><span class="tier-badge tier-1">OI10</span> Water Points/1000 Animals</td>
+                                <td><span class="tier-badge tier-3">BOI22</span> Communities Supported</td>
+                                <td>Water Availability → Animal Health → Production</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO1</span> Extension</td>
+                                <td><strong>P8:</strong> Extension Services</td>
+                                <td>P8.1-P8.7 (Policy, Training, LEW Deployment, Service Delivery)</td>
+                                <td><span class="tier-badge tier-1">OI11</span> LEW to Farmer Ratio<br><span class="tier-badge tier-1">OI12</span> CAHWs</td>
+                                <td><span class="tier-badge tier-3">BOI24-26</span> LEWs, CAHWs Trained</td>
+                                <td>Knowledge Transfer → Adoption → Efficiency</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3 class="section-title">SG2: Enhanced Animal Health and Reduced Disease Burden</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Focus Area</th>
+                                <th>Outcome Indicators</th>
+                                <th>Target Impact</th>
+                                <th>Critical Success Factor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Disease Prevention</td>
+                                <td><span class="tier-badge tier-1">OI6</span> Vaccination Coverage (Target: >70%)</td>
+                                <td>Herd Immunity</td>
+                                <td class="priority-high">CRITICAL</td>
+                            </tr>
+                            <tr>
+                                <td>Disease Control</td>
+                                <td><span class="tier-badge tier-1">OI7</span> TAD Outbreak Incidence</td>
+                                <td>Outbreak Elimination</td>
+                                <td class="priority-high">CRITICAL</td>
+                            </tr>
+                            <tr>
+                                <td>Mortality Reduction</td>
+                                <td><span class="tier-badge tier-1">OI5</span> Livestock Mortality Rate</td>
+                                <td>Production Continuity</td>
+                                <td class="priority-high">CRITICAL</td>
+                            </tr>
+                            <tr>
+                                <td>Zoonoses Prevention</td>
+                                <td><span class="tier-badge tier-1">OI8</span> Zoonotic Spillover Events</td>
+                                <td>Public Health Protection</td>
+                                <td class="priority-medium">HIGH</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- PP2 Tab -->
+            <div id="pp2" class="tab-pane">
+                <h2 class="section-title">PP2: Reform the Economy for Sustained Growth</h2>
+                
+                <div class="info-card">
+                    <h3>Impact Indicators</h3>
+                    <p><span class="tier-badge tier-0">II1</span> <strong>Livestock Sector GDP Contribution</strong> | <span class="tier-badge tier-0">II4</span> <strong>Livestock Export Earnings (FX)</strong></p>
+                </div>
+                
+                <h3 class="section-title">SG4: Strengthened Market Access and Export Competitiveness</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bond Outcome</th>
+                                <th>Pillar</th>
+                                <th>Strategic Focus</th>
+                                <th>Key Indicators</th>
+                                <th>Value Proposition</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="code-tag">BO2</span> Infrastructure</td>
+                                <td><strong>P5:</strong> Finance & Insurance</td>
+                                <td>Private Investment & PPPs</td>
+                                <td><span class="tier-badge tier-1">OI17-20</span> Credit, Investment, Insurance, Fund Disbursement</td>
+                                <td>Financial Access → Capital → Infrastructure → Competitiveness</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO2</span> Infrastructure</td>
+                                <td><strong>P7:</strong> Infrastructure Development</td>
+                                <td>Modern Processing & Logistics</td>
+                                <td><span class="tier-badge tier-1">OI14</span> Abattoirs Meeting Standards<br><span class="tier-badge tier-1">OI16</span> Infrastructure Upgraded</td>
+                                <td>Modern Facilities → Quality Products → Market Access</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO3</span> Export</td>
+                                <td><strong>P1:</strong> Value Chain</td>
+                                <td>Quality Production</td>
+                                <td><span class="tier-badge tier-1">OI13</span> Export Volume by Product</td>
+                                <td>Quality → Standards → Export Earnings</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO3</span> Export</td>
+                                <td><strong>P5:</strong> Finance</td>
+                                <td>Market Linkages</td>
+                                <td><span class="tier-badge tier-1">OI13</span> Export Volume<br><span class="tier-badge tier-3">BOI37-38</span> Export Training</td>
+                                <td>Market Access → Export Growth → FX</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO3</span> Export</td>
+                                <td><strong>P10:</strong> Statistics & Traceability</td>
+                                <td>Compliance Systems</td>
+                                <td><span class="tier-badge tier-1">OI15</span> Animals in NAITS<br><span class="tier-badge tier-1">OI29-32</span> Data Systems</td>
+                                <td>Traceability → Export Compliance → Market Access</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3 class="section-title">SG5: Enhanced Financial Inclusion and Private Investment</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Financial Instrument</th>
+                                <th>Target Beneficiary</th>
+                                <th>Outcome Measure</th>
+                                <th>Expected Impact</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Livestock Credit Scheme</td>
+                                <td>Farmers & SMEs</td>
+                                <td><span class="tier-badge tier-1">OI17</span> Credit as % of Ag Lending</td>
+                                <td>Capital Access → Business Expansion</td>
+                            </tr>
+                            <tr>
+                                <td>National Insurance Scheme</td>
+                                <td>All Livestock Farmers</td>
+                                <td><span class="tier-badge tier-1">OI19</span> Insurance Uptake %</td>
+                                <td>Risk Protection → Resilience</td>
+                            </tr>
+                            <tr>
+                                <td>PPP Investment</td>
+                                <td>Private Sector & Infrastructure</td>
+                                <td><span class="tier-badge tier-1">OI18</span> Private Investment Mobilized</td>
+                                <td>Capital Multiplication → Transformation</td>
+                            </tr>
+                            <tr>
+                                <td>Poverty Reduction Fund</td>
+                                <td>Rural Communities</td>
+                                <td><span class="tier-badge tier-0">II6</span> Rural Poverty Rate</td>
+                                <td>Employment → Income → Poverty Reduction</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- PP3 Tab -->
+            <div id="pp3" class="tab-pane">
+                <h2 class="section-title">PP3: Strengthen National Security for Peace</h2>
+                
+                <div class="info-card">
+                    <h3>Impact Indicator: II5 - Reduction in Livestock-Related Conflict Incidents</h3>
+                    <p><strong>Target:</strong> Measurable decline in farmer-herder conflicts through resource management and institutional mechanisms</p>
+                </div>
+                
+                <h3 class="section-title">SG6: Reduced Farmer-Herder Conflicts and Improved Social Cohesion</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bond Outcome</th>
+                                <th>Pillar</th>
+                                <th>Intervention Strategy</th>
+                                <th>Outcome Indicators</th>
+                                <th>Conflict Prevention Mechanism</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="6"><span class="code-tag">BO4</span> Conflict Reduction</td>
+                                <td><strong>P6.1:</strong> Institutional Strengthening</td>
+                                <td>Build Conflict Management Institutions</td>
+                                <td><span class="tier-badge tier-1">OI21</span> Functional Committees<br><span class="tier-badge tier-3">BOI46</span> Committees Established</td>
+                                <td>Structured Response → Resolution</td>
+                            </tr>
+                            <tr>
+                                <td><strong>P6.2:</strong> Government Support</td>
+                                <td>Strengthen Mediation Systems</td>
+                                <td><span class="tier-badge tier-1">OI24</span> Response Time</td>
+                                <td>Quick Resolution → De-escalation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>P6.3:</strong> Capacity Building</td>
+                                <td>Train Local Leaders & Rangers</td>
+                                <td><span class="tier-badge tier-1">OI22</span> Members Trained<br><span class="tier-badge tier-3">BOI47</span> Training Completed</td>
+                                <td>Local Capacity → Early Intervention</td>
+                            </tr>
+                            <tr>
+                                <td><strong>P6.4:</strong> Communication</td>
+                                <td>Conflict-Sensitive Media Engagement</td>
+                                <td><span class="tier-badge tier-1">OI21</span> Awareness & Prevention</td>
+                                <td>Balanced Reporting → Tension Reduction</td>
+                            </tr>
+                            <tr>
+                                <td><strong>P6.5:</strong> Transhumance</td>
+                                <td>Coordinate Safe Migration Routes</td>
+                                <td><span class="tier-badge tier-1">OI23</span> Formalized Routes<br><span class="tier-badge tier-0">II5</span> Conflict Incidents</td>
+                                <td>Organized Migration → Predictability → Peace</td>
+                            </tr>
+                            <tr>
+                                <td><strong>P6.6:</strong> Rangers</td>
+                                <td>Deploy Community Rangers</td>
+                                <td><span class="tier-badge tier-1">OI24</span> Security Response<br><span class="tier-badge tier-3">BOI48</span> Rangers Deployed</td>
+                                <td>Protection → Security → Peace</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO4</span> Water Conflicts</td>
+                                <td><strong>P4.3:</strong> Water Conflict Reduction</td>
+                                <td>Manage Shared Water Resources (WUAs)</td>
+                                <td><span class="tier-badge tier-1">OI10</span> Water Access<br><span class="tier-badge tier-1">OI24</span> Response Time</td>
+                                <td>Shared Access → Reduced Competition → Peace</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- PP4 Tab -->
+            <div id="pp4" class="tab-pane">
+                <h2 class="section-title">PP4: Improve Governance for Effective Service Delivery</h2>
+                
+                <div class="info-card">
+                    <h3>Impact Indicators</h3>
+                    <p><span class="tier-badge tier-0">II3</span> <strong>Livestock-Attributable Employment</strong> | <span class="tier-badge tier-0">II1</span> <strong>GDP via Efficient Resource Allocation</strong></p>
+                </div>
+                
+                <h3 class="section-title">SG7: Inclusive Youth and Women Participation</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Program</th>
+                                <th>Target Group</th>
+                                <th>Intervention</th>
+                                <th>Outcome Indicators</th>
+                                <th>Empowerment Pathway</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>P9.1:</strong> Cooperatives</td>
+                                <td>Youth & Women</td>
+                                <td>Organize & Strengthen Cooperatives</td>
+                                <td><span class="tier-badge tier-1">OI25</span> Enterprises Owned by Women/Youth</td>
+                                <td>Organization → Collective Power → Market Access</td>
+                            </tr>
+                            <tr>
+                                <td><strong>P9.2:</strong> Gender Mainstreaming</td>
+                                <td>All Programs</td>
+                                <td>Integrate Gender Perspectives</td>
+                                <td><span class="tier-badge tier-1">OI25</span> Ownership<br><span class="tier-badge tier-0">II3</span> Gender-Disaggregated Employment</td>
+                                <td>Mainstreaming → Equality → Participation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>P9.3:</strong> Credit Incentives</td>
+                                <td>Youth & Women Entrepreneurs</td>
+                                <td>Enable Finance Access</td>
+                                <td><span class="tier-badge tier-1">OI27</span> Women/Youth Accessing Finance</td>
+                                <td>Finance Access → Entrepreneurship → Empowerment</td>
+                            </tr>
+                            <tr>
+                                <td><strong>P9.4:</strong> Cottage Industries</td>
+                                <td>Women-Led Enterprises</td>
+                                <td>Small Processing & Value Addition</td>
+                                <td><span class="tier-badge tier-1">OI28</span> Cottage Industries<br><span class="tier-badge tier-1">OI26</span> Income Change</td>
+                                <td>Value Addition → Income → Economic Power</td>
+                            </tr>
+                            <tr>
+                                <td><strong>P9.5:</strong> Agribusiness Training</td>
+                                <td>Youth & Women</td>
+                                <td>Build Business Skills</td>
+                                <td><span class="tier-badge tier-1">OI26</span> Income Change<br><span class="tier-badge tier-3">BOI7</span> Trained with Starter Packs</td>
+                                <td>Skills → Business Success → Income Growth</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3 class="section-title">SG8: Strengthened Data Systems and Evidence-Based Planning</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bond Outcome</th>
+                                <th>Program</th>
+                                <th>Data System Component</th>
+                                <th>Outcome Indicators</th>
+                                <th>Governance Impact</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="code-tag">BO5</span> Information</td>
+                                <td><strong>P10.1:</strong> Census & Survey</td>
+                                <td>Baseline Data Collection</td>
+                                <td><span class="tier-badge tier-1">OI1</span> Population Baseline<br><span class="tier-badge tier-1">OI32</span> Database Completeness</td>
+                                <td>Census → Baseline → Evidence-Based Planning</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO3</span> Export</td>
+                                <td><strong>P10.2:</strong> Traceability</td>
+                                <td>National Animal ID & Traceability System (NAITS)</td>
+                                <td><span class="tier-badge tier-1">OI15</span> Animals in NAITS<br><span class="tier-badge tier-1">OI13</span> Export Compliance</td>
+                                <td>Traceability → Export Eligibility → Market Access</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO5</span> Systems</td>
+                                <td><strong>P10.3:</strong> Data Management</td>
+                                <td>National Livestock Information Management System (NLIMS)</td>
+                                <td><span class="tier-badge tier-1">OI29-32</span> Coverage, Publication, Utilization, Completeness</td>
+                                <td>NLIMS → Real-Time Data → Informed Decisions</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO7</span> Service Delivery</td>
+                                <td><strong>P10:</strong> All Programs</td>
+                                <td>Integrated Systems</td>
+                                <td><span class="tier-badge tier-1">OI29-32</span> System Performance<br>CCM2 Governance Metrics</td>
+                                <td>Systems → Transparency → Accountability</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO8</span> E-Government</td>
+                                <td><strong>P10.3:</strong> Digital Platform</td>
+                                <td>Citizen Engagement Portal</td>
+                                <td><span class="tier-badge tier-1">OI32</span> Database Completeness<br><span class="tier-badge tier-3">BOI55-57</span> Engagement</td>
+                                <td>Digital Access → Citizen Participation → Responsive Governance</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Pillars Summary Tab -->
+            <div id="pillars" class="tab-pane">
+                <h2 class="section-title">Complete Pillar Overview (P1-P10)</h2>
+                
+                <input type="text" class="search-box" placeholder="🔍 Search pillars..." onkeyup="searchTable(this, 'pillars-table')">
+                
+                <div class="table-container">
+                    <table id="pillars-table">
+                        <thead>
+                            <tr>
+                                <th>Pillar</th>
+                                <th>Primary PP</th>
+                                <th>Bond Outcomes</th>
+                                <th>Key Programs</th>
+                                <th>Critical Indicators</th>
+                                <th>Impact Contribution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="code-tag">P1</span> <strong>Value Chain Development</strong></td>
+                                <td>PP1, PP2</td>
+                                <td>BO1, BO3, BO6</td>
+                                <td>Dairy (P1.1), Poultry (P1.2), Small Ruminant (P1.3), Beef (P1.4), Pig (P1.5), Leather (P1.6), Micro-Livestock (P1.7)</td>
+                                <td><span class="tier-badge tier-1">OI1-4</span> Production<br><span class="tier-badge tier-1">OI13</span> Export</td>
+                                <td><span class="tier-badge tier-0">II1</span> GDP, <span class="tier-badge tier-0">II2</span> Protein, <span class="tier-badge tier-0">II4</span> Export</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P2</span> <strong>Animal Health & Zoonoses</strong></td>
+                                <td>PP1</td>
+                                <td>BO1</td>
+                                <td>Health Supplies (P2.1), Surveillance (P2.2), TADs Control (P2.3), Diagnostics (P2.4), Trade Standards (P2.5), One Health (P2.9)</td>
+                                <td><span class="tier-badge tier-1">OI5-8</span> Mortality, Vaccination, TAD, Zoonoses</td>
+                                <td><span class="tier-badge tier-0">II2</span> Protein via Food Safety</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P3</span> <strong>Feed & Fodder</strong></td>
+                                <td>PP1</td>
+                                <td>BO1</td>
+                                <td>Pasture Seeds (P3.1), Land Allocation (P3.2), Feed Budgeting (P3.3), Year-Round Production (P3.4), Grazing Reserves (P3.6)</td>
+                                <td><span class="tier-badge tier-1">OI9</span> Year-Round Feed<br><span class="tier-badge tier-1">OI10</span> Water Points</td>
+                                <td><span class="tier-badge tier-0">II2</span> Protein via Feed Security</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P4</span> <strong>Water Resources</strong></td>
+                                <td>PP1, PP3</td>
+                                <td>BO1, BO4</td>
+                                <td>Water Access (P4.1), Sustainable Management (P4.2), Conflict Reduction (P4.3), Climate Resilience (P4.4)</td>
+                                <td><span class="tier-badge tier-1">OI10</span> Water Access<br><span class="tier-badge tier-1">OI24</span> Response Time</td>
+                                <td><span class="tier-badge tier-0">II2</span> Protein, <span class="tier-badge tier-0">II5</span> Conflict</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P5</span> <strong>Finance & Insurance</strong></td>
+                                <td>PP2</td>
+                                <td>BO2, BO3</td>
+                                <td>Product Development (P5.1), Credit Scheme (P5.5), Insurance (P5.6), Market Access (P5.3), PPP Coordination (P5.12)</td>
+                                <td><span class="tier-badge tier-1">OI17-20</span> Credit, Investment, Insurance, Funds</td>
+                                <td><span class="tier-badge tier-0">II1</span> GDP, <span class="tier-badge tier-0">II3</span> Employment, <span class="tier-badge tier-0">II4</span> Export, <span class="tier-badge tier-0">II6</span> Poverty</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P6</span> <strong>Peacebuilding & Security</strong></td>
+                                <td>PP3</td>
+                                <td>BO4</td>
+                                <td>Institutional Strengthening (P6.1), Capacity Building (P6.3), Transhumance Coordination (P6.5), Rangers Deployment (P6.6)</td>
+                                <td><span class="tier-badge tier-1">OI21-24</span> Committees, Training, Routes, Response</td>
+                                <td><span class="tier-badge tier-0">II5</span> Conflict Reduction</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P7</span> <strong>Infrastructure Development</strong></td>
+                                <td>PP2</td>
+                                <td>BO2</td>
+                                <td>Production Facilities (P7.1), Health Infrastructure (P7.2), Processing (P7.6), Transport (P7.5), Waste Management (P7.9)</td>
+                                <td><span class="tier-badge tier-1">OI14</span> Abattoirs<br><span class="tier-badge tier-1">OI16</span> Infrastructure</td>
+                                <td><span class="tier-badge tier-0">II1</span> GDP, <span class="tier-badge tier-0">II4</span> Export</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P8</span> <strong>Extension Services</strong></td>
+                                <td>PP1</td>
+                                <td>BO1</td>
+                                <td>National Policy (P8.1), LEW Formalization (P8.2), Training Modules (P8.3), LEW Recruitment (P8.4), Service Delivery (P8.5)</td>
+                                <td><span class="tier-badge tier-1">OI11-12</span> LEW Ratio, CAHWs</td>
+                                <td><span class="tier-badge tier-0">II2</span> Protein via Knowledge</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P9</span> <strong>Youth & Women Empowerment</strong></td>
+                                <td>PP4</td>
+                                <td>BO5</td>
+                                <td>Cooperatives (P9.1), Gender Mainstreaming (P9.2), Credit Incentives (P9.3), Cottage Industries (P9.4), Agribusiness Training (P9.5)</td>
+                                <td><span class="tier-badge tier-1">OI25-28</span> Enterprises, Income, Finance, Industries</td>
+                                <td><span class="tier-badge tier-0">II3</span> Employment (Gender Equity)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P10</span> <strong>Statistics & Information</strong></td>
+                                <td>PP4</td>
+                                <td>BO3, BO5, BO6, BO7, BO8</td>
+                                <td>Census & Survey (P10.1), Traceability/NAITS (P10.2), NLIMS (P10.3), Capacity Building (P10.4)</td>
+                                <td><span class="tier-badge tier-1">OI15</span> NAITS<br><span class="tier-badge tier-1">OI29-32</span> Data Systems</td>
+                                <td><span class="tier-badge tier-0">II1</span> GDP via Efficiency, <span class="tier-badge tier-0">II4</span> Export via Traceability</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3 class="section-title" style="margin-top: 40px;">Cross-Cutting Metrics (CCM1-CCM4)</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Cross-Cutting Area</th>
+                                <th>Key Metrics</th>
+                                <th>Purpose</th>
+                                <th>Links To</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="code-tag">CCM1</span></td>
+                                <td><strong>Investment Tracking & Disbursement</strong></td>
+                                <td>Total Investment, Federal Budget, Donor Funding, Private Investment, State Co-investment</td>
+                                <td>Track financial flows across all programs</td>
+                                <td>All PPs, All Pillars</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">CCM2</span></td>
+                                <td><strong>Governance & Coordination</strong></td>
+                                <td>JWG Establishment, Meetings, State JWGs, Recommendations, Inter-ministerial Coordination</td>
+                                <td>Monitor institutional coordination effectiveness</td>
+                                <td>PP4, All Pillars</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">CCM3</span></td>
+                                <td><strong>Environmental & Sustainability</strong></td>
+                                <td>GHG Emissions, Sustainable Reserves, Soil Conservation, Breed Diversity</td>
+                                <td>Ensure environmental sustainability</td>
+                                <td>PP1, P1-P4, P7</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">CCM4</span></td>
+                                <td><strong>Equity & Social Inclusion</strong></td>
+                                <td>Women %, Youth %, Pastoralists %, Smallholders %, Gini Coefficient</td>
+                                <td>Monitor inclusive participation and equity</td>
+                                <td>PP4, All Pillars</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Leverage Points Tab -->
+            <div id="leverage" class="tab-pane">
+                <h2 class="section-title">Strategic Leverage Points: High Impact Interventions</h2>
+                
+                <div class="info-card">
+                    <h3>What are Leverage Points?</h3>
+                    <p>Places in the system where a small intervention yields disproportionately large effects. These are the "critical nodes" that multiply impact across multiple pillars and outcomes.</p>
+                </div>
+                
+                <h3 class="section-title">Tier 1 Leverage Points: Systemic Multipliers</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Leverage Point</th>
+                                <th>Why Critical</th>
+                                <th>Impact Multiplier</th>
+                                <th>Key Indicators</th>
+                                <th>Alert Threshold</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>LP1: Animal Health System (P2)</strong></td>
+                                <td>Affects all production pillars; disease outbreak reverses gains across entire sector</td>
+                                <td>1:5 ratio (₦1 prevention saves ₦5 losses)</td>
+                                <td><span class="tier-badge tier-1">OI5</span> Mortality<br><span class="tier-badge tier-1">OI6</span> Vaccination<br><span class="tier-badge tier-1">OI7</span> TAD</td>
+                                <td class="priority-high">Vaccination <70% OR TAD Rising</td>
+                                <td><span class="priority-high">CRITICAL</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>LP2: Feed Security (P3)</strong></td>
+                                <td>Constrains productivity regardless of genetics or health; 60-70% of production costs</td>
+                                <td>Determines animal performance ceiling</td>
+                                <td><span class="tier-badge tier-1">OI9</span> Year-Round Access<br><span class="tier-badge tier-3">BOI19</span> Hectares<br><span class="tier-badge tier-3">BOI20</span> Seeds</td>
+                                <td class="priority-high">Seasonal Feed Gaps Detected</td>
+                                <td><span class="priority-high">CRITICAL</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>LP3: Traceability System (P10.2)</strong></td>
+                                <td>Gateway to international markets; compliance prerequisite for premium exports</td>
+                                <td>Unlocks premium export markets</td>
+                                <td><span class="tier-badge tier-1">OI15</span> NAITS Registration<br><span class="tier-badge tier-3">BOI44</span> Animals Registered<br><span class="tier-badge tier-1">OI13</span> Export Volume</td>
+                                <td class="priority-high"><40% Registration Blocks Exports</td>
+                                <td><span class="priority-high">HIGH</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3 class="section-title">Tier 2 Leverage Points: Sectoral Accelerators</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Leverage Point</th>
+                                <th>Why Critical</th>
+                                <th>Impact Multiplier</th>
+                                <th>Key Indicators</th>
+                                <th>Alert Threshold</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>LP4: Extension Services (P8)</strong></td>
+                                <td>Knowledge transfer mechanism for all technical interventions; determines adoption rates</td>
+                                <td>Affects effectiveness across all production pillars</td>
+                                <td><span class="tier-badge tier-1">OI11</span> LEW Ratio<br>Adoption Rates</td>
+                                <td class="priority-medium">LEW:Farmer Ratio >1:500</td>
+                                <td><span class="priority-medium">HIGH</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>LP5: PPP Mechanism (P5.12)</strong></td>
+                                <td>Mobilizes private capital for infrastructure and innovation</td>
+                                <td>₦1 public investment attracts ₦3-5 private capital</td>
+                                <td><span class="tier-badge tier-1">OI18</span> Private Investment<br><span class="tier-badge tier-3">BOI35-36</span> PPP Projects</td>
+                                <td class="priority-medium"><15 LOIs/Year = Weak Confidence</td>
+                                <td><span class="priority-medium">MEDIUM-HIGH</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3 class="section-title">Tier 3 Leverage Points: Inclusion Catalysts</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Leverage Point</th>
+                                <th>Why Critical</th>
+                                <th>Impact Multiplier</th>
+                                <th>Key Indicators</th>
+                                <th>Alert Threshold</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>LP6: Youth & Women Programs (P9)</strong></td>
+                                <td>Demographic dividend and social equity; women's productivity currently underutilized</td>
+                                <td>Youth innovation potential; gender equity improves household outcomes</td>
+                                <td><span class="tier-badge tier-1">OI25-28</span> Inclusion Metrics<br>CCM4 Equity Metrics</td>
+                                <td class="priority-low"><30% Women/Youth = Exclusion</td>
+                                <td><span class="priority-low">MEDIUM</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3 class="section-title" style="margin-top: 40px;">Critical Overlap Zones: Multi-Pillar Coordination Required</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Overlap Zone</th>
+                                <th>Contributing Pillars</th>
+                                <th>Convergence Point</th>
+                                <th>Management Implication</th>
+                                <th>Dashboard Visualization</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>OZ1: Export Competitiveness</strong></td>
+                                <td>P1 (Production) + P2 (SPS) + P5 (Market Access) + P7 (Processing) + P10 (Traceability)</td>
+                                <td><span class="tier-badge tier-1">OI13</span> Export Volume → <span class="tier-badge tier-0">II4</span> Export Earnings</td>
+                                <td class="priority-high">Weakness in ANY pillar compromises entire export pathway</td>
+                                <td>Multi-pillar contribution chart</td>
+                            </tr>
+                            <tr>
+                                <td><strong>OZ2: Productivity Enhancement</strong></td>
+                                <td>P1 (Genetics) + P2 (Health) + P3 (Feed) + P4 (Water) + P8 (Extension)</td>
+                                <td><span class="tier-badge tier-1">OI2-4</span> Efficiency → <span class="tier-badge tier-3">BOI3-6</span> Output → <span class="tier-badge tier-0">II2</span> Nutrition</td>
+                                <td class="priority-high">Synergistic effects - combined interventions yield multiplier effects</td>
+                                <td>Productivity index with component contributions</td>
+                            </tr>
+                            <tr>
+                                <td><strong>OZ3: Farmer Empowerment</strong></td>
+                                <td>P5 (Finance) + P8 (Extension) + P9 (Youth/Women)</td>
+                                <td><span class="tier-badge tier-1">OI25-28</span> Inclusion → <span class="tier-badge tier-0">II3</span> Employment + <span class="tier-badge tier-0">II6</span> Poverty</td>
+                                <td class="priority-medium">Holistic approach needed - financial access without knowledge fails</td>
+                                <td>Empowerment scorecard (financial, knowledge, social)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>OZ4: Infrastructure Ecosystem</strong></td>
+                                <td>P5 (Finance) + P7 (Physical) + P10 (Data Infrastructure)</td>
+                                <td><span class="tier-badge tier-1">OI16</span> Infrastructure → <span class="tier-badge tier-0">II1</span> GDP Contribution</td>
+                                <td class="priority-medium">Balanced investment - physical infrastructure without finance or data systems underutilized</td>
+                                <td>Infrastructure development index (physical, financial, digital)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Quick Reference Tab -->
+            <div id="codes" class="tab-pane">
+                <h2 class="section-title">Quick Reference Codes & Definitions</h2>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="3" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);">Presidential Priorities (PP1-PP4) - Tier 0</th>
+                            </tr>
+                            <tr>
+                                <th>Code</th>
+                                <th>Priority</th>
+                                <th>Primary Focus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="code-tag">PP1</span></td>
+                                <td>Boost Agriculture to Achieve Food Security</td>
+                                <td>Production, Productivity, Nutrition</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">PP2</span></td>
+                                <td>Reform the Economy for Sustained Growth</td>
+                                <td>Market Access, Exports, Investment</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">PP3</span></td>
+                                <td>Strengthen National Security for Peace</td>
+                                <td>Conflict Reduction, Social Cohesion</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">PP4</span></td>
+                                <td>Improve Governance for Effective Service Delivery</td>
+                                <td>Inclusion, Data Systems, Accountability</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="3" style="background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);">Sectoral Goals (SG1-SG8) - Tier 1</th>
+                            </tr>
+                            <tr>
+                                <th>Code</th>
+                                <th>Sectoral Goal</th>
+                                <th>Linked PP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="code-tag">SG1</span></td>
+                                <td>Increased Livestock Production and Productivity</td>
+                                <td>PP1</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">SG2</span></td>
+                                <td>Enhanced Animal Health and Reduced Disease Burden</td>
+                                <td>PP1</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">SG3</span></td>
+                                <td>Improved Access to Livestock Inputs and Services</td>
+                                <td>PP1</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">SG4</span></td>
+                                <td>Strengthened Market Access and Export Competitiveness</td>
+                                <td>PP2</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">SG5</span></td>
+                                <td>Enhanced Financial Inclusion and Private Investment</td>
+                                <td>PP2</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">SG6</span></td>
+                                <td>Reduced Farmer-Herder Conflicts and Social Cohesion</td>
+                                <td>PP3</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">SG7</span></td>
+                                <td>Inclusive Youth and Women Participation</td>
+                                <td>PP4</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">SG8</span></td>
+                                <td>Strengthened Data Systems and Evidence-Based Planning</td>
+                                <td>PP4</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">Bond Outcomes (BO1-BO8) - Tier 1-2</th>
+                            </tr>
+                            <tr>
+                                <th>Code</th>
+                                <th>Bond Outcome</th>
+                                <th>Primary Pillar(s)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="code-tag">BO1</span></td>
+                                <td>Improved livestock productivity and enhanced health and extension services</td>
+                                <td>P1, P2, P3, P4, P8</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO2</span></td>
+                                <td>Transformed livestock value chain infrastructure through PPP</td>
+                                <td>P5, P7</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO3</span></td>
+                                <td>Enhanced export orientation</td>
+                                <td>P1, P5, P10</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO4</span></td>
+                                <td>Reduced incidences of conflicts</td>
+                                <td>P4, P6</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO5</span></td>
+                                <td>Enhanced livestock innovation and information system</td>
+                                <td>P9, P10</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO6</span></td>
+                                <td>Improved nutrition</td>
+                                <td>P1, P2, P10</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO7</span></td>
+                                <td>Efficient service delivery</td>
+                                <td>P10</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">BO8</span></td>
+                                <td>E-government and citizens engagement</td>
+                                <td>P10</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="3" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">NLGAS Pillars (P1-P10) - Tier 1-2</th>
+                            </tr>
+                            <tr>
+                                <th>Code</th>
+                                <th>Pillar Name</th>
+                                <th>Core Function</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="code-tag">P1</span></td>
+                                <td>Livestock Value Chain Development & Market Access</td>
+                                <td>Production & Value Addition</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P2</span></td>
+                                <td>Animal Health & Zoonoses Control</td>
+                                <td>Disease Prevention & Control</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P3</span></td>
+                                <td>Feed & Fodder Development</td>
+                                <td>Nutrition Security</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P4</span></td>
+                                <td>Water Resources Management</td>
+                                <td>Water Access & Conflict Prevention</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P5</span></td>
+                                <td>Finance & Insurance</td>
+                                <td>Financial Access & Investment</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P6</span></td>
+                                <td>Peacebuilding, Security & Social Cohesion</td>
+                                <td>Conflict Management</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P7</span></td>
+                                <td>Infrastructure Development & Waste Management</td>
+                                <td>Physical Infrastructure</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P8</span></td>
+                                <td>Livestock Extension Services</td>
+                                <td>Knowledge Transfer</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P9</span></td>
+                                <td>Youth & Women Empowerment</td>
+                                <td>Inclusive Participation</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">P10</span></td>
+                                <td>Livestock Statistics & Information Systems</td>
+                                <td>Data Management & Traceability</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="3" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">Impact Indicators (II1-II6) - Tier 0</th>
+                            </tr>
+                            <tr>
+                                <th>Code</th>
+                                <th>Impact Indicator</th>
+                                <th>Measurement Focus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="code-tag">II1</span></td>
+                                <td>Livestock Sector GDP Contribution</td>
+                                <td>Economic Growth</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">II2</span></td>
+                                <td>Daily Animal Protein Consumption Per Capita</td>
+                                <td>Food Security & Nutrition</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">II3</span></td>
+                                <td>Livestock-Attributable Employment</td>
+                                <td>Job Creation</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">II4</span></td>
+                                <td>Livestock Export Earnings (Foreign Exchange)</td>
+                                <td>Export Performance</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">II5</span></td>
+                                <td>Reduction in Livestock-Related Conflict Incidents</td>
+                                <td>Peace & Security</td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">II6</span></td>
+                                <td>Rural Poverty Rate</td>
+                                <td>Poverty Reduction</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="4" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);">Indicator Tier Classification</th>
+                            </tr>
+                            <tr>
+                                <th>Tier</th>
+                                <th>Level</th>
+                                <th>Measurement Frequency</th>
+                                <th>Attribution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tier-badge tier-0">Tier 0</span></td>
+                                <td><strong>Impact</strong> - National-level societal changes</td>
+                                <td>Annual / Multi-year</td>
+                                <td>Contribution (many external factors)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tier-badge tier-1">Tier 1-2</span></td>
+                                <td><strong>Outcome</strong> - Sectoral behavioral/conditional changes</td>
+                                <td>Quarterly / Annual</td>
+                                <td>Strong contribution to moderate attribution</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tier-badge tier-3">Tier 3</span></td>
+                                <td><strong>Output</strong> - Program deliverables and activities</td>
+                                <td>Weekly / Monthly / Quarterly</td>
+                                <td>Direct attribution</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3 class="section-title" style="margin-top: 40px;">Key Outcome Indicators (OI1-OI32) - Sample</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Outcome Indicator</th>
+                                <th>Primary Pillar</th>
+                                <th>Tier</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="code-tag">OI1</span></td>
+                                <td>National Livestock Population by Species</td>
+                                <td>P1, P10</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI2</span></td>
+                                <td>Average Slaughter Weight - Cattle</td>
+                                <td>P1</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI3</span></td>
+                                <td>Milk Yield per Cow (Litres/Year)</td>
+                                <td>P1</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI4</span></td>
+                                <td>Average Poultry Live Weight at Market</td>
+                                <td>P1</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI5</span></td>
+                                <td>Livestock Mortality Rate (%)</td>
+                                <td>P2</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI6</span></td>
+                                <td>Vaccination Coverage Rate (%)</td>
+                                <td>P2</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI7</span></td>
+                                <td>TAD Outbreak Incidence (Number/Year)</td>
+                                <td>P2</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI8</span></td>
+                                <td>Zoonotic Spillover Events (Number/Year)</td>
+                                <td>P2</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI9</span></td>
+                                <td>Farmers with Year-Round Feed Access (%)</td>
+                                <td>P3</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI10</span></td>
+                                <td>Water Points per 1000 Animals</td>
+                                <td>P4</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI11</span></td>
+                                <td>LEW to Farmer Ratio</td>
+                                <td>P8</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI13</span></td>
+                                <td>Export Volume by Product (Tonnes/Year)</td>
+                                <td>P1, P5, P10</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI14</span></td>
+                                <td>Abattoirs Meeting International Standards (Number)</td>
+                                <td>P1, P7</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI15</span></td>
+                                <td>Animals Registered in NAITS (%)</td>
+                                <td>P10</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI16</span></td>
+                                <td>Infrastructure Facilities Upgraded/Built (Number)</td>
+                                <td>P7</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI17</span></td>
+                                <td>Livestock Credit as % of Total Ag Lending</td>
+                                <td>P5</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI18</span></td>
+                                <td>Private/PPP Investment Mobilized (₦ Billion)</td>
+                                <td>P5</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI19</span></td>
+                                <td>Farmers with Livestock Insurance Coverage (%)</td>
+                                <td>P5</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI21</span></td>
+                                <td>Functional Conflict Management Committees (Number)</td>
+                                <td>P6</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI23</span></td>
+                                <td>Formalized Transhumance Routes (Number)</td>
+                                <td>P6</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI25</span></td>
+                                <td>Livestock Enterprises Owned by Women/Youth (%)</td>
+                                <td>P9</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI29</span></td>
+                                <td>Data Coverage Rate - NLIMS (%)</td>
+                                <td>P10</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="code-tag">OI31</span></td>
+                                <td>Data Utilization for Policy Decisions (%)</td>
+                                <td>P10</td>
+                                <td><span class="tier-badge tier-1">Tier 1</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-pane');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all nav tabs
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+        }
+        
+        function searchTable(input, tableId) {
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById(tableId);
+            const tr = table.getElementsByTagName('tr');
+            
+            for (let i = 1; i < tr.length; i++) {
+                let td = tr[i].getElementsByTagName('td');
+                let found = false;
+                
+                for (let j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        const txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                
+                tr[i].style.display = found ? '' : 'none';
+            }
+        }
+    </script>
+</body>
+</html>

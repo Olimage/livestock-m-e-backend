@@ -6,6 +6,10 @@ use App\Models\PresidentialPriority;
 use App\Models\SectoralGoal;
 use App\Models\BondOutcome;
 use App\Models\NlgasPillar;
+use App\Models\Program;
+use App\Models\Indicator;
+use App\Models\CrossCuttingMetric;
+use App\Models\Department;
 use App\Models\StrategicAlignment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -433,4 +437,116 @@ class ProgramController extends Controller
         return redirect()->route('programs.nlgas-pillars.index')
                         ->with('success', 'NLGAS Pillar deleted successfully');
     }
+
+    // Indicators
+    public function indicators(Request $request)
+    {
+        $query = Indicator::query()->with(['presidentialPriority', 'sectoralGoal', 'bondOutcome', 'nlgasPillar', 'department']);
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('code', 'like', "%{$search}%")
+                  ->orWhere('title', 'like', "%{$search}%");
+            });
+        }
+
+        $indicators = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
+                           ->paginate($request->per_page ?? 10);
+
+        return Inertia::render('Programs/Indicators/Index', [
+            'indicators' => $indicators,
+            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order']),
+            'totalCount' => Indicator::count()
+        ]);
+    }
+
+    public function createIndicator()
+    {
+        return Inertia::render('Programs/Indicators/Create', [
+            'presidentialPriorities' => PresidentialPriority::all(),
+            'sectoralGoals' => SectoralGoal::all(),
+            'bondOutcomes' => BondOutcome::all(),
+            'nlgasPillars' => NlgasPillar::all(),
+            'departments' => Department::all()
+        ]);
+    }
+
+    public function storeIndicator(Request $request)
+    {
+        $validated = $request->validate([
+            'code' => 'required|string|max:255|unique:indicators',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'presidential_priority_id' => 'nullable|exists:presidential_priorities,id',
+            'sectoral_goal_id' => 'nullable|exists:sectoral_goals,id',
+            'bond_outcome_id' => 'nullable|exists:bond_outcomes,id',
+            'nlgas_pillar_id' => 'nullable|exists:nlgas_pillars,id',
+            'department_id' => 'nullable|exists:departments,id',
+            'indicator_type' => 'nullable|in:outcome,output,impact',
+            'measurement_unit' => 'nullable|string',
+            'baseline_value' => 'nullable|numeric',
+            'baseline_year' => 'nullable|integer',
+            'target_value' => 'nullable|numeric',
+            'target_year' => 'nullable|integer',
+            'data_source' => 'nullable|string',
+            'collection_frequency' => 'nullable|string',
+            'responsible_entity' => 'nullable|string',
+            'tier_level' => 'nullable|integer',
+        ]);
+
+        Indicator::create($validated);
+
+        return redirect()->route('programs.indicators.index')
+                        ->with('success', 'Indicator created successfully');
+    }
+
+    public function editIndicator(Indicator $indicator)
+    {
+        return Inertia::render('Programs/Indicators/Edit', [
+            'indicator' => $indicator->load(['presidentialPriority', 'sectoralGoal', 'bondOutcome', 'nlgasPillar', 'department']),
+            'presidentialPriorities' => PresidentialPriority::all(),
+            'sectoralGoals' => SectoralGoal::all(),
+            'bondOutcomes' => BondOutcome::all(),
+            'nlgasPillars' => NlgasPillar::all(),
+            'departments' => Department::all()
+        ]);
+    }
+
+    public function updateIndicator(Request $request, Indicator $indicator)
+    {
+        $validated = $request->validate([
+            'code' => 'required|string|max:255|unique:indicators,code,' . $indicator->id,
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'presidential_priority_id' => 'nullable|exists:presidential_priorities,id',
+            'sectoral_goal_id' => 'nullable|exists:sectoral_goals,id',
+            'bond_outcome_id' => 'nullable|exists:bond_outcomes,id',
+            'nlgas_pillar_id' => 'nullable|exists:nlgas_pillars,id',
+            'department_id' => 'nullable|exists:departments,id',
+            'indicator_type' => 'nullable|in:outcome,output,impact',
+            'measurement_unit' => 'nullable|string',
+            'baseline_value' => 'nullable|numeric',
+            'baseline_year' => 'nullable|integer',
+            'target_value' => 'nullable|numeric',
+            'target_year' => 'nullable|integer',
+            'data_source' => 'nullable|string',
+            'collection_frequency' => 'nullable|string',
+            'responsible_entity' => 'nullable|string',
+            'tier_level' => 'nullable|integer',
+        ]);
+
+        $indicator->update($validated);
+
+        return redirect()->route('programs.indicators.index')
+                        ->with('success', 'Indicator updated successfully');
+    }
+
+    public function destroyIndicator(Indicator $indicator)
+    {
+        $indicator->delete();
+        return redirect()->route('programs.indicators.index')
+                        ->with('success', 'Indicator deleted successfully');
+    }
+
 }
