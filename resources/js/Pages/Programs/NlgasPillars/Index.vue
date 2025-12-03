@@ -128,29 +128,36 @@ const getSortIcon = (column) => {
                                             Title <i :class="getSortIcon('title')"></i>
                                         </th>
                                         <th>Description</th>
-                                        <th>Responsible Entity</th>
-                                        <th>Relationships</th>
+                                        <th>Programs</th>
+                                        <th>Tiers</th>
+                                        <th @click="toggleSort('created_at')" class="sortable">
+                                            Created <i :class="getSortIcon('created_at')"></i>
+                                        </th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-if="pillars?.data && pillars.data.length === 0">
-                                        <td colspan="6" class="text-center text-muted">No pillars found</td>
+                                        <td colspan="7" class="text-center text-muted">No pillars found</td>
                                     </tr>
                                     <tr v-for="pillar in pillars?.data" :key="pillar.id">
                                         <td><span class="badge bg-success">{{ pillar.code }}</span></td>
                                         <td><strong>{{ pillar.title }}</strong></td>
                                         <td>
-                                            <small>{{ pillar.description ? pillar.description.substring(0, 60) + '...' : 'N/A' }}</small>
+                                            <small>{{ pillar.description ? pillar.description.substring(0, 80) + '...' : 'N/A' }}</small>
                                         </td>
-                                        <td><small>{{ pillar.responsible_entity || 'N/A' }}</small></td>
+                                        <td>
+                                            <span class="badge bg-primary">{{ pillar.programs?.length || 0 }} Programs</span>
+                                        </td>
                                         <td>
                                             <small>
-                                                <span class="badge bg-primary me-1">{{ pillar.presidential_priorities?.length || 0 }} Priorities</span>
-                                                <span class="badge bg-info me-1">{{ pillar.sectoral_goals?.length || 0 }} Goals</span>
-                                                <span class="badge bg-warning">{{ pillar.bond_outcomes?.length || 0 }} Outcomes</span>
+                                                <span v-if="pillar.tiers && pillar.tiers.length > 0" 
+                                                      v-for="tier in pillar.tiers" :key="tier.id" 
+                                                      class="badge bg-info me-1">{{ tier.tier }}</span>
+                                                <span v-else class="text-muted">No tiers</span>
                                             </small>
                                         </td>
+                                        <td><small>{{ new Date(pillar.created_at).toLocaleDateString() }}</small></td>
                                         <td>
                                             <div class="btn-group" role="group">
                                                 <Link :href="route('programs.nlgas-pillars.edit', pillar.id)"
