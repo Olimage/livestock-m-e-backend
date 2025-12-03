@@ -21,6 +21,14 @@ Route::group([
         Route::get('/states', [App\Http\Controllers\LocationController::class, 'ApiGetStates'])->name('states');
         Route::get('/lgas', [App\Http\Controllers\LocationController::class, 'ApiGetLgas'])->name('lgas');
     });
+
+    // Protected enumeration submissions (JWT auth)
+    Route::group([
+        'middleware' => ['json-response','jwt.verify'],
+    ], function () {
+        Route::post('/enumeration-records', 'Api\EnumerationRecordController@store')
+            ->name('api.enumerations.records.store');
+    });
 });
 
 // Dashboard API endpoints (session auth required)
