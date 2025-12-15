@@ -12,7 +12,7 @@ services:
       # Persist uploaded files & cache
       - laravel-storage:/var/www/storage
     env_file:
-      - .env
+      - .env.docker
     depends_on:
       - postgres
     networks:

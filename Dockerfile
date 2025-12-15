@@ -44,7 +44,7 @@ RUN chown -R www-data:www-data /var/www \
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-RUN php artisan migrate --seed
+# RUN php artisan migrate --seed --force
 
 EXPOSE 9000
 CMD ["php-fpm"]

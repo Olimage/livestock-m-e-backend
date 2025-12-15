@@ -27,3 +27,5 @@ docker compose up -d --build
 docker compose exec app php artisan migrate
 docker compose exec app php artisan storage:link
 docker compose down
+
+docker compose exec app php artisan migrate:fresh --seed
