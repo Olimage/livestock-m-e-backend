@@ -12,6 +12,8 @@ RUN apk add --no-cache \
     oniguruma-dev \
     icu-dev \
     postgresql-dev \
+    postgresql-client \  
+    # Added for pg_isready
     mysql-client \
     unzip
 
@@ -34,6 +36,10 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
+# Copy entrypoint script FIRST (better for caching)
+COPY docker/app-entrypoint.sh /usr/local/bin/app-entrypoint.sh
+RUN chmod +x /usr/local/bin/app-entrypoint.sh
+
 # Copy application
 COPY . .
 
@@ -44,7 +50,8 @@ RUN chown -R www-data:www-data /var/www \
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# RUN php artisan migrate --seed --force
-
 EXPOSE 9000
+
+# Set entrypoint AND CMD
+ENTRYPOINT ["app-entrypoint.sh"]
 CMD ["php-fpm"]
