@@ -48,7 +48,13 @@ class ActivityLogController extends Controller
             }
 
             $perPage = $request->get('per_page', 15);
+            
             $logs = $query->paginate($perPage);
+            
+            // Hide id from each activity log
+            $logs->getCollection()->transform(function ($log) {
+                return $log->makeHidden(['id']);
+            });
 
             return response()->json([
                 'status' => true,
