@@ -118,4 +118,6 @@ public function getIndicators(Request $request)
             ], 500);
         }
     }
+
+
 }
