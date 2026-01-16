@@ -13,18 +13,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('presidential_priorities', function (Blueprint $table) {
+        Schema::table('sectoral_goals', function (Blueprint $table) {
             $table->uuid('uuid')->nullable()->after('id');
         });
 
         // Generate UUIDs for existing records
-        DB::table('presidential_priorities')->whereNull('uuid')->get()->each(function ($priority) {
-            DB::table('presidential_priorities')
-                ->where('id', $priority->id)
+        DB::table('sectoral_goals')->whereNull('uuid')->get()->each(function ($goal) {
+            DB::table('sectoral_goals')
+                ->where('id', $goal->id)
                 ->update(['uuid' => (string) Str::uuid()]);
         });
 
-        Schema::table('presidential_priorities', function (Blueprint $table) {
+        Schema::table('sectoral_goals', function (Blueprint $table) {
             $table->uuid('uuid')->nullable(false)->unique()->change();
         });
     }
@@ -34,7 +34,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('presidential_priorities', function (Blueprint $table) {
+        Schema::table('sectoral_goals', function (Blueprint $table) {
             $table->dropColumn('uuid');
         });
     }
