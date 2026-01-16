@@ -38,6 +38,8 @@ class LogUserActivity
                 return;
             }
 
+            $callableInfo = $this->getCallableInfo($request);
+
             ActivityLog::create([
                 'user_id' => $user?->id,
                 'action' => $this->getAction($request),
@@ -50,6 +52,9 @@ class LogUserActivity
                 'location' => $this->getLocation($request),
                 'properties' => $this->getProperties($request),
                 'status_code' => $response->getStatusCode(),
+                'callable_type' => $callableInfo['callable_type'] ?? null,
+                'callable_id' => $callableInfo['callable_id'] ?? null,
+                'db_action' => $callableInfo['db_action'] ?? null,
             ]);
         } catch (\Exception $e) {
             // Silently fail to prevent breaking the application
@@ -151,5 +156,49 @@ class LogUserActivity
         }
 
         return $properties;
+    }
+
+    /**
+     * Get callable information from route parameters
+     */
+    protected function getCallableInfo(Request $request): array
+    {
+        $callableInfo = [];
+        $routeParameters = $request->route()?->parameters() ?? [];
+
+        // Try to find model instance in route parameters
+        foreach ($routeParameters as $key => $value) {
+            if (is_object($value) && method_exists($value, 'getKey')) {
+                // This is likely an Eloquent model
+                $callableInfo['callable_type'] = get_class($value);
+                $callableInfo['callable_id'] = $value->getKey();
+                $callableInfo['db_action'] = $this->mapHttpMethodToDbAction($request->method());
+                break;
+            }
+        }
+
+        // If no model found in route parameters, try to infer from URL pattern
+        if (empty($callableInfo) && preg_match('/\\/([a-z-]+)\\/(\d+)/', $request->path(), $matches)) {
+            $callableInfo['db_action'] = $this->mapHttpMethodToDbAction($request->method());
+            // Store resource info in properties instead
+            $callableInfo['resource'] = $matches[1];
+            $callableInfo['resource_id'] = $matches[2];
+        }
+
+        return $callableInfo;
+    }
+
+    /**
+     * Map HTTP method to database action
+     */
+    protected function mapHttpMethodToDbAction(string $method): string
+    {
+        return match(strtoupper($method)) {
+            'POST' => 'created',
+            'PUT', 'PATCH' => 'updated',
+            'DELETE' => 'deleted',
+            'GET' => 'viewed',
+            default => 'accessed',
+        };
     }
 }

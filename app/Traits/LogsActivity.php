@@ -14,13 +14,21 @@ trait LogsActivity
      * @param string $action
      * @param string|null $description
      * @param array $properties
+     * @param object|null $callable
+     * @param string|null $dbAction
      * @return ActivityLog
      */
-    public static function logActivity(string $action, ?string $description = null, array $properties = []): ActivityLog
+    public static function logActivity(
+        string $action, 
+        ?string $description = null, 
+        array $properties = [],
+        ?object $callable = null,
+        ?string $dbAction = null
+    ): ActivityLog
     {
         $user = Auth::user();
         
-        return ActivityLog::create([
+        $logData = [
             'user_id' => $user?->id,
             'action' => $action,
             'description' => $description,
@@ -29,7 +37,16 @@ trait LogsActivity
             'ip_address' => Request::ip(),
             'user_agent' => Request::userAgent(),
             'properties' => $properties,
-        ]);
+        ];
+
+        // Add callable information if provided
+        if ($callable) {
+            $logData['callable_type'] = get_class($callable);
+            $logData['callable_id'] = $callable->id ?? null;
+            $logData['db_action'] = $dbAction;
+        }
+
+        return ActivityLog::create($logData);
     }
 
     /**
@@ -45,7 +62,9 @@ trait LogsActivity
             self::logActivity(
                 'created',
                 class_basename($model) . ' created',
-                ['model' => class_basename($model), 'id' => $model->id]
+                ['model' => class_basename($model), 'id' => $model->id],
+                $model,
+                'created'
             );
         });
 
@@ -57,7 +76,9 @@ trait LogsActivity
             self::logActivity(
                 'updated',
                 class_basename($model) . ' updated',
-                ['model' => class_basename($model), 'id' => $model->id, 'changes' => $model->getChanges()]
+                ['model' => class_basename($model), 'id' => $model->id, 'changes' => $model->getChanges()],
+                $model,
+                'updated'
             );
         });
 
@@ -69,7 +90,9 @@ trait LogsActivity
             self::logActivity(
                 'deleted',
                 class_basename($model) . ' deleted',
-                ['model' => class_basename($model), 'id' => $model->id]
+                ['model' => class_basename($model), 'id' => $model->id],
+                $model,
+                'deleted'
             );
         });
     }

@@ -14,7 +14,7 @@ class ActivityLogController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = ActivityLog::with('user:id,full_name,email')
+            $query = ActivityLog::with(['user:id,full_name,email', 'callable'])
                 ->orderBy('created_at', 'desc');
 
             // Filter by user
@@ -25,6 +25,16 @@ class ActivityLogController extends Controller
             // Filter by action
             if ($request->has('action')) {
                 $query->action($request->action);
+            }
+
+            // Filter by database action
+            if ($request->has('db_action')) {
+                $query->dbAction($request->db_action);
+            }
+
+            // Filter by callable type (model)
+            if ($request->has('callable_type')) {
+                $query->byCallable($request->callable_type);
             }
 
             // Filter by date range
@@ -96,7 +106,7 @@ class ActivityLogController extends Controller
     public function show($id)
     {
         try {
-            $log = ActivityLog::with('user:id,full_name,email')->findOrFail($id);
+            $log = ActivityLog::with(['user:id,full_name,email', 'callable'])->findOrFail($id);
 
             return response()->json([
                 'status' => true,
@@ -136,11 +146,22 @@ class ActivityLogController extends Controller
                 'by_method' => $query->selectRaw('method, COUNT(*) as count')
                     ->groupBy('method')
                     ->pluck('count', 'method'),
+                'by_db_action' => $query->selectRaw('db_action, COUNT(*) as count')
+                    ->whereNotNull('db_action')
+                    ->groupBy('db_action')
+                    ->pluck('count', 'db_action'),
+                'by_callable_type' => $query->selectRaw('callable_type, COUNT(*) as count')
+                    ->whereNotNull('callable_type')
+                    ->groupBy('callable_type')
+                    ->pluck('count', 'callable_type')
+                    ->mapWithKeys(function ($count, $type) {
+                        return [class_basename($type) => $count];
+                    }),
                 'by_status' => $query->selectRaw('status_code, COUNT(*) as count')
                     ->groupBy('status_code')
                     ->pluck('count', 'status_code'),
                 'unique_users' => $query->distinct('user_id')->count('user_id'),
-                'recent_activities' => ActivityLog::with('user:id,full_name,email')
+                'recent_activities' => ActivityLog::with(['user:id,full_name,email', 'callable'])
                     ->orderBy('created_at', 'desc')
                     ->limit(10)
                     ->get(),

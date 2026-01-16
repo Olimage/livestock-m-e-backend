@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class ActivityLog extends Model
 {
@@ -31,6 +32,14 @@ class ActivityLog extends Model
     }
 
     /**
+     * Get the callable model (polymorphic relationship)
+     */
+    public function callable(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    /**
      * Scope to filter by action
      */
     public function scopeAction($query, string $action)
@@ -39,11 +48,27 @@ class ActivityLog extends Model
     }
 
     /**
+     * Scope to filter by database action
+     */
+    public function scopeDbAction($query, string $dbAction)
+    {
+        return $query->where('db_action', $dbAction);
+    }
+
+    /**
      * Scope to filter by user
      */
     public function scopeByUser($query, int $userId)
     {
         return $query->where('user_id', $userId);
+    }
+
+    /**
+     * Scope to filter by callable type (model)
+     */
+    public function scopeByCallable($query, string $callableType)
+    {
+        return $query->where('callable_type', $callableType);
     }
 
     /**
