@@ -30,6 +30,7 @@ $app = Application::configure(basePath: dirname(__DIR__))
             Illuminate\Routing\Middleware\SubstituteBindings::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Session\Middleware\StartSession::class,
+            \App\Http\Middleware\LogUserActivity::class,
         ]);
 
         $middleware->alias([

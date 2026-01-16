@@ -51,6 +51,15 @@ Route::prefix('programs')->name('programs.')->group(function () {
     });
 });
 
+// Activity logs routes
+Route::prefix('activity-logs')->middleware(['json-response', 'jwt.verify'])->name('activity-logs.')->group(function () {
+    Route::get('/', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('index');
+    Route::get('/my-activity', [App\Http\Controllers\ActivityLogController::class, 'myActivity'])->name('my-activity');
+    Route::get('/statistics', [App\Http\Controllers\ActivityLogController::class, 'statistics'])->name('statistics');
+    Route::get('/{id}', [App\Http\Controllers\ActivityLogController::class, 'show'])->name('show');
+    Route::delete('/cleanup', [App\Http\Controllers\ActivityLogController::class, 'cleanup'])->name('cleanup');
+});
+
 
 
 });
