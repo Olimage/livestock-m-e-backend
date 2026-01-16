@@ -33,11 +33,17 @@ Route::group([
 
 Route::prefix('programs')->name('programs.')->group(function () {
     Route::prefix('indicators')->name('indicators.')->group(function () {
-        Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getIndaicators'])->name('list');
+        Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getIndicators'])->name('list');
     });
 
     Route::prefix('modules')->name('modules.')->group(function () {
         Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getModules'])->name('list');
+    });
+    Route::prefix('sectoral-goals')->name('sectoral-goals.')->group(function () {
+        Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getSectoralGoals'])->name('list');
+    });
+    Route::prefix('presidential-priorities')->name('presidential-priorities.')->group(function () {
+        Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getPresidentialPriorities'])->name('list');
     });
 });
 
@@ -57,6 +63,7 @@ Route::middleware([
 Route::prefix('app-setup')->group(function () {
     Route::get('/departments', [App\Http\Controllers\AppSetupController::class, 'getDepartments'])->name('api.app-setup.departments');
     Route::get('/sectors', [App\Http\Controllers\AppSetupController::class, 'getSectors'])->name('api.app-setup.sectors');
+
 });
 
 
