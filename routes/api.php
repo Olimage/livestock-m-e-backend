@@ -3,16 +3,13 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-
 $namespace = 'App\Http\Controllers';
 
 Route::group([
-    'prefix'=>'/v1',
+    'prefix' => '/v1',
     'namespace' => $namespace,
     'middleware' => ['json-response', 'cors'],
-], function(){
-
-
+], function () {
     require __DIR__ . '/v1/auth.php';
     require __DIR__ . '/v1/user.php';
 
@@ -24,11 +21,28 @@ Route::group([
 
     // Protected enumeration submissions (JWT auth)
     Route::group([
-        'middleware' => ['json-response','jwt.verify'],
+        'middleware' => ['json-response', 'jwt.verify'],
     ], function () {
         Route::post('/enumeration-records', 'Api\EnumerationRecordController@store')
             ->name('api.enumerations.records.store');
     });
+
+
+
+    /// prgrams
+
+Route::prefix('programs')->name('programs.')->group(function () {
+    Route::prefix('indicators')->name('indicators.')->group(function () {
+        Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getIndaicators'])->name('list');
+    });
+
+    Route::prefix('modules')->name('modules.')->group(function () {
+        Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getModules'])->name('list');
+    });
+});
+
+
+
 });
 
 // Dashboard API endpoints (session auth required)
@@ -39,7 +53,6 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard/stats', [App\Http\Controllers\DashboardController::class, 'getStats'])->name('api.dashboard.stats');
 });
-
 
 Route::prefix('app-setup')->group(function () {
     Route::get('/departments', [App\Http\Controllers\AppSetupController::class, 'getDepartments'])->name('api.app-setup.departments');
