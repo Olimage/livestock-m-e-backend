@@ -182,4 +182,24 @@ class User extends Authenticatable implements JWTSubject
         );
     }
 
+    /**
+     * Get all activity logs for this user
+     */
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
+    /**
+     * Get recent activity logs for this user
+     */
+    public function recentActivity($limit = 10)
+    {
+        return $this->activityLogs()
+            ->with('callable')
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
 }
