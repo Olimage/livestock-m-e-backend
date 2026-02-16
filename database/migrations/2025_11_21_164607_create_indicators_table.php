@@ -15,16 +15,16 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('title');
+            $table->string('slug')->unique();   
             $table->text('description')->nullable();
 
             $table->enum('indicator_type', ['outcome', 'output', 'impact'])->default('output');
             $table->string('measurement_unit')->nullable();
             $table->decimal('baseline_value', 15, 2)->nullable();
             $table->integer('baseline_year')->nullable();
-            $table->decimal('target_value', 15, 2)->nullable();
-            $table->integer('target_year')->nullable();
-            $table->string('data_source')->nullable();
-            $table->string('collection_frequency')->nullable();
+            $table->json('collection_frequency')->nullable();
+            $table->json('disaggregation_dimensions')->nullable();
+            $table->json('reporting_frequency')->nullable();
             $table->timestamps();
         });
     }

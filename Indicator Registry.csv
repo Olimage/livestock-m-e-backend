@@ -1,0 +1,657 @@
+,,,,,,,,,,,,,,,,,,,,
+INDICATOR REGISTRY,,,,,,,,,,,,,,,,,,,,
+,indicator_code,indicator_name,indicator_description,indicator_category,functional_module,numerator_definition,denominator_definition,calculation_formula,unit_of_measure,disaggregation_dimensions,data_source_entities,reporting_frequency,baseline_value,baseline_year,target_value,target_year,indicator_owner_institution_id,approved_by_user_id,approval_date,indicator_status
+,,,,,,,,,,,,,,,,,,,,
+,IMP-1,Proportion of livestock households below poverty line,The percentage of livestock-keeping households whose income levels fall below the nationally defined poverty line. ,Impact,,,,Number of livestock households below poverty line / Total livestock households * 100.,Percentage,"•Gender of household head
+•Livestock production system (pastoral, agro-pastoral, mixed farming)
+•Geographic region",,Annually,,,,,,,,
+,IMP-2,% of population with access to livestock products,"Measures the proportion of the population that has physical and economic access to livestock products (meat, milk, eggs) within a defined geographic area and time period.",Impact,,,,(Number of individuals with access to livestock products within acceptable distance and price thresholds ÷ Total population) × 100,Percentage,"• By region/state
+• By urban/rural location
+• By income quintile
+• By livestock product type (meat, milk, eggs)",,Annually,,,,,,,,
+,IMP-3,Consumer Price Index for Livestock Products,"Measures changes over time in the average prices paid by consumers for a basket of livestock products, reflecting affordability and market stability.",Impact,,,,(Index of weighted average prices of selected livestock products in the current period ÷ Index in the base period) × 100,Index (Base year = 100),"• By region/state
+• By livestock product type
+• By market type (urban, peri-urban, rural)",,Quarterly/Annually,,,,,,,,
+,IMP-4,Animal-Source Food Nutrition Adequacy Score (ASF-NAS),"Measures the extent to which consumption of animal-source foods meets recommended dietary requirements for key nutrients, serving as a proxy for diet quality and nutritional adequacy.",Impact,,,,"Composite score derived from household or individual consumption data, comparing intake of animal-source foods against recommended dietary allowances for selected nutrients.",Composite score (index),"• By region/state
+• By age group
+• By gender
+• By livestock product type",,Annually,,,,,,,,
+,OUT-1,% contribution to GDP (Livestock Sector),Measures the economic significance of the national livestock sector by calculating the proportion of the country's total Gross Domestic Product (GDP) that is directly attributable to all livestock subsectors and their related value chains.,Outcome,,,,Value added from livestock sector / Total national GDP * 100.,Percentage,"By Livestock Subsector:
+•	Meat Production (Further breakdown by species where feasible: Beef, Poultry, Pork, Small Ruminants)
+•	Dairy Production
+•	Egg Production
+•	Related Value Chain Activities (e.g., Feed Manufacturing, Processing, Trading)",,Annual,,,,,,,,
+,OUT-2,Annual Livestock Export Earnings (FX),"Quantifies the total foreign exchange earnings generated from the export of live animals and livestock products (meat, milk, eggs, hides, skins, leather, and other by-products) within a financial year.",Outcome,,,,"Sum of all verified livestock export receipts recorded by customs, trade authorities, and exporting firms.",Foreign Exchange ($US),"•By product category (live animals, meat, dairy, hides/skins)
+•By exporting region/province
+•By species (cattle, sheep, goats, poultry)",,Annual,,,,,,,,
+,OUT-3,Volume of livestock products exported (live animals meat dairy hides/skins) ,"Measures the total quantity of livestock and livestock-derived products exported from the country, including live animals, meat, milk, eggs, hides, and skins. ",Outcome,,,,"Aggregated sum of all livestock product exports verified through customs, trade authorities, or official export documentation.",Metric tons (MT),"•	By product type (live animals, meat, dairy, eggs, hides/skins)
+•	By destination market (country/region)",,Annual,,,,,,,,
+,OUT-4,Number of  jobs created,"Total number of direct and indirect jobs generated across the livestock value chain within a defined period. It includes employment in production (farming), processing, transportation, trading, feed manufacturing, veterinary services, and allied input supply.",Outcome,,,,Sum of all direct and indirect jobs reported across relevant livestock enterprises and programs.,Number,"•By gender (male, female)
+•By age group (youth, adult)
+•By value chain segment (production, processing, marketing, services)",,Quarterly/Annual,,,,,,,,
+,OUT-5,Average Income Change for Women/Youth in Programs,"Measures the change in average income earned by women and youth who participate in livestock-related programs, projects, or interventions over a defined implementation period",Outcome,,,,"(Average post-intervention income ? Average baseline income)
+Income should include all livestock-related earnings such as sales of animals, milk, eggs, meat, manure, by-products, or service fees","Change in income expressed in local currency (e.g., NGN) or USD equivalent.","•	Gender (women, male youth, female youth)
+•	Age category (e.g., 18–25, 26–35)
+•	Type of livestock enterprise (dairy, poultry, small ruminants, beef, pigs)
+•	Geographic location (state, LGA)
+•	Program type or intervention thematic area",,Annual,,,,,,,,
+,OUT-6,Livestock Credit as % of Total Agricultural Lending,Measure and track the financial support directed towards the livestock sector within the broader agricultural landscape,Outcome,,,,(Total credit extended to livestock sector/Total agricultural credit extended) × 100,Percentage (%),"•	By financial institution type (commercial banks, microfinance, cooperatives)
+•	By livestock subsector (cattle, poultry, small ruminants, pigs)",,Annual,,,,,,,,
+,OUT-7,Daily Animal Protein Consumption Per Capita,Measures the average amount of animal-source protein consumed per person per day within the country. It captures both the volume of animal-source foods available for consumption and their proportional dietary contribution relative to population size.,Outcome,,,,Total annual animal protein available for consumption (kg)/Total population / 365,Kilogrammes (Kg),"Urban vs. rural populations; Gender and age groups (children, adolescents, adults); animal-source food type (meat, milk, eggs, fish if included)",,Annual,,,,,,,,
+,OUT-8,"Total number of animals by species (cattle, goat, sheep, poultry, pigs)","Measures the total population of major livestock species within the country capturing the size, structure, and distribution of the national herd and flock",Outcome,,,,Sum of all animals recorded across validated data sources.,Number,"•By species: cattle, goats, sheep, pigs, and poultry
+•By production system: pastoral, agro-pastoral, semi-intensive, intensive
+•By region/state",,Annual,,,,,,,,
+,OUT-9,Average Slaughter Weight per Cattle,"Measures the average live weight of cattle at the point of slaughter within formal and informal abattoirs reflecting nutritional status, breed quality, feeding systems, management practices, and overall production efficiency. ",Outcome,,,,Total live weight of slaughtered cattle/Total number of cattle slaughtered.,Kilograms (kg).,"•	By breed/type (e.g., indigenous, crossbred, exotic)
+•	By production system (pastoral vs. feedlot)
+•	By geographic region",,Quarterly/Annual,,,,,,,,
+,OUT-10,Average Slaughter Weight per Goat,"Measures the average live weight per goat at the point of slaughter across formal and informal slaughter facilities reflecting the productivity, market readiness, and overall performance of goat production systems",Outcome,,,,Sum of live weights of goats at slaughter / Total number of goats slaughtered,Kilograms (kg).,"•	By production system: Pastoral, agro-pastoral, semi-intensive, intensive
+•	By breed: Local, improved, crossbred
+•	By region/state: Variations in feed availability and climate may affect growth
+•	By age and sex: Kid, yearling, adult; male vs. female
+•	By market type: Formal abattoirs vs. informal slaughter points",,Quarterly/Annual,Quarterly/Annual,Quarterly/Annual,Quarterly/Annual,Quarterly/Annual,Quarterly/Annual,Quarterly/Annual,Quarterly/Annual,Quarterly/Annual
+,OUT-11,Average Slaughter Weight per Pig,"Measures the average live weight of pigs at the time of slaughter during a specified reporting period providing a reliable metric of pig growth performance, feeding quality, health status, and production efficiency",Outcome,,,,Sum of slaughter weights of sampled pigs ÷ Total number of pigs weighed,Kilograms (kg).,"•	By production system (intensive, semi-intensive, backyard)
+•	By breed/genetic line
+•	By region/state",,Quarterly/Annual,,,,,,,,
+,OUT-12,Average Slaughter Weight per Poultry,"Measures the average live weight of poultry at the time of slaughter reflecting production efficiency, feed conversion performance, and overall flock health",Outcome,,,,Total live weight of slaughtered birds/Total number of birds slaughtered.,Kilograms (kg).,"•	By breed/strain
+•	By production system (intensive vs. semi-intensive)
+•	By region",,Monthly/Quarterly/Annually.,,,,,,,,
+,OUT-13,Total national meat production (all species),"Measures the total volume of meat produced annually from all livestock species, including cattle, goats, sheep, pigs, and poultry",Outcome,,,,"Sum of total carcass weight produced from each livestock species, ",Metric tons (MT),"•	By species (cattle, sheep, goats, pigs, poultry)
+•	By production system
+•	By region/state",,Annual,,,,,,,,
+,OUT-14,"Average Daily Milk Yield Per Lactating Specie (Cow, Goat)","Measures the average volume of milk produced per lactating species (cow,goat,sheep) per day reflecting dairy productivity and efficiency within the livestock sector.",Outcome,,,,"Total milk produced by lactating species (cow,goat,sheep) / Number of lactating species (cow,goat,sheep) ","Liters per lactating species (cow,goat,sheep) per day","•	By breed (local, crossbreed, exotic)
+•	By production system (stall-fed, semi-intensive, pastoral)
+•	By region",,Monthly/Quarterly/Annually.,,,,,,,,
+,OUT-15,Total national milk production,"Measures the total volume of milk produced nationally from all lactating species—predominantly cattle, goats, and sheep—over a one-year period. It includes milk consumed on-farm, sold in formal markets, traded in informal markets, or processed into dairy products.",Outcome,,,,Sum of milk production volumes reported by producers and processors during the reporting year.,Liters (ltrs),"•	By species (cattle, goats, sheep, camels)
+•	By production system (pastoral, agro-pastoral, commercial)
+•	By region/state",,Annual,,,,,,,,
+,OUT-16,Volume of Honey produced annually ,"Measures the total quantity of honey produced across the country within a calendar year, including production from traditional, transitional, and modern beekeeping systems. ",Outcome,,,,? (Honey Output from All Producers),Metric tons (MT).,"•	By type of beekeeping system (traditional, transitional, modern)
+•	By region/state
+•	By scale (smallholder vs commercial producers)",,Annual,,,,,,,,
+,OUT-17,Total national egg production,"Measures the total quantity of eggs produced within the country across all poultry production systems—including commercial layer farms, backyard poultry, and semi-intensive operations—within a defined reporting period.",Outcome,,,,Sum of eggs produced by registered poultry farms during the reporting year.,Metric tons (MT).,"•	By production system (commercial, semi-intensive, backyard)
+•	By region/state
+•	By poultry species (if non-chicken egg production is relevant)",,Annual,,,,,,,,
+,OUT-18,Volume of commercially produced feed,"Measures the total annual quantity of livestock feed produced by commercial feed manufacturers nationally. It reflects the size, capacity, and growth trajectory of the feed industry,",Outcome,,,,Aggregation of production volumes reported by licensed feed manufacturers.,Metric tons (MT).,"•	By type of feed (poultry, dairy, beef, pig, fish)
+•	By region
+•	By production scale (large, medium, small feed mills)",,Quarterly/Annual.,,,,,,,,
+,OUT-19,Total commercial feed production capacity,"Measures the total annual production capacity of commercially manufactured livestock feed in the country, including compound feed, concentrates, and premixes.",Outcome,,,,Sum of the annual maximum production capacities reported by all operational commercial feed mills.,Metric tons (MT).,"•	By feed type (cattle, poultry, pigs, small ruminants)
+•	By region/state",,Annual,,,,,,,,
+,OUT-20,% of Abattoirs Meeting National Standards,"Measures the percentage of abattoirs in the country that meet nationally defined hygiene, operational, and structural standards",Outcome,,,,(Number of abattoirs meeting national standards / Total abattoirs inspected) × 100,Percentage (%).,"•	By abattoir size/type (small, medium, large)
+•	By region/state",,Annual,,,,,,,,
+,OUT-21,"Livestock Mortality Rate by Species (Cattle,Goat,Sheep,Pig,Poultry)","Measures the proportion of livestock that die within a given period, disaggregated by species reflecting the health status, disease burden, environmental stress, and effectiveness of veterinary and husbandry practices across the sector",Outcome,,,,(Number of livestock deaths / Total population of livestock) × 100.,Percentage (%).,"•	By species: cattle, goats, sheep, pigs, poultry
+•	By region
+•	By production system",,Annual,,,,,,,,
+,OUT-22,"% of animals vaccinated against Priority TADs ( PPR, FMD, NCD, ASF, CBPP)","Measures the proportion of animals vaccinated against key priority diseases, including Peste des Petits Ruminants (PPR), Foot and Mouth Disease (FMD), Newcastle Disease (NCD), African Swine Fever (ASF), and Contagious Bovine Pleuropneumonia (CBPP). ",Outcome,,,,(Number of animals vaccinated / Total animal target population) × 100.,Percentage (%).,"•	By disease type
+•	By species
+•	By region/state",,Annual,,,,,,,,
+,OUT-23,"Prevalance rate of priority TADs (FMD,PPR,NCD,ASF,CBPP,Tickborne diseases,Trypanosomiasis)  across species",Measures the proportion of livestock infected with key priority transboundary animal diseases within a specified period across all relevant species.,Outcome,,,,(Number of infected animals for each TAD / Total population at risk) × 100,Percentage (%).,"•	By species (cattle, goats, sheep, pigs, poultry)
+•	By disease type
+•	By region/state",,Annual,,,,,,,,
+,OUT-24,Livestock Extension Worker to Farmer Ratio,"Measures the average number of livestock farmers served by a single livestock extension worker reflecting the capacity of the extension system to deliver advisory, technical, and veterinary services to farmers.",Outcome,,,,Total number of livestock farmers : Total number of livestock extension workers.,Ratio,"•	By state or region
+•	By production system (pastoral, mixed, commercial)",,Annual,,,,,,,,
+,OUT-25,Veterinarian-to-livestock ratio,"Measures the ratio of qualified veterinarians to the total livestock population, reflecting the adequacy of veterinary service coverage.",Outcome,,,,"Total number of registered veterinarians / Total livestock population × 1,000","Number of veterinarians per 1,000 livestock","•	By species
+•	By region/state",,Annual,,,,,,,,
+,OUT-26,% of Conflicts resolved by Functional Conflict Mitigation Committees,"Measures the proportion of livestock-related conflicts that are successfully resolved by established conflict mitigation committees at community, regional, or national levels.",Outcome,,,,(Number of conflicts resolved by committees/Total number of reported conflicts) × 100,Percentage (%),"•	By conflict type (farmer-herder, market disputes, grazing disputes)
+•	By region/state",,Quarterly/Annual,,,,,,,,
+,OUT-27,Farmer-Herder Conflict Response Time (Days),"Measures the average number of days taken to respond to reported livestock-related conflicts between farmers and herders, from the time of report to the initiation of resolution or intervention.",Outcome,,,,Average number of days from official report of conflict to documented resolution or intervention.,Days,"•	By region/state
+•	By type of conflict (grazing disputes, crop damage, market disputes)",,Quarterly/Annual,,,,,,,,
+,OPT-1,Number of livestock related conflicts reported,"The total number of reported incidents of conflict directly involving livestock production, grazing, pastoral mobility, resource competition, or market disputes within a defined period.",Output ,,,,"Total number of verified conflict incidents recorded during the reporting period through security agencies, community structures, local governments, and surveillance systems.",Number,"•By conflict type (farmer-herder, market dispute, grazing reserve, etc.)
+•By location (state, LGA, community)
+•By severity",,Quarterly,,,,,,,,
+,OPT-2,Disease surveillance system coverage,"Measures the extent to which livestock populations are covered by active disease surveillance programs, including routine monitoring, reporting, and early detection systems.",Output ,,,,(Number of animals monitored through the surveillance system / Total livestock population) × 100,Percentage (%),"•	By species (cattle, goats, sheep, pigs, poultry)
+•	By region/state
+•	By surveillance type (routine, targeted, sentinel)",,Annual,,,,,,,,
+,OPT-3,"Number of reported outbreaks of transboundary diseases per 100,000 animals","Measures the frequency of confirmed outbreaks of priority Transboundary Animal Diseases (TADs), standardized per 100,000 livestock. It captures the burden and spread of infectious diseases that can cross borders and rapidly affect animal populations, livelihoods, and trade. ",Output ,,,,"(Number of confirmed TAD outbreaks / Total livestock population) × 100,000.",Number,"•	By disease type (PPR, FMD, CBPP, etc.)
+•	By species affected
+•	By region or state",,Quarterly/Annual.,,,,,,,,
+,OPT-4,Number of human Zoonotic Disease cases reported,"Measures the total number of confirmed human cases of zoonotic diseases attributable to livestock or livestock environments reflecting the intersection between animal health, human health, and environmental risk factors.",Output ,,,,Direct count of confirmed human cases reported through health and veterinary surveillance systems.,Number,"•	By disease type
+•	By location
+•	By age and gender",,Quarterly/Annual.,,,,,,,,
+,OPT-5,Number of functional Water Points to Animals in Grazing Reserves,Measures the adequacy of water infrastructure in grazing reserves by calculating the number of functional livestock water points available relative to the total animal population within each reserve,Output ,,,,Number of functional water points : Total number of animals in the grazing reserve.,Ratio,"•	By grazing reserve
+•	By state or zone",,Annual,,,,,,,,
+,OPT-6,Total area of grazing land,"Measures the total land area officially designated or used for livestock grazing, including communal, private, and reserved grazing areas",Output ,,,,Sum of officially surveyed or mapped grazing lands across the country.,Hectares (ha),"•	By region/state
+•	By land type (communal, private, reserved)",,Annual,,,,,,,,
+,OPT-7,Percentage of grazing land in good/excellent condition,"Measures the proportion of total grazing land that meets defined standards of quality and productivity, including vegetation cover, forage availability, and soil health",Output ,,,,(Area of grazing land in good/excellent condition / Total grazing land area) × 100,Percentage (%),"•	By region/state
+•	By type of grazing land (pastoral, mixed, community-managed)",,Annual,,,,,,,,
+,OPT-8,Community Animal Health Workers (CAHWs) Deployed and Active,Measures the total number of trained Community Animal Health Workers (CAHWs) who are operational and actively providing basic veterinary and animal health services within their communities,Output ,,,,Count of all CAHWs who are actively providing verified animal health services in their communities.,Number,"•	By region/state
+•	By gender
+•	By type of livestock served (cattle, poultry, small ruminants, pigs)",,Annual,,,,,,,,
+,OPT-9,Number of Animals Registered in NAITS,"Measures the total number of animals registered in the National Animal Identification and Traceability System (NAITS), a system designed to uniquely identify animals for traceability, disease control, and market transparency",Output ,,,,"Count of animals officially registered in NAITS, verified through the national database.",Number,"•	By species (cattle, goats, sheep, pigs, poultry)
+•	By region/state",,Quarterly/Annual,,,,,,,,
+,OPT-10,Number of Functional Abbatiors,"Measures the total number of abattoirs that are operational, comply with national standards, and are actively processing livestock for human consumption.",Output ,,,,"Count of abattoirs verified to be functional, meeting operational and hygienic standards during the reporting period.",Number,"•	By species processed (cattle, goats, sheep, pigs, poultry)
+•	By region/state
+•	By compliance level with national standards",,Annual,,,,,,,,
+,OPT-11,Number of operational breeding/AI centers,Measures the total number of breeding or AI centers that are functional and actively providing services to improve livestock reproduction.,Output ,,,,"Count of breeding/AI centers that are functional, staffed, and providing verified services during the reporting period.",Number,"•	By species served (cattle, goats, sheep, pigs)
+•	By region/state",,Annual,,,,,,,,
+,OPT-12,Total cold storage capacity for livestock products,"Measures the total storage capacity available for perishable livestock products, including meat, milk, eggs, and other processed products, in refrigerated or frozen facilities.",Output ,,,,Sum of all operational cold storage facilities’ capacities as verified through inspections or official records.,Number,"•	By product type (meat, milk, eggs, hides/skins)
+•	By region/state",,Annual,,,,,,,,
+,OPT-13,Number of functional commercial feedmills,Measures the total number of commercial feedmills that are operational and producing livestock feed at or near capacity.,Output ,,,,Count of commercial feedmills meeting operational criteria verified through inspections or industry records.,Number,"•	By region/state
+•	By type of feed produced (cattle, poultry, small ruminants, pigs)",,Annual,,,,,,,,
+,OPT-14,Number of functional Veterinary Diagnostic Centres,"Measures the total number of veterinary diagnostic laboratories or centers that are operational and capable of performing disease testing, pathogen identification, and providing diagnostic services to support livestock health management",Output ,,,,"Count of diagnostic centers verified to be operational, staffed with trained personnel, and providing validated testing services",Number,"•	By region/state
+•	By species supported
+•	By diagnostic capability (routine testing, advanced pathology, molecular diagnostics)",,Annual,,,,,,,,
+,OPT-15,Value of Private/PPP Investment Mobilized,"Measures the total monetary value of private sector and Public-Private Partnership (PPP) investments mobilized for livestock production, processing, and related value chain activities. ",Output ,,,,Sum of all verified financial commitments and disbursements made by private investors and PPPs in livestock enterprises within the reporting period.,Currency value (Naira/USD),"•	By investment type (production, processing, infrastructure, services)
+•	By source (private sector, PPP)",,Annual,,,,,,,,
+,OPT-16,Number of Commercial livestock Farms with Active Insurance,Measures the total number of commercial livestock farmers who have enrolled in and maintain active insurance coverage for their animals and production risks.,Output ,,,,"Count of commercial livestock farmers with active, verified insurance policies for livestock production risks.",Number,"•	By species insured (cattle, poultry, goats, sheep, pigs)
+•	By region/state
+•	By farm size",,Quarterly/Annual,,,,,,,,
+,OPT-17,Number of Livestock insured,"Measures the total number of livestock covered by formal insurance policies that provide financial protection against risks such as disease, theft, or natural disasters.",Output ,,,,Count of livestock with verified active insurance coverage during the reporting period.,Number,"•	By species (cattle, goats, sheep, pigs, poultry)
+•	By region/state
+•	By insurance type (full, partial, indemnity-based)",,Annual,,,,,,,,
+,OPT-18,Number of Conflict Mitigation Committee Members Trained,"Measures the total number of individuals serving on livestock conflict mitigation committees who have received formal training on dispute resolution, mediation, and conflict management.",Output ,,,,Count of committee members who have completed verified training programs within the reporting period.,Number,"•	By gender
+•	By training type or module
+•	By region/state",,Quarterly/Annual,,,,,,,,
+,OPT-19,Number of Transhumance Routes with Formalized Access Agreements,"Measures the total number of pastoralist and livestock transhumance routes that have legally recognized and documented agreements for movement, grazing, and water access",Output ,,,,"Count of transhumance routes with legally documented, active access agreements validated by local authorities.",Number,"•	By region/state
+•	By route type (long-distance, seasonal)",,Annual,,,,,,,,
+,OPT-20,Number of Livestock Enterprises Owned by Women and Youth,"Measures the number of registered or surveyed livestock enterprises that are owned or managed by women and youth, highlighting inclusivity and demographic participation in the sector.",Output ,,,,(Number of women/youth-owned enterprises / Total number of enterprises surveyed) × 100,Percentage (%),"•	By gender (women)
+•	By age group (youth, typically 18–35 years)
+•	By livestock subsector",,Annual,,,,,,,,
+,OPT-21,Number of Women/Youth Accessing Livestock Finance,"Measures the total number of women and youth who have successfully obtained formal or program-supported finance for livestock production, processing, or value chain activities",Output ,,,,Count of verified women and youth who accessed livestock-related loans or credit facilities during the reporting period.,Number,"•	By gender and age
+•	By type of livestock financed
+•	By region/state",,Quarterly/Annual,,,,,,,,
+,OPT-22,Number of Livestock Cottage Industries Established,"Measures the total number of small-scale, often family-owned livestock-related enterprises established within a specified period, including processing, feed production, and value-added services.",Output ,,,,Count of verified small-scale livestock enterprises formally registered or recognized by local authorities.,Number,"•	By type of enterprise (processing, feed production, services)
+•	By region/state",,Annual,,,,,,,,
+,OPT-23,Number of States with Functional NLIMS ,"Measures the number of states with fully operational National Livestock Information Management System (NLIMS) platforms capable of managing livestock data, including animal registration, disease monitoring, and production statistics",Output ,,,,Count of number of states with fully functional NLIMS,Number,"•	By state
+•	By livestock subsector coverage",,Annual,,,,,,,,
+,OPT-24,Frequency of National Livestock Statistics Publication by FMLD,"Measures the number of times the Federal Ministry of Livestock Development (FMLD) officially publishes livestock statistics within a calendar year.
+",Output ,,,,Count of official livestock statistical reports published and disseminated by FMLD within the reporting year.,Number,None,,Annual,,,,,,,,
+,OPT-25,Number of request of NLIMS data ,"Measures the total number of formal requests received for data from the National Livestock Information Management System (NLIMS), reflecting data utilization and stakeholder demand.",Output ,,,,Count of documented and approved data requests submitted through official NLIMS channels within the reporting period.,Number,"• By requesting institution type (government, research, private sector, development partners)
+• By data category requested
+• By region/state of intended use",,Quarterly / Annual,,,,,,,,
+,OPT-26,Number of Livestock Farmers Enrolled in National Database,"Measures the number of livestock farmers registered in the national livestock database or management system, reflecting the coverage and adoption of formal registration systems.",Output ,,,,(Number of farmers registered in national database/Total estimated livestock farmers) × 100,Percentage (%),"•	By region/state
+•	By gender
+•	By farm type (commercial, smallholder, pastoralist)",,Annual,,,,,,,,
+,OPT-27,Average interest rate for livestock loans,Measures the mean interest rate charged on loans provided to livestock farmers by formal financial institutions,Output ,,,,Sum of interest rates charged on all loans / Number of loans issued to livestock farmers during the period.,Percentage (%),"•	By type of livestock financed
+•	By financial institution type (bank, microfinance, cooperative)",,Annual,,,,,,,,
+,OPT-28,Number of livestock farmers accessing formal credit,"Measures the total number of livestock farmers who have obtained formal loans from banks, microfinance institutions, or other accredited financial providers.",Output ,,,,Count of farmers who have received verified loans or credit facilities from formal financial institutions during the reporting period,Number,"•	By gender and age (women, youth)
+•	By livestock subsector (cattle, poultry, goats, sheep, pigs)
+•	By region/state",,Annual,Annual,Annual,Annual,Annual,Annual,Annual,Annual,Annual
+,OPT-29,Number of Quarantine station coverage at border crossings,"Measures the total number of quarantine stations that are operational at official border points to monitor, inspect, and control the movement of livestock entering or leaving the country.",Output ,,,,"Count of quarantine stations verified to be operational, staffed, and enforcing biosecurity protocols during the reporting period.",Number,"•	By border type (land, sea, air)
+•	By region/state
+•	By species covered",,Annual,,,,,,,,
+,BOI-1,Number of livestock farmers supported with animal husbandry inputs,"Measures the total number of livestock farmers who received animal husbandry inputs, including feed, housing materials, equipment, or related production support, within the reporting period.",Output ,,,,Count of livestock farmers who received at least one verified animal husbandry input.,Number,"• By region/state
+• By livestock species
+• By farmer category (smallholder, commercial)",,Quarterly/Annual,,,,,,,,
+,BOI-2,Number of livestock farmers supported with veterinary inputs,"Measures the total number of livestock farmers who received veterinary inputs, including drugs, vaccines, diagnostic kits, or treatment services.",Output ,,,,Count of livestock farmers with documented receipt of veterinary inputs,Number,"• By region/state
+• By livestock species
+• By type of veterinary input",,Quarterly/Annual,,,,,,,,
+,BOI-3,Quantity of Meat produced annually (Mt),Measures the total quantity of meat produced within the reporting year from all livestock species.,Output ,,,,Sum of carcass weight from slaughtered animals recorded in abattoirs and slaughter slabs during the reporting year.,Metric tonnes (Mt),"• By region/state
+• By livestock species
+• By production system (formal/informal)",,Annual,,,,,,,,
+,BOI-4,Quantity of milk produced annually (Litres),Measures the total quantity of milk produced by livestock within the reporting year.,Output ,,,,Sum of milk production volumes reported by producers and processors during the reporting year.,Liters (ltrs),"•	By species (cattle, goats, sheep, camels)
+•	By production system (pastoral, agro-pastoral, commercial)
+•	By region/state",,Annual,,,,,,,,
+,BOI-5,Quantity of eggs produced annually (Crates),Measures the total quantity of eggs produced by poultry systems within the reporting year,Output ,,,,Sum of eggs produced by registered poultry farms during the reporting year.,Crates,"•	By production system (commercial, semi-intensive, backyard)
+•	By region/state
+•	By poultry species (if non-chicken egg production is relevant)",,Annual,,,,,,,,
+,BOI-6,Weight of honey produced annually (kg),Measures the total weight of honey produced by beekeepers within the reporting year.,Output ,,,,Sum of honey production volumes reported by supported and registered beekeepers.,Kilograms (kg),"• By region/state
+• By production system (traditional, modern)",,Annual,,,,,,,,
+,BOI-7,Number of youths and women trained and supported with livestock starter packs,Measures the total number of youths and women who received training and livestock starter packs to support entry into livestock production,Output ,,,,Count of beneficiaries with documented training completion and receipt of starter packs,Number,"• By region/state
+• By gender
+• By age group",,Quarterly/Annual,,,,,,,,
+,BOI-8,Number of bee keepers trained and supported with bee starter packs,Measures the total number of beekeepers who received training and bee starter packs to support apiculture activities.,Output ,,,,Count of trained beekeepers with documented receipt of starter packs,Number,"• By region/state
+• By gender",,Quarterly/Annual,,,,,,,,
+,BOI-9,Number of livestock farmers trained in modern production techniques,Measures the total number of livestock farmers trained in improved and modern livestock production practices.,Output ,,,,Count of livestock farmers who completed certified training sessions.,Number,"• By region/state
+• By livestock species
+• By production technique",,Quarterly/Annual,,,,,,,,
+,BOI-10,Number of breeder farmers supported with improved breeds,Measures the total number of breeder farmers who received improved livestock breeds for genetic enhancement.,Output ,,,,Count of breeder farmers with verified receipt of improved breeds.,Number,"• By region/state
+• By livestock species
+• By breed type",,Quarterly/Annual,,,,,,,,
+,BOI-11,Number of animals artificially inseminated,Measures the total number of animals that received artificial insemination services during the reporting period.,Output ,,,,Count of insemination procedures recorded by accredited technicians.,Number,"• By region/state
+• By livestock species",,Quarterly/Annual,,,,,,,,
+,BOI-12,Number of embryos transferred into recipient animals,Measures the total number of embryos successfully transferred into recipient animals.,Output ,,,,Count of embryo transfer procedures conducted and recorded,Number,"• By region/state
+• By livestock species",,Quarterly/Annual,,,,,,,,
+,BOI-13,Quantity (doses) of animal vaccines produced annually (million),Measures the total quantity of animal vaccine doses produced within the reporting year.,Output ,,,,Sum of vaccine doses produced by accredited laboratories during the reporting year,Number,"• By vaccine type
+• By producing institution",,Quarterly/Annual,,,,,,,,
+,BOI-14,Number of vaccine doses distributed to States (million),Measures the total number of animal vaccine doses distributed to states for livestock disease control.,Output ,,,,Sum of vaccine doses officially distributed and acknowledged by states.,Number,"• By region/state
+• By vaccine type",,Quarterly/Annual,,,,,,,,
+,BOI-15,Number of animals vaccinated during national campaigns (million),Measures the total number of animals vaccinated during officially sanctioned national vaccination campaigns.,Output ,,,,Count of animals vaccinated as recorded in campaign reports.,Number,"• By region/state
+• By livestock species",,Quarterly/Annual,,,,,,,,
+,BOI-16,Quantity of disinfectants distributed to States (Liters),Measures the total volume of disinfectants distributed to states for livestock disease prevention and biosecurity.,Output ,,,,Sum of disinfectant volumes officially distributed.,Litres,"• By region/state
+• By disinfectant type",,Quarterly/Annual,,,,,,,,
+,BOI-17,Number of sensitization/awareness campaigns on TADs and Zoonoses,Mmeasures the total number of sensitization and awareness campaigns conducted on Transboundary Animal Diseases (TADs) and zoonotic diseases.,Output ,,,,Count of completed and documented campaigns.,Number,"• By region/state
+• By disease focus",,Quarterly/Annual,,,,,,,,
+,BOI-18,Hours of aerial sprays for pest control,Measures the total number of hours of aerial spraying conducted for livestock-related pest and vector control.,Output ,,,,Sum of flight hours logged for pest control operations.,Hours (hrs),"• By region/state
+• By pest/vector targeted",,Quarterly/Annual,,,,,,,,
+,BOI-19,Hectares of land cultivated for pasture production,Measures the total land area cultivated for pasture and forage production within the reporting period.,Output ,,,,Sum of hectares cultivated and verified through field reports or remote sensing.,Hectares (ha),"• By region/state
+• By pasture type",,Quarterly/Annual,,,,,,,,
+,BOI-20,Quantity of pasture seeds distributed (kg),Measures the total quantity of pasture seeds distributed to livestock farmers for pasture development.,Output ,,,,Sum of pasture seed quantities officially distributed.,Kilograms (kg),"• By region/state
+• By seed type",,Quarterly/Annual,,,,,,,,
+,BOI-21,Number of grazing reserves and ranches rehabilitated,"Measures the total number of officially designated grazing reserves and ranches that have been rehabilitated to improve functionality, carrying capacity, and livestock management within the reporting period.",Output ,,,,Count of grazing reserves and ranches with documented rehabilitation activities completed and verified,Number,"• By region/state
+• By facility type (grazing reserve, ranch)
+• By type of rehabilitation intervention",,Quarterly/Annual,,,,,,,,
+,BOI-22,Number of livestock communities supported with pasture and water,Measures the total number of livestock-dependent communities that received support for pasture development and/or water infrastructure to improve livestock productivity and reduce resource-based vulnerability.,Output ,,,,Count of livestock communities with verified delivery of pasture and/or water support interventions.,Number,"• By region/state
+• By type of support (pasture, water, both)
+• By production system",,Quarterly/Annual,,,,,,,,
+,BOI-23,Number of feed producers and farmers trained in alternative feedstuff,"Measures the total number of feed producers and livestock farmers trained in the formulation, production, or utilization of alternative feedstuffs aimed at reducing feed costs and improving feed availability.",Output ,,,,Count of individuals who completed certified training on alternative feedstuff production or use.,Number,"• By region/state
+• By participant type (feed producer, livestock farmer)
+• By livestock species focus",,Quarterly/Annual,,,,,,,,
+,BOI-24,Number of Livestock Extension Workers (LEWs) trained,"Measures the total number of Livestock Extension Workers who received structured training to enhance service delivery, advisory support, and dissemination of improved livestock practices",Output ,,,,Count of LEWs who completed approved training programme,Number,"• By region/state
+• By training thematic area
+• By level of government",,Quarterly/Annual,,,,,,,,
+,BOI-25,Number of Community Animal Health Workers (CAHWs) trained,"Measures the total number of Community Animal Health Workers trained to deliver basic animal health services at community level, particularly in underserved and hard-to-reach areas.",Output ,,,,Count of CAHWs who completed recognized training programmes.,Number,"• By region/state
+• By community type
+• By livestock species focus",,Quarterly/Annual,,,,,,,,
+,BOI-26,Number of Veterinarians trained through ISAVET programme,"Measures the total number of veterinarians trained under the In-Service Applied Veterinary Epidemiology Training (ISAVET) programme to strengthen disease surveillance, outbreak response, and epidemiological capacity.",Output ,,,,Count of veterinarians who successfully completed ISAVET training modules.,Number,"• By region/state
+• By level of ISAVET training
+• By institutional affiliation",,Quarterly/Annual,,,,,,,,
+,BOI-27,Number of flood-prone states supported with protective measures,Measures the total number of flood-prone states that received protective or mitigation measures aimed at reducing flood-related risks to livestock production and infrastructure.,Output ,,,,Count of flood-prone states with documented implementation of flood protection or mitigation interventions.,Number,"• By region
+• By type of protective measure
+• By livestock system affected",,Quarterly/Annual,,,,,,,,
+,BOI-28,Number of Veterinary Hospitals/PAHCs constructed/rehabilitated,Measures the total number of veterinary hospitals and Primary Animal Health Care Centres (PAHCs) that were constructed or rehabilitated to improve access to animal health services.,Output ,,,,Count of facilities with completed construction or rehabilitation works and verified functionality.,Number,"• By region/state
+• By facility type (hospital, PAHC)
+• By intervention type (construction, rehabilitation",,Quarterly/Annual,,,,,,,,
+,BOI-29,Number of abattoirs/slaughter houses upgraded,"Measures the total number of abattoirs and slaughter houses that were upgraded to improve hygiene, food safety, animal welfare, and processing efficiency.",Output ,,,,Count of abattoirs and slaughter houses with completed and verified upgrade works.,Number,"• By region/state
+• By facility type
+• By upgrade component",,Quarterly/Annual,,,,,,,,
+,BOI-30,Number of Live Bird Markets rehabilitated,"Measures the total number of live bird markets that were rehabilitated to enhance biosecurity, disease prevention, and market functionality.",Output ,,,,Count of live bird markets with completed rehabilitation interventions.,Number,"• By region/state
+• By type of rehabilitation intervention",,Quarterly/Annual,,,,,,,,
+,BOI-31,Number of Livestock Markets rehabilitated,"Measures the total number of livestock markets that have been rehabilitated to improve market infrastructure, hygiene standards, biosecurity, and trading efficiency within the reporting period.",Output ,,,,Count of livestock markets with completed and verified rehabilitation works.,Number,"• By region/state
+• By market type (primary, secondary, terminal)
+• By rehabilitation component",,Quarterly/Annual,,,,,,,,
+,BOI-32,Number of cold Room facilities built for vaccine preservation,Measures the total number of cold room facilities constructed to support safe storage and preservation of animal vaccines and other temperature-sensitive veterinary commodities,Output ,,,,Count of cold room facilities constructed and verified to be operational.,Number,"• By region/state
+• By facility location (central, state, field level)",,Quarterly/Annual,,,,,,,,
+,BOI-33,Number of private investors enrolled and engaged,Measures the total number of private sector investors formally enrolled and actively engaged in livestock value chain development initiatives.,Output ,,,,Count of private investors with signed engagement agreements or documented participation in programme activities.,Number,"• By region/state
+• By livestock value chain segment
+• By investment type",,Quarterly/Annual,Quarterly/Annual,Quarterly/Annual,Quarterly/Annual,Quarterly/Annual,Quarterly/Annual,Quarterly/Annual,Quarterly/Annual,Quarterly/Annual
+,BOI-34,Number of private animal health providers supported with equipment,"Measures the total number of private animal health service providers supported with equipment to enhance service delivery, diagnostics, and treatment capacity.",Output ,,,,Count of private providers with documented receipt of equipment support.,Number,"• By region/state
+• By type of service provided",,Quarterly/Annual,,,,,,,,
+,BOI-35,Number of PPP projects with bankable business cases,Measures the total number of livestock-related PPP projects that have developed bankable business cases meeting agreed financial and technical viability criteria.,Output ,,,,Count of PPP projects with completed and approved bankable business cases.,Number,"• By region/state
+• By value chain segment",,Quarterly/Annual,,,,,,,,
+,BOI-36,Number of PPP projects handed over to private sector,Measures the total number of PPP projects formally transferred to private sector operators for management and operation.,Output ,,,,Count of PPP projects with documented handover agreements executed.,Number,"• By region/state
+• By value chain segment",,Quarterly/Annual,,,,,,,,
+,BOI-37,Number of livestock export promotion workshops organized,"Measures the total number of workshops organized to promote livestock exports, market access, and compliance with international trade requirements.",Output ,,,,Count of completed livestock export promotion workshops.,Number,"• By region/state
+• By target participant group",,Quarterly/Annual,,,,,,,,
+,BOI-38,Number of livestock value actors trained on SPS and food safety,Measures the total number of livestock value chain actors trained on Sanitary and Phytosanitary (SPS) measures and food safety standards.,Output ,,,,Count of participants who completed SPS and food safety training programmes.,Number,"• By region/state
+• By value chain actor type
+• By gender",,Quarterly/Annual,,,,,,,,
+,BOI-39,2025 baseline survey for livestock products and honey completed,Measures the completion of a nationally representative baseline survey for livestock products and honey to establish benchmark data for monitoring sector performance.,Output ,,,,"Binary assessment based on completion, validation, and approval of the baseline survey report.",Yes/No,N/A,,Annual,,,,,,,,
+,BOI-40,Number of annual surveys for livestock production conducted,Measures the total number of nationally or sub-nationally conducted surveys assessing livestock production performance within the reporting year.,Output ,,,,Count of completed and validated livestock production surveys.,Number,"• By geographic coverage
+• By survey type",,Quarterly/Annual,,,,,,,,
+,BOI-41,Number of livestock farmers enlisted on national database,Measures the total number of livestock farmers registered and captured in the national livestock database.,Output ,,,,Count of unique livestock farmer records entered and validated in the national database.,Number,"• By region/state
+• By livestock species
+• By gender",,Quarterly/Annual,,,,,,,,
+,BOI-42,Number of livestock farmers trained in business models,"Measures the total number of livestock farmers trained in business planning, financial management, and market-oriented production models.",Output ,,,,Count of farmers who completed approved business model training programmes.,Number,"• By region/state
+• By livestock species
+• By gender",,Quarterly/Annual,,,,,,,,
+,BOI-43,Number of livestock cooperatives linked to formal markets,Measures the total number of livestock cooperatives supported and successfully linked to formal markets through contractual or structured market arrangements.,Output ,,,,Count of cooperatives with documented formal market linkages.,Number,"• By region/state
+• By livestock product",,Quarterly/Annual,,,,,,,,
+,BOI-44,Number of animals registered on National Traceability System,Measures the total number of animals registered and uniquely identified within the National Animal Traceability System.,Output ,,,,Count of animals with valid identification records in the traceability system.,Number,"• By region/state
+• By livestock species",,Quarterly/Annual,,,,,,,,
+,BOI-45,Number of Livestock traded in domestic/international markets (million),Measures the total number of livestock traded in domestic and international markets within the reporting period.,Output ,,,,Sum of livestock transaction records documented in domestic and export markets.,Number,"• By market type (domestic, international)
+• By livestock species
+• By region/state",,Quarterly/Annual,,,,,,,,
+,BOI-46,Number of conflict mitigation committees established,Measures the total number of multi-stakeholder conflict mitigation committees established to address livestock-related conflicts.,Output ,,,,Count of formally constituted conflict mitigation committees.,Number,"• By region/state
+• By conflict typology",,Quarterly/Annual,,,,,,,,
+,BOI-47,Number of conflict mitigation committee members trained,"Measures the total number of members of conflict mitigation committees trained in conflict prevention, mediation, and resolution.",Output ,,,,Count of committee members who completed approved training programmes.,Number,"• By region/state
+• By gender",,Quarterly/Annual,,,,,,,,
+,BOI-48,Operational Situation room established,"Measures the establishment and operationalization of a centralized situation room to support real-time monitoring, coordination, and response for livestock sector operations and emergencies.",Output ,,,,"Binary assessment based on establishment, staffing, and operational readiness.",Yes/No,N/A,,Quarterly/Annual,,,,,,,,
+,BOI-49,Number of small-scale dairy farmers supported with improved breeds,Measures the total number of small-scale dairy farmers who received improved dairy breeds to enhance milk productivity.,Output ,,,,Count of eligible dairy farmers with verified receipt of improved breeds.,Number,"• By region/state
+• By breed type",,Quarterly/Annual,,,,,,,,
+,BOI-50,Number of animals AI for milk production,Measures the total number of dairy animals that received artificial insemination services specifically aimed at improving milk production.,Output ,,,,Count of artificial insemination procedures recorded for milk production purposes,Number,"• By region/state
+• By breed type",,Quarterly/Annual,,,,,,,,
+,BOI-51,Number of embryos transferred for milk production,Measures the total number of embryos transferred into recipient animals as part of genetic improvement interventions aimed specifically at enhancing milk production.,Output ,,,,Count of embryo transfer procedures conducted and recorded for dairy production purposes during the reporting period.,Number,"• By region/state
+• By breed type
+• By implementing facility",,Quarterly/Annual,,,,,,,,
+,BOI-52,Number of milking collection centers rehabilitated,"Measures the total number of milk collection centres that have been rehabilitated to improve milk quality, storage efficiency, hygiene standards, and aggregation capacity.",Output ,,,,Count of milk collection centres with completed and verified rehabilitation works.,Number,"• By region/state
+• By rehabilitation component",,Quarterly/Annual,,,,,,,,
+,BOI-53,Number of milk aggregators supported with collection tools,"Measures the total number of milk aggregators supported with collection tools, equipment, or technologies to enhance milk aggregation, quality control, and cold-chain efficiency.",Output ,,,,Count of milk aggregators with documented receipt of collection tools or equipment.,Number,"• By region/state
+• By type of collection tool",,Quarterly/Annual,,,,,,,,
+,BOI-54,National Growth Acceleration Strategy Developed (NLGAS),"Measures the development and formal approval of the National Livestock Growth Acceleration Strategy (NLGAS), providing a strategic framework to accelerate growth, productivity, and competitiveness in the livestock sector.",Output ,,,,"Binary assessment based on completion, validation, and official approval of the NLGAS document.",Yes/No,N/A,,Quarterly/Annual,,,,,,,,
+,BOI-55,Number of citizens engagement sessions held,"Measures the total number of structured citizen engagement sessions conducted to gather inputs, perspectives, and concerns related to livestock sector policies, programmes, or service delivery.",Output ,,,,Count of completed and documented citizen engagement sessions.,Number,"• By region/state
+• By engagement format (town hall, focus group, digital forum)",,Quarterly/Annual,,,,,,,,
+,BOI-56,Number of citizens feedback received,Measures the total number of feedback inputs received from citizens through formal engagement channels related to livestock sector initiatives.,Output ,,,,"Count of documented feedback submissions received via meetings, surveys, digital platforms, or helpdesks.",Number,"• By region/state
+• By feedback channel
+• By thematic area",,Quarterly/Annual,,,,,,,,
+,BOI-57,Number of initiatives/adjustments made from feedback,"Measures the total number of policy, programme, or operational initiatives that were initiated or adjusted in response to citizen feedback, demonstrating responsiveness and adaptive management.",Output ,,,,Count of initiatives or documented adjustments that explicitly reference citizen feedback as a trigger.,Number,"• By region/state
+• By intervention type (policy, programme, operational)",,Quarterly/Annual,,,,,,,,
+,PPOI-1.1.1,Number of solar chillers in use,,Output ,,,,,,,,,,,,,,,,
+,PPOI-1.1.2,Volume of milk processed (liters),,Output ,,,,,,,,,,,,,,,,
+,PPOI-1.1.3,Number of new dairy cooperatives formed,,Output ,,,,,,,,,,,,,,,,
+,PPOI-1.1.4,Number of new milk aggregators operational,,Output ,,,,,,,,,,,,,,,,
+,PPOI-1.1.5,Percentage boost in milk yield per cow,,Output ,,,,,,,,,,,,,,,,
+,PPOI-1.1.6,Percentage of dairy policies rolled out/active,,Output ,,,,,,,,,,,,,,,,
+,PPOI-1.1.7,Number of AI and embryo transfers completed,,,,,,,,,,,,,,,,,,
+,PPOI-1.1.8,Number of persons reached (sensitization),,,,,,,,,,,,,,,,,,
+,PPOI-1.1.9,Number of persons trained (stockmen/technicians),,,,,,,,,,,,,,,,,,
+,PPOI-1.1.10,Number of active development partners,,,,,,,,,,,,,,,,,,
+,PPOI-1.2.1,Percentage cost reduction in feed price,,,,,,,,,,,,,,,,,,
+,PPOI-1.2.2,Number of participants trained in soybean linkages,,,,,,,,,,,,,,,,,,
+,PPOI-1.2.3,Number of persons trained (capacity building),,,,,,,,,,,,,,,,,,
+,PPOI-1.2.4,Volume of credit extended to poultry farmers,,,,,,,,,,,,,,,,,,
+,PPOI-1.2.5,Number of processing sites rehabilitated,,,,,,,,,,,,,,,,,,
+,PPOI-1.2.6,Number of participants sensitized (outgrower schemes),,,,,,,,,,,,,,,,,,
+,PPOI-1.2.7,Number of GPS farms established by private sector,,,,,,,,,,,,,,,,,,
+,PPOI-1.2.8,Number of workshops conducted (policy development),,,,,,,,,,,,,,,,,,
+,PPOI-1.2.9,Number of chicks distributed (rural poultry support),,,,,,,,,,,,,,,,,,
+,PPOI-1.2.10,Number of community animal husbandry providers trained,,,,,,,,,,,,,,,,,,
+,PPOI-1.3.1,Number of cooperatives formed,,,,,,,,,,,,,,,,,,
+,PPOI-1.3.2,Number of farmers engaged in cooperatives,,,,,,,,,,,,,,,,,,
+,PPOI-1.3.3,Number of farmers impacted by breeding programs,,,,,,,,,,,,,,,,,,
+,PPOI-1.3.4,Percentage rise in sheep/goat yields,,,,,,,,,,,,,,,,,,
+,PPOI-1.3.5,Number of goat houses constructed,,,,,,,,,,,,,,,,,,
+,PPOI-1.3.6,Number of farmers supported (fattening programs),,,,,,,,,,,,,,,,,,
+,PPOI-1.3.7,Number of processing centers rehabilitated,,,,,,,,,,,,,,,,,,
+,PPOI-1.4.1,Number of fattening cooperatives formed,,,,,,,,,,,,,,,,,,
+,PPOI-1.4.2,Number of farmers trained (cooperative members),,,,,,,,,,,,,,,,,,
+,PPOI-1.4.3,Tons of fattening feed distributed,,,,,,,,,,,,,,,,,,
+,PPOI-1.4.4,Number of meat transport entrepreneurs incentivized,,,,,,,,,,,,,,,,,,
+,PPOI-1.4.5,Number of abattoir modernization projects,,,,,,,,,,,,,,,,,,
+,PPOI-1.4.6,Rollout of abattoir SOPs (% states compliant),,,,,,,,,,,,,,,,,,
+,PPOI-1.4.7,Number of butchers/vendors trained,,,,,,,,,,,,,,,,,,
+,PPOI-1.4.8,Number of modern meat retail shops incentivized,,,,,,,,,,,,,,,,,,
+,PPOI-1.5.1,Number of pig farmers supported with inputs,,,,,,,,,,,,,,,,,,
+,PPOI-1.5.2,Number of meat processors trained,,,,,,,,,,,,,,,,,,
+,PPOI-1.5.3,Number of markets linked to pig producers,,,,,,,,,,,,,,,,,,
+,PPOI-1.6.1,Number of value chain actors registered,,,,,,,,,,,,,,,,,,
+,PPOI-1.6.2,Number of participants trained (breed improvement),,,,,,,,,,,,,,,,,,
+,PPOI-1.6.3,Number of actors receiving input support,,,,,,,,,,,,,,,,,,
+,PPOI-1.6.4,Number of SOP copies produced and distributed,,,,,,,,,,,,,,,,,,
+,PPOI-1.6.5,Number of markets linked to leather producers,,,,,,,,,,,,,,,,,,
+,PPOI-1.7.1,Number of micro-livestock actors registered,,,,,,,,,,,,,,,,,,
+,PPOI-1.7.2,Number of actors trained in improved husbandry,,,,,,,,,,,,,,,,,,
+,PPOI-1.7.3,Number of SOP copies distributed (micro-livestock),,,,,,,,,,,,,,,,,,
+,PPOI-1.7.4,Number of farmers supported with inputs (micro-livestock),,,,,,,,,,,,,,,,,,
+,PPOI-1.7.5,Number of markets linked to micro-livestock producers,,,,,,,,,,,,,,,,,,
+,PPOI-1.7.6,Number of beehives kept (apiculture),,,,,,,,,,,,,,,,,,
+,PPOI-1.7.7,Honey production volume (liters),,,,,,,,,,,,,,,,,,
+,PPOI-1.7.8,Percentage of honey certified residue-free,,,,,,,,,,,,,,,,,,
+,PPOI-1.7.9,Number of donkey breeders registered,,,,,,,,,,,,,,,,,,
+,PPOI-1.7.10,Number of donkey farmers supported (Jennys feed minerals),,,,,,,,,,,,,,,,,,
+,PPOI-2.1.1,Quantity of veterinary supplies procured,,,,,,,,,,,,,,,,,,
+,PPOI-2.1.2,Number of stockout incidents,,,,,,,,,,,,,,,,,,
+,PPOI-2.2.1,Percentage rise in disease detection rates,,,,,,,,,,,,,,,,,,
+,PPOI-2.2.2,Number of persons trained (biosecurity protocols),,,,,,,,,,,,,,,,,,
+,PPOI-2.2.3,Number of veterinary clinics rebuilt/equipped,,,,,,,,,,,,,,,,,,
+,PPOI-2.2.4,Usage levels of rehabilitated clinics (% capacity),,,,,,,,,,,,,,,,,,
+,PPOI-2.2.5,Number of disease outbreaks prevented,,,,,,,,,,,,,,,,,,
+,PPOI-2.2.6,Improved outbreak detection rates (% detected <24hrs),,,,,,,,,,,,,,,,,,
+,PPOI-2.2.7,Number of surveillance officers trained,,,,,,,,,,,,,,,,,,
+,PPOI-2.2.8,System readiness score (surveillance infrastructure),,,,,,,,,,,,,,,,,,
+,PPOI-2.2.9,Number of surveillance vehicles deployed,,,,,,,,,,,,,,,,,,
+,PPOI-2.2.10,Improved capacity to prevent/manage outbreaks (index score),,,,,,,,,,,,,,,,,,
+,PPOI-2.3.1,Percentage vaccination coverage target achieved,,,,,,,,,,,,,,,,,,
+,PPOI-2.3.2,Decline in vaccine/consumable stockouts,,,,,,,,,,,,,,,,,,
+,PPOI-2.3.3,Falling number of infection spillovers (zoonotic diseases),,,,,,,,,,,,,,,,,,
+,PPOI-2.3.4,Number of disease control campaigns conducted,,,,,,,,,,,,,,,,,,
+,PPOI-2.3.5,Percentage decline in TAD incidence,,,,,,,,,,,,,,,,,,
+,PPOI-2.4.1,Number of diagnostic kits distributed,,,,,,,,,,,,,,,,,,
+,PPOI-2.4.2,Percentage decline in diagnostic stockouts,,,,,,,,,,,,,,,,,,
+,PPOI-2.4.3,Number of laboratories upgraded,,,,,,,,,,,,,,,,,,
+,PPOI-2.4.4,Percentage improvement in lab efficiency (turnaround time),,,,,,,,,,,,,,,,,,
+,PPOI-2.4.5,Percentage efficiency in data collection and diagnostic accuracy,,,,,,,,,,,,,,,,,,
+,PPOI-2.4.6,Percentage remapped surveillance points operational,,,,,,,,,,,,,,,,,,
+,PPOI-2.5.1,Number of veterinary certificates issued,,,,,,,,,,,,,,,,,,
+,PPOI-2.5.2,Percentage increase in market access to export markets,,,,,,,,,,,,,,,,,,
+,PPOI-2.5.3,Percentage compliance with veterinary regulations,,,,,,,,,,,,,,,,,,
+,PPOI-2.5.4,Percentage increase in livestock product exports,,,,,,,,,,,,,,,,,,
+,PPOI-2.5.5,Database quality score (livestock demographics),,,,,,,,,,,,,,,,,,
+,PPOI-2.5.6,Database usage statistics (number of queries/reports),,,,,,,,,,,,,,,,,,
+,PPOI-2.6.1,Number of beehives kept,,,,,,,,,,,,,,,,,,
+,PPOI-2.6.2,Honey production volumes (liters),,,,,,,,,,,,,,,,,,
+,PPOI-2.6.3,Percentage of honey certified residue-free,,,,,,,,,,,,,,,,,,
+,PPOI-2.6.4,Percentage disease outbreaks in micro-livestock per annum,,,,,,,,,,,,,,,,,,
+,PPOI-2.6.5,Number of micro-livestock farmers trained in biosecurity,,,,,,,,,,,,,,,,,,
+,PPOI-2.6.6,Number of micro-livestock farms biosecurity compliant,,,,,,,,,,,,,,,,,,
+,PPOI-2.7.1,Percentage reduction in aquaculture health incidents,,,,,,,,,,,,,,,,,,
+,PPOI-2.7.2,Percentage reduction in chemical use (aquaculture),,,,,,,,,,,,,,,,,,
+,PPOI-2.7.3,Percentage increase in aquaculture productivity,,,,,,,,,,,,,,,,,,
+,PPOI-2.7.4,Number of disease outbreaks prevented/contained,,,,,,,,,,,,,,,,,,
+,PPOI-2.7.5,Number of aquaculture farmers trained and protected,,,,,,,,,,,,,,,,,,
+,PPOI-2.8.1,Number of wildlife officers trained,,,,,,,,,,,,,,,,,,
+,PPOI-2.8.2,Level of knowledge transferred (assessment score),,,,,,,,,,,,,,,,,,
+,PPOI-2.8.3,Percentage increase in prompt wildlife disease detection,,,,,,,,,,,,,,,,,,
+,PPOI-2.8.4,Stability of wildlife ecosystem (disease impact score),,,,,,,,,,,,,,,,,,
+,PPOI-2.8.5,Number of disease spillovers from wildlife prevented,,,,,,,,,,,,,,,,,,
+,PPOI-2.9.1,Number of functional One Health structures at sub-national levels,,,,,,,,,,,,,,,,,,
+,PPOI-2.9.2,Number of One Health teams established and operational,,,,,,,,,,,,,,,,,,
+,PPOI-2.9.3,Percentage alignment with global One Health best practices,,,,,,,,,,,,,,,,,,
+,PPOI-2.9.4,Percentage of zoonoses controlled (target diseases),,,,,,,,,,,,,,,,,,
+,PPOI-2.9.5,Number of One Health multilateral meetings conducted,,,,,,,,,,,,,,,,,,
+,PPOI-2.10.1,Percentage of WOAH dues paid on time,,,,,,,,,,,,,,,,,,
+,PPOI-2.10.2,Percentage of WOAH obligations met (reporting standards),,,,,,,,,,,,,,,,,,
+,PPOI-2.10.3,Nigeria's WOAH performance pathway (PVS) score,,,,,,,,,,,,,,,,,,
+,PPOI-3.1.1,Volume of certified pasture seeds produced,,,,,,,,,,,,,,,,,,
+,PPOI-3.1.2,Number of pasture seed varieties certified,,,,,,,,,,,,,,,,,,
+,PPOI-3.1.3,Number of seed producers trained and certified,,,,,,,,,,,,,,,,,,
+,PPOI-3.1.4,Number of enforcement activities (seed quality control),,,,,,,,,,,,,,,,,,
+,PPOI-3.2.1,Number of states with designated pasture lands,,,,,,,,,,,,,,,,,,
+,PPOI-3.2.2,Size of allocated pasture lands (hectares),,,,,,,,,,,,,,,,,,
+,PPOI-3.3.1,Creation of national feed budget model,,,,,,,,,,,,,,,,,,
+,PPOI-3.3.2,Annual feed budget forecast issuance,,,,,,,,,,,,,,,,,,
+,PPOI-3.3.3,Number of national workshops on feed budgeting,,,,,,,,,,,,,,,,,,
+,PPOI-3.4.1,Percentage increase in pasture and feed production,,,,,,,,,,,,,,,,,,
+,PPOI-3.4.2,Number of year-round pasture farmers trained,,,,,,,,,,,,,,,,,,
+,PPOI-3.4.3,Percentage of annual pasture and fodder available year-round,,,,,,,,,,,,,,,,,,
+,PPOI-3.4.4,Number of hectares under wetland/irrigation feed crop production,,,,,,,,,,,,,,,,,,
+,PPOI-3.5.1,Number of alternative feed ingredients mapped and analyzed,,,,,,,,,,,,,,,,,,
+,PPOI-3.5.2,Completion of national feed mill survey,,,,,,,,,,,,,,,,,,
+,PPOI-3.5.3,Number of feed mills mapped,,,,,,,,,,,,,,,,,,
+,PPOI-3.5.4,Number of feed ingredient manufacturers identified,,,,,,,,,,,,,,,,,,
+,PPOI-3.6.1,Number of grazing reserves cultivated and seeded,,,,,,,,,,,,,,,,,,
+,PPOI-3.6.2,Number of pastoralists trained (pasture management),,,,,,,,,,,,,,,,,,
+,PPOI-3.6.3,Number of water facilities built in grazing reserves,,,,,,,,,,,,,,,,,,
+,PPOI-3.6.4,Number of access roads constructed in grazing reserves,,,,,,,,,,,,,,,,,,
+,PPOI-3.7.1,Number of youth and women trained in conservation enterprises,,,,,,,,,,,,,,,,,,
+,PPOI-3.7.2,Number of persons capacitated (business support provided),,,,,,,,,,,,,,,,,,
+,PPOI-3.7.3,Number of persons integrated into livestock distribution program,,,,,,,,,,,,,,,,,,
+,PPOI-3.8.1,Number of grazing reserve managers trained,,,,,,,,,,,,,,,,,,
+,PPOI-3.8.2,Number of reserve managers actively deployed,,,,,,,,,,,,,,,,,,
+,PPOI-4.1.1,Number of new or rehabilitated water points,,,,,,,,,,,,,,,,,,
+,PPOI-4.1.2,Number of boreholes constructed/rehabilitated,,,,,,,,,,,,,,,,,,
+,PPOI-4.1.3,Number of dams constructed near stock routes,,,,,,,,,,,,,,,,,,
+,PPOI-4.1.4,Number of water harvesting systems installed,,,,,,,,,,,,,,,,,,
+,PPOI-4.1.5,Number of solar-powered water supply systems,,,,,,,,,,,,,,,,,,
+,PPOI-4.2.1,Percentage of pastoralists trained in water conservation,,,,,,,,,,,,,,,,,,
+,PPOI-4.2.2,Percentage of Water User Associations (WUAs) functional,,,,,,,,,,,,,,,,,,
+,PPOI-4.2.3,Number of Water User Associations established,,,,,,,,,,,,,,,,,,
+,PPOI-4.2.4,Percentage adoption of rotational grazing systems,,,,,,,,,,,,,,,,,,
+,PPOI-4.3.1,Percentage reduction in farmer-herder conflicts related to water,,,,,,,,,,,,,,,,,,
+,PPOI-4.3.2,Number of livestock watering points mapped and secured,,,,,,,,,,,,,,,,,,
+,PPOI-4.3.3,Number of joint water access agreements signed,,,,,,,,,,,,,,,,,,
+,PPOI-4.4.1,Percentage adoption of water recycling systems,,,,,,,,,,,,,,,,,,
+,PPOI-4.4.2,Percentage adoption of efficient irrigation for fodder,,,,,,,,,,,,,,,,,,
+,PPOI-4.4.3,Number of climate-resilient water systems implemented,,,,,,,,,,,,,,,,,,
+,PPOI-4.4.4,Number of solar-powered boreholes and irrigation systems,,,,,,,,,,,,,,,,,,
+,PPOI-4.4.5,Establishment of early warning systems for drought/water shortages,,,,,,,,,,,,,,,,,,
+,PPOI-4.5.1,Policies and legal frameworks developed,,,,,,,,,,,,,,,,,,
+,PPOI-4.5.2,National and State level legislations established,,,,,,,,,,,,,,,,,,
+,PPOI-4.5.3,Percentage increase in inter-ministerial coordination,,,,,,,,,,,,,,,,,,
+,PPOI-4.5.4,Percentage research output on livestock water needs,,,,,,,,,,,,,,,,,,
+,PPOI-5.1.1,Number of financial products launched,,,,,,,,,,,,,,,,,,
+,PPOI-5.1.2,Percentage of farmers using financial services,,,,,,,,,,,,,,,,,,
+,PPOI-5.2.1,Percentage reduction in farmer financial losses,,,,,,,,,,,,,,,,,,
+,PPOI-5.2.2,Percentage increase in farmer income,,,,,,,,,,,,,,,,,,
+,PPOI-5.3.1,Percentage of farmers linked to value-added markets,,,,,,,,,,,,,,,,,,
+,PPOI-5.3.2,Percentage certification compliance achieved,,,,,,,,,,,,,,,,,,
+,PPOI-5.3.3,Percentage annual export growth (livestock products),,,,,,,,,,,,,,,,,,
+,PPOI-5.3.4,Forex earnings from livestock exports,,,,,,,,,,,,,,,,,,
+,PPOI-5.4.1,Number of facilities developed (markets abattoirs processing),,,,,,,,,,,,,,,,,,
+,PPOI-5.4.2,Number of farmers trained in value chain activities,,,,,,,,,,,,,,,,,,
+,PPOI-5.4.3,Number of livestock zones established within SAPZ,,,,,,,,,,,,,,,,,,
+,PPOI-5.5.1,Total loan volume disbursed,,,,,,,,,,,,,,,,,,
+,PPOI-5.5.2,Number of farmers in livestock credit system,,,,,,,,,,,,,,,,,,
+,PPOI-5.5.3,Percentage loan repayment rate,,,,,,,,,,,,,,,,,,
+,PPOI-5.5.4,Number of specialty financing initiatives funded,,,,,,,,,,,,,,,,,,
+,PPOI-5.6.1,Number of farmers insured,,,,,,,,,,,,,,,,,,
+,PPOI-5.6.2,Insurance coverage value (Naira and animals covered),,,,,,,,,,,,,,,,,,
+,PPOI-5.6.3,Claims settlement rate (% of legitimate claims paid),,,,,,,,,,,,,,,,,,
+,PPOI-5.6.4,Number of insurance products available,,,,,,,,,,,,,,,,,,
+,PPOI-5.7.1,Number of farmers trained on accessing finance/insurance,,,,,,,,,,,,,,,,,,
+,PPOI-5.7.2,Number of regional training programs conducted,,,,,,,,,,,,,,,,,,
+,PPOI-5.8.1,Number of aggregation centers operational,,,,,,,,,,,,,,,,,,
+,PPOI-5.8.2,Digital platform usage statistics (active users),,,,,,,,,,,,,,,,,,
+,PPOI-5.8.3,Number of livestock sales transactions through digital platform,,,,,,,,,,,,,,,,,,
+,PPOI-5.8.4,Percentage platform usage data (transaction volume share),,,,,,,,,,,,,,,,,,
+,PPOI-5.9.1,Livestock lending as % of total agricultural loans,,,,,,,,,,,,,,,,,,
+,PPOI-5.9.2,Number of commercial banks actively lending to livestock,,,,,,,,,,,,,,,,,,
+,PPOI-5.9.3,Total livestock sector financing (public + private),,,,,,,,,,,,,,,,,,
+,PPOI-5.10.1,Livestock export growth trajectory,,,,,,,,,,,,,,,,,,
+,PPOI-5.10.2,Number of financing initiatives for market activities,,,,,,,,,,,,,,,,,,
+,PPOI-5.11.1,Number of direct jobs created,,,,,,,,,,,,,,,,,,
+,PPOI-5.11.2,Number of indirect jobs created,,,,,,,,,,,,,,,,,,
+,PPOI-5.11.3,Percentage reduction in rural poverty,,,,,,,,,,,,,,,,,,
+,PPOI-5.12.1,Number of ministerial committee meetings held,,,,,,,,,,,,,,,,,,
+,PPOI-5.12.2,Number of livestock ministerial investment conferences,,,,,,,,,,,,,,,,,,
+,PPOI-5.12.3,Number of firms in Livestock Business Group,,,,,,,,,,,,,,,,,,
+,PPOI-5.12.4,Number of Letters of Intent (LOIs) secured from investors,,,,,,,,,,,,,,,,,,
+,PPOI-6.1.1,Number of agencies supported to improve conflict management,,,,,,,,,,,,,,,,,,
+,PPOI-6.1.2,Number of parties trained in mediation/ADR/grievance management,,,,,,,,,,,,,,,,,,
+,PPOI-6.1.3,Number of SOPs developed,,,,,,,,,,,,,,,,,,
+,PPOI-6.1.4,Percentage SOP utilization in conflict resolution,,,,,,,,,,,,,,,,,,
+,PPOI-6.1.5,Percentage of conflicts resolved within 90 days,,,,,,,,,,,,,,,,,,
+,PPOI-6.1.6,Number of conflicts prevented/neutralized through rapid intervention,,,,,,,,,,,,,,,,,,
+,PPOI-6.2.1,Percentage of state/LGA institutions with improved funding,,,,,,,,,,,,,,,,,,
+,PPOI-6.3.1,Number of public sector and traditional leaders trained,,,,,,,,,,,,,,,,,,
+,PPOI-6.3.2,Number of farmer and pastoral organization leaders trained,,,,,,,,,,,,,,,,,,
+,PPOI-6.3.3,Percentage of trained leaders actively engaged in peacebuilding,,,,,,,,,,,,,,,,,,
+,PPOI-6.4.1,Number of media organizations and social influencers engaged,,,,,,,,,,,,,,,,,,
+,PPOI-6.4.2,Number of media practitioners trained in conflict-sensitive reporting,,,,,,,,,,,,,,,,,,
+,PPOI-6.4.3,Percentage of media practitioners practicing conflict-sensitive reporting,,,,,,,,,,,,,,,,,,
+,PPOI-6.4.4,Percentage of media promoting peaceful coexistence,,,,,,,,,,,,,,,,,,
+,PPOI-6.5.1,Guidelines and procedures for transhumance migration developed,,,,,,,,,,,,,,,,,,
+,PPOI-6.5.2,Number of states with improved coordination of transhumance,,,,,,,,,,,,,,,,,,
+,PPOI-6.5.3,Number of community leaders trained in migration management,,,,,,,,,,,,,,,,,,
+,PPOI-6.5.4,Number of inter-state migration agreements signed,,,,,,,,,,,,,,,,,,
+,PPOI-6.5.5,ECOWAS transhumance protocol review initiated,,,,,,,,,,,,,,,,,,
+,PPOI-6.5.6,Framework agreement for ECOWAS protocol implementation,,,,,,,,,,,,,,,,,,
+,PPOI-6.6.1,Livestock Ranger Unit established and operational,,,,,,,,,,,,,,,,,,
+,PPOI-6.6.2,Number of livestock rangers recruited and equipped,,,,,,,,,,,,,,,,,,
+,PPOI-6.6.3,Percentage of ranger recruitment and equipping target,,,,,,,,,,,,,,,,,,
+,PPOI-6.6.4,Conflict/insecurity hotspot mapping completed,,,,,,,,,,,,,,,,,,
+,PPOI-6.6.5,Number of ranger deployment operations conducted,,,,,,,,,,,,,,,,,,
+,PPOI-6.6.6,Number of security awareness activities among communities,,,,,,,,,,,,,,,,,,
+,PPOI-6.6.7,Percentage community support for Livestock Ranger services,,,,,,,,,,,,,,,,,,
+,PPOI-7.1.1,Baseline facility inventory completed,,,,,,,,,,,,,,,,,,
+,PPOI-7.1.2,Design prototypes for production facilities completed,,,,,,,,,,,,,,,,,,
+,PPOI-7.1.3,Number of livestock production facilities constructed,,,,,,,,,,,,,,,,,,
+,PPOI-7.1.4,Number of herders settled in new facilities,,,,,,,,,,,,,,,,,,
+,PPOI-7.1.5,Percentage of facility utilization (product marketing economic activity),,,,,,,,,,,,,,,,,,
+,PPOI-7.2.1,Number of veterinary clinics constructed/equipped,,,,,,,,,,,,,,,,,,
+,PPOI-7.2.2,Number of private partners managing concessioned clinics,,,,,,,,,,,,,,,,,,
+,PPOI-7.2.3,Number of farmers using clinic services,,,,,,,,,,,,,,,,,,
+,PPOI-7.2.4,Number of laboratories upgraded (NVRI Regional Sentinel Teaching),,,,,,,,,,,,,,,,,,
+,PPOI-7.2.5,Number of laboratory samples processed annually,,,,,,,,,,,,,,,,,,
+,PPOI-7.2.6,Number of private animal health service providers supported,,,,,,,,,,,,,,,,,,
+,PPOI-7.3.1,Number of abattoirs upgraded with meat haulage vehicles,,,,,,,,,,,,,,,,,,
+,PPOI-7.3.2,Number of silos and storage facilities constructed,,,,,,,,,,,,,,,,,,
+,PPOI-7.3.3,Number of demonstration farms with irrigation systems,,,,,,,,,,,,,,,,,,
+,PPOI-7.3.4,Number of grazing reserves equipped with modern infrastructure,,,,,,,,,,,,,,,,,,
+,PPOI-7.3.5,Number of new business ventures established on reserves,,,,,,,,,,,,,,,,,,
+,PPOI-7.4.1,Number of centralized livestock service centers established,,,,,,,,,,,,,,,,,,
+,PPOI-7.4.2,Number of satellite rural centers (sub-centers),,,,,,,,,,,,,,,,,,
+,PPOI-7.4.3,Number of service centers fully operational and staffed,,,,,,,,,,,,,,,,,,
+,PPOI-7.4.4,Usage data (number of animals treated/diagnosed/marketed),,,,,,,,,,,,,,,,,,
+,PPOI-7.5.1,Number of temperature-controlled vehicles deployed,,,,,,,,,,,,,,,,,,
+,PPOI-7.5.2,Percentage reduction in post-harvest losses (perishables),,,,,,,,,,,,,,,,,,
+,PPOI-7.5.3,Number of livestock trailers and wagons for feed transport,,,,,,,,,,,,,,,,,,
+,PPOI-7.5.4,Number of designated livestock loading/unloading hubs,,,,,,,,,,,,,,,,,,
+,PPOI-7.5.5,Number of vehicles operational and in use,,,,,,,,,,,,,,,,,,
+,PPOI-7.6.1,Number of regional processing facility clusters established,,,,,,,,,,,,,,,,,,
+,PPOI-7.6.2,Number of modern meat processing facilities operational,,,,,,,,,,,,,,,,,,
+,PPOI-7.6.3,Number of new private investments in processing sector,,,,,,,,,,,,,,,,,,
+,PPOI-7.6.4,Number of processing facilities meeting international standards,,,,,,,,,,,,,,,,,,
+,PPOI-7.6.5,Tax holiday incentive uptake rate,,,,,,,,,,,,,,,,,,
+,PPOI-7.7.1,Number of renewable energy pilot projects,,,,,,,,,,,,,,,,,,
+,PPOI-7.7.2,Number of solar-powered water pumps/systems,,,,,,,,,,,,,,,,,,
+,PPOI-7.7.3,Number of biogas digesters constructed,,,,,,,,,,,,,,,,,,
+,PPOI-7.7.4,Number of farms adopting renewable energy,,,,,,,,,,,,,,,,,,
+,PPOI-7.7.5,Percentage of farms using green energy,,,,,,,,,,,,,,,,,,
+,PPOI-7.7.6,Percentage reduction in operational energy costs,,,,,,,,,,,,,,,,,,
+,PPOI-7.8.1,Number of kilometers of all-weather roads constructed/rehabilitated,,,,,,,,,,,,,,,,,,
+,PPOI-7.8.2,Number of all-weather roads with erosion control/safeguards,,,,,,,,,,,,,,,,,,
+,PPOI-7.8.3,Number of LGA-level last-mile road connectivity projects,,,,,,,,,,,,,,,,,,
+,PPOI-7.8.4,Volume of goods transported on improved roads,,,,,,,,,,,,,,,,,,
+,PPOI-7.8.5,Percentage reduction in transport time to markets,,,,,,,,,,,,,,,,,,
+,PPOI-7.9.1,Number of waste collection systems established,,,,,,,,,,,,,,,,,,
+,PPOI-7.9.2,Number of large-scale organic fertilizer production facilities,,,,,,,,,,,,,,,,,,
+,PPOI-7.9.3,Number of biogas production facilities,,,,,,,,,,,,,,,,,,
+,PPOI-7.9.4,Tons of animal waste processed annually,,,,,,,,,,,,,,,,,,
+,PPOI-7.9.5,Number of beneficiary farmers/communities reached,,,,,,,,,,,,,,,,,,
+,PPOI-7.9.6,Number of PR/awareness activities on waste conversion,,,,,,,,,,,,,,,,,,
+,PPOI-8.1.1,Draft National Policy on Livestock Extension developed,,,,,,,,,,,,,,,,,,
+,PPOI-8.1.2,Stakeholder validation workshops completed,,,,,,,,,,,,,,,,,,
+,PPOI-8.1.3,National Policy on Livestock Extension approved,,,,,,,,,,,,,,,,,,
+,PPOI-8.1.4,Policy implementation roadmap disseminated,,,,,,,,,,,,,,,,,,
+,PPOI-8.1.5,Number of higher institutions developing livestock extension curricula,,,,,,,,,,,,,,,,,,
+,PPOI-8.2.1,Schedule of duties for LEW developed and validated,,,,,,,,,,,,,,,,,,
+,PPOI-8.2.2,Number of LEWs formally integrated into civil service,,,,,,,,,,,,,,,,,,
+,PPOI-8.2.3,Number of states implementing formal LEW cadre,,,,,,,,,,,,,,,,,,
+,PPOI-8.3.1,Draft extension training modules completed (by value chain),,,,,,,,,,,,,,,,,,
+,PPOI-8.3.2,Stakeholder workshop for module refinement conducted,,,,,,,,,,,,,,,,,,
+,PPOI-8.3.3,Training modules finalized and published,,,,,,,,,,,,,,,,,,
+,PPOI-8.3.4,Number of copies of training materials produced,,,,,,,,,,,,,,,,,,
+,PPOI-8.4.1,Number of LEWs recruited,,,,,,,,,,,,,,,,,,
+,PPOI-8.4.2,Number of master trainers trained (ToT program),,,,,,,,,,,,,,,,,,
+,PPOI-8.4.3,Number of cascading trainings conducted at state level,,,,,,,,,,,,,,,,,,
+,PPOI-8.4.4,Percentage coverage of LEW training (% recruited workers trained),,,,,,,,,,,,,,,,,,
+,PPOI-8.5.1,Number of extension service calls/requests responded to,,,,,,,,,,,,,,,,,,
+,PPOI-8.5.2,Percentage of priority livestock areas with active extension coverage,,,,,,,,,,,,,,,,,,
+,PPOI-8.5.3,Number of farmers receiving extension services,,,,,,,,,,,,,,,,,,
+,PPOI-8.5.4,Number of farmers adopting recommended practices,,,,,,,,,,,,,,,,,,
+,PPOI-8.5.5,Percentage of extension service priorities rolled out nationally,,,,,,,,,,,,,,,,,,
+,PPOI-8.6.1,Number of LEW specializing in pastoral systems,,,,,,,,,,,,,,,,,,
+,PPOI-8.6.2,Number of pastoralists trained on improved husbandry,,,,,,,,,,,,,,,,,,
+,PPOI-8.6.3,Percentage increase in pastoral herd productivity,,,,,,,,,,,,,,,,,,
+,PPOI-8.7.1,Number of private sector extension service providers mapped,,,,,,,,,,,,,,,,,,
+,PPOI-8.7.2,SOPs for private extension delivery developed,,,,,,,,,,,,,,,,,,
+,PPOI-8.7.3,Number of private extension service providers operationalized,,,,,,,,,,,,,,,,,,
+,PPOI-8.7.4,Percentage of extension services from private sector,,,,,,,,,,,,,,,,,,
+,PPOI-9.1.1,Number of women and youth cooperative clusters formed,,,,,,,,,,,,,,,,,,
+,PPOI-9.1.2,Number of cooperative cluster members,,,,,,,,,,,,,,,,,,
+,PPOI-9.1.3,Number of cooperative members trained on group dynamics,,,,,,,,,,,,,,,,,,
+,PPOI-9.1.4,Percentage of trained cooperative members accessing credit,,,,,,,,,,,,,,,,,,
+,PPOI-9.2.1,Number of women and youth sensitized on livestock programs,,,,,,,,,,,,,,,,,,
+,PPOI-9.2.2,Gender policies integrated in livestock sector documents,,,,,,,,,,,,,,,,,,
+,PPOI-9.2.3,Number of all-women and all-youth livestock enterprises,,,,,,,,,,,,,,,,,,
+,PPOI-9.3.1,Number of women/youth livestock farmers linked to credit,,,,,,,,,,,,,,,,,,
+,PPOI-9.3.2,Average loan size per woman/youth borrower,,,,,,,,,,,,,,,,,,
+,PPOI-9.3.3,Percentage on-time loan repayment rate (women/youth),,,,,,,,,,,,,,,,,,
+,PPOI-9.4.1,Number of livestock cottage industries established,,,,,,,,,,,,,,,,,,
+,PPOI-9.4.2,Investment in cottage industries,,,,,,,,,,,,,,,,,,
+,PPOI-9.4.3,Number of beneficiary women/youth trained on industry management,,,,,,,,,,,,,,,,,,
+,PPOI-9.4.4,Number of industries operational and generating revenue,,,,,,,,,,,,,,,,,,
+,PPOI-9.5.1,Number of women and youth trained in agribusiness,,,,,,,,,,,,,,,,,,
+,PPOI-9.5.2,Number of women/youth provided starter pack inputs,,,,,,,,,,,,,,,,,,
+,PPOI-9.5.3,Input value per beneficiary,,,,,,,,,,,,,,,,,,
+,PPOI-9.5.4,Number of market linkages established for women/youth,,,,,,,,,,,,,,,,,,
+,PPOI-10.1.1,Number of stakeholders sensitized for census (awareness),,,,,,,,,,,,,,,,,,
+,PPOI-10.1.2,Census design finalized,,,,,,,,,,,,,,,,,,
+,PPOI-10.1.3,National sensitization campaign completed,,,,,,,,,,,,,,,,,,
+,PPOI-10.1.4,Number of livestock species enumerated,,,,,,,,,,,,,,,,,,
+,PPOI-10.1.5,Number of livestock farmers enumerated,,,,,,,,,,,,,,,,,,
+,PPOI-10.1.6,Number of livestock infrastructure/markets enumerated,,,,,,,,,,,,,,,,,,
+,PPOI-10.2.1,National livestock ID system design completed,,,,,,,,,,,,,,,,,,
+,PPOI-10.2.2,Number of animals with unique ID assigned,,,,,,,,,,,,,,,,,,
+,PPOI-10.2.3,Traceability system operational,,,,,,,,,,,,,,,,,,
+,PPOI-10.2.4,Number of traceability system users trained,,,,,,,,,,,,,,,,,,
+,PPOI-10.3.1,Livestock data management system (LDMS) designed,,,,,,,,,,,,,,,,,,
+,PPOI-10.3.2,LDMS software developed and tested,,,,,,,,,,,,,,,,,,
+,PPOI-10.3.3,Data analysis and reporting tools procured,,,,,,,,,,,,,,,,,,
+,PPOI-10.3.4,Computer hardware deployed to LGAs/states,,,,,,,,,,,,,,,,,,
+,PPOI-10.3.5,Number of reports generated and disseminated,,,,,,,,,,,,,,,,,,
+,PPOI-10.3.6,System maintenance and updates performed,,,,,,,,,,,,,,,,,,
+,PPOI-10.4.1,Number of livestock/animal health officers trained on data management,,,,,,,,,,,,,,,,,,
+,PPOI-10.4.2,Number of data entry personnel trained,,,,,,,,,,,,,,,,,,
+,PPOI-10.4.3,Number of livestock farmers trained on data collection,,,,,,,,,,,,,,,,,,
+,PPOI-10.4.4,Number of personnel receiving refresher/advanced training,,,,,,,,,,,,,,,,,,
+,PPOI-10.4.5,Number of usage status reports generated (system performance),,,,,,,,,,,,,,,,,,
+,PPOI-CCM1.1,Total investment mobilized (all sources),,,,,,,,,,,,,,,,,,
+,PPOI-CCM1.2,Federal government budget allocation to NGLAS,,,,,,,,,,,,,,,,,,
+,PPOI-CCM1.3,Donor/MDB funding commitments secured,,,,,,,,,,,,,,,,,,
+,PPOI-CCM1.4,Private sector investment secured (Letters of Intent),,,,,,,,,,,,,,,,,,
+,PPOI-CCM1.5,State government co-investment,,,,,,,,,,,,,,,,,,
+,PPOI-CCM2.1,National Joint Working Group (JWG) established & operational,,,,,,,,,,,,,,,,,,
+,PPOI-CCM2.2,Number of JWG meetings held,,,,,,,,,,,,,,,,,,
+,PPOI-CCM2.3,Number of state-level JWGs established,,,,,,,,,,,,,,,,,,
+,PPOI-CCM2.4,Percentage of JWG recommendations implemented,,,,,,,,,,,,,,,,,,
+,PPOI-CCM2.5,Number of inter-ministerial coordination meetings held,,,,,,,,,,,,,,,,,,
+,PPOI-CCM2.6,Percentage of coordination issues resolved through JWG,,,,,,,,,,,,,,,,,,
+,PPOI-CCM3.1,Livestock sector GHG emissions (carbon footprint),,,,,,,,,,,,,,,,,,
+,PPOI-CCM3.2,Number of grazing reserves under sustainable management,,,,,,,,,,,,,,,,,,
+,PPOI-CCM3.3,Percentage of farmland under soil conservation practices,,,,,,,,,,,,,,,,,,
+,PPOI-CCM3.4,Biodiversity conservation (livestock breed diversity),,,,,,,,,,,,,,,,,,
+,PPOI-CCM4.1,Percentage of women farmers in sector programs,,,,,,,,,,,,,,,,,,
+,PPOI-CCM4.2,Percentage of youth (18-35 years) in sector programs,,,,,,,,,,,,,,,,,,
+,PPOI-CCM4.3,Percentage of pastoralist/nomadic communities benefiting,,,,,,,,,,,,,,,,,,
+,PPOI-CCM4.4,Percentage of smallholder farmers benefiting,,,,,,,,,,,,,,,,,,
+,PPOI-CCM4.5,Gini coefficient for livestock income distribution,,,,,,,,,,,,,,,,,,

@@ -13,26 +13,46 @@ class ProgramsController extends Controller
 {
     
 public function getIndicators(Request $request)
-    {
-        try{
+{
+    try {
         $indicators = Indicator::with('tiers')->get()->makeHidden(['id'])->map(function ($indicator) {
             $indicator->tiers->each->makeHidden(['id', 'pivot', 'created_at', 'updated_at']);
+            
+            // Transform disaggregation_dimensions to clean array format
+            $disagg = $indicator->disaggregation_dimensions;
+            if (is_array($disagg) && !empty($disagg)) {
+                $cleaned = [];
+                foreach ($disagg as $key => $value) {
+                    if (is_array($value)) {
+                        // Associative element with sub-items
+                        $cleaned[$key] = $value;
+                    } else {
+                        // Simple indexed element
+                        $cleaned[] = $value;
+                    }
+                }
+                $indicator->disaggregation_dimensions = $cleaned;
+            }
+            
             return $indicator;
         })->makeHidden(['created_at', 'updated_at']);
 
+        // Use JSON_FORCE_OBJECT flag selectively or convert to array
+        $data = $indicators->toArray();
+        
         return response()->json([
             'status' => true,
             'data' => $indicators
         ]);
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Failed to retrieve indicators',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Failed to retrieve indicators',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
     
     public function getSectoralGoals(Request $request)
     {
