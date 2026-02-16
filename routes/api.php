@@ -19,12 +19,27 @@ Route::group([
         Route::get('/lgas', [App\Http\Controllers\LocationController::class, 'ApiGetLgas'])->name('lgas');
     });
 
+
+
     // Protected enumeration submissions (JWT auth)
     Route::group([
         'middleware' => ['json-response', 'jwt.verify'],
     ], function () {
         Route::post('/enumeration-records', 'Api\EnumerationRecordController@store')
             ->name('api.enumerations.records.store');
+    });
+
+    // forms
+
+    Route::prefix('forms')->name('forms.')->middleware('jwt.verify')->group(function () {
+
+    Route::prefix('indicator')->controller('IndicatorFormController')->name('indicator.')->group(function () {
+
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/fields', 'getIndicatorFormFields')->name('fields');
+
+    });
     });
 
 
