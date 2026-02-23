@@ -41,8 +41,6 @@ class Indicator extends Model
         'disaggregation_dimensions' => 'json',
     ];
 
- 
-
     protected static function boot()
     {
         parent::boot();
@@ -52,9 +50,12 @@ class Indicator extends Model
                 $model->uuid = (string) Str::uuid();
             }
 
-              if (empty($model->slug) && !empty($model->title)) {
-
-                $base = Slugger::slugify($model->title, '_', true, );
+            if (empty($model->slug) && !empty($model->title)) {
+                $base = Slugger::slugify(
+                    $model->title,
+                    '_',
+                    true,
+                );
                 $slug = $base;
                 $i = 1;
                 while (self::where('slug', $slug)->exists()) {
@@ -62,7 +63,6 @@ class Indicator extends Model
                 }
                 $model->slug = $slug;
             }
-
         });
     }
 
@@ -71,21 +71,35 @@ class Indicator extends Model
         return $this->morphToMany(Tier::class, 'tierable');
     }
 
-
     public function scopeWithDimension($query, $dimension)
-{
-    return $query->where(function($q) use ($dimension) {
-        $q->whereJsonContains('disaggregation_dimensions', $dimension)
-          ->orWhereNotNull("disaggregation_dimensions->{$dimension}");
-    });
+    {
+        return $query->where(function ($q) use ($dimension) {
+            $q
+                ->whereJsonContains('disaggregation_dimensions', $dimension)
+                ->orWhereNotNull("disaggregation_dimensions->{$dimension}");
+        });
+    }
+
+    public function scopeWithCategory($query, $dimension, $category)
+    {
+        return $query->whereJsonContains("disaggregation_dimensions->{$dimension}", $category);
+    }
+
+    public function baseline()
+    {
+        return $this->hasMany(IndicatorBaselineYear::class);
+    }
+
+public function disagregation(){
+    return $this->belongsToMany(
+        DisagregationItem::class,
+        'indicator_disagregations', // pivot table name
+        'indicator_id',             // FK for this model on pivot
+        'disagregation_item_id'     // FK for related model on pivot
+    );
 }
 
-public function scopeWithCategory($query, $dimension, $category)
-{
-    return $query->whereJsonContains("disaggregation_dimensions->{$dimension}", $category);
-}
-
-// Usage:
-// Indicator::withDimension('gender_of_household_head')->get();
-// Indicator::withCategory('livestock_production_system', 'pastoral')->get();
+    // Usage:
+    // Indicator::withDimension('gender_of_household_head')->get();
+    // Indicator::withCategory('livestock_production_system', 'pastoral')->get();
 }

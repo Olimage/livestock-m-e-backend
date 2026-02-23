@@ -158,10 +158,10 @@ class IndicatorSeeder extends Seeder
                 'measurement_unit' => $data['unit_of_measure'] ?? null,
                 'disaggregation_dimensions' => $disagg,
                 'collection_frequency' => $reportingFreq,
-                'baseline_value' => !empty($data['baseline_value']) ? (float) $data['baseline_value'] : null,
-                'baseline_year' => !empty($data['baseline_year']) ? (int) $data['baseline_year'] : null,
-                'target_value' => !empty($data['target_value']) ? (float) $data['target_value'] : null,
-                'target_year' => !empty($data['target_year']) ? (int) $data['target_year'] : null,
+                // 'baseline_value' => !empty($data['baseline_value']) ? (float) $data['baseline_value'] : null,
+                // 'baseline_year' => !empty($data['baseline_year']) ? (int) $data['baseline_year'] : null,
+                // 'target_value' => !empty($data['target_value']) ? (float) $data['target_value'] : null,
+                // 'target_year' => !empty($data['target_year']) ? (int) $data['target_year'] : null,
                 'data_source' => $data['data_source_entities'] ?? null,
             ];
 

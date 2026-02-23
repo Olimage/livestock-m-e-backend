@@ -20,8 +20,6 @@ return new class extends Migration
 
             $table->enum('indicator_type', ['outcome', 'output', 'impact'])->default('output');
             $table->string('measurement_unit')->nullable();
-            $table->decimal('baseline_value', 15, 2)->nullable();
-            $table->integer('baseline_year')->nullable();
             $table->json('collection_frequency')->nullable();
             $table->json('disaggregation_dimensions')->nullable();
             $table->json('reporting_frequency')->nullable();
