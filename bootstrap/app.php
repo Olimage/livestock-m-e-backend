@@ -65,24 +65,28 @@ $app = Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->dontTruncateRequestExceptions();
 
-        // Ensure JSON responses for all exceptions
-        $exceptions->shouldRenderJsonWhen(fn(Request $request, Throwable $e) => true);
+        // JSON only for non-Inertia requests; Inertia requests use redirect-based handling
+        $exceptions->shouldRenderJsonWhen(fn(Request $request, Throwable $e) => !$request->header('X-Inertia'));
 
-        $exceptions->render(function (Throwable $exception) {
+        $exceptions->render(function (Throwable $exception, Request $request) {
+            // Let ValidationException pass through for Inertia requests so the
+            // Inertia middleware can convert the 422 into a redirect-back with
+            // session errors (which useForm then maps to form.errors).
+            if ($request->header('X-Inertia') && $exception instanceof \Illuminate\Validation\ValidationException) {
+                return null;
+            }
+
+            // For other Inertia errors, redirect back with a flash error for toast display
+            if ($request->header('X-Inertia')) {
+                return redirect()->back()->with('error', $exception->getMessage());
+            }
+
+            // Non-Inertia requests: return JSON
             $statusCode = $exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException
                 ? $exception->getStatusCode()
                 : \Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR;
 
-            $response = [
-                'message' => $exception->getMessage(),
-                // 'code'    => $statusCode,
-            ];
-
-            if (app()->environment(['local', 'testing'])) {
-                // $response['trace'] = $exception->getTrace();
-            }
-
-            return response()->json($response, $statusCode);
+            return response()->json(['message' => $exception->getMessage()], $statusCode);
         });
     })->create();
 

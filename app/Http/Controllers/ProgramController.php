@@ -11,6 +11,8 @@ use App\Models\Tier;
 use App\Models\Indicator;
 use App\Models\CrossCuttingMetric;
 use App\Models\Department;
+use App\Models\DisagregationCategory;
+use App\Models\DisagregationItem;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -665,5 +667,107 @@ class ProgramController extends Controller
         $crossCuttingMetric->delete();
         return redirect()->route('programs.cross-cutting-metrics.index')
                         ->with('success', 'Cross-Cutting Metric deleted successfully');
+    }
+
+    // ==================== Disaggregation Categories ====================
+
+    public function disagregationCategories(Request $request)
+    {
+        $query = DisagregationCategory::withCount('items');
+
+        if ($request->has('search') && $request->search) {
+            $query->where('name', 'like', "%{$request->search}%");
+        }
+
+        $categories = $query->orderBy($request->sort_by ?? 'name', $request->sort_order ?? 'asc')
+                            ->paginate($request->per_page ?? 15);
+
+        return Inertia::render('Programs/Disagregations/Index', [
+            'categories' => $categories,
+            'filters'    => $request->only(['search', 'per_page', 'sort_by', 'sort_order']),
+            'totalCount' => DisagregationCategory::count(),
+        ]);
+    }
+
+    public function createDisagregationCategory()
+    {
+        return Inertia::render('Programs/Disagregations/Create');
+    }
+
+    public function storeDisagregationCategory(Request $request)
+    {
+        $validated = $request->validate([
+            'name'  => 'required|string|max:255|unique:disagregation_categories,name',
+            'items' => 'nullable|array',
+            'items.*' => 'string|max:255',
+        ]);
+
+        $category = DisagregationCategory::create(['name' => $validated['name']]);
+
+        foreach (array_filter($validated['items'] ?? []) as $itemName) {
+            $category->items()->create(['name' => trim($itemName)]);
+        }
+
+        return redirect()->route('programs.disagregations.index')
+                        ->with('success', 'Disaggregation category created successfully');
+    }
+
+    public function editDisagregationCategory(DisagregationCategory $category)
+    {
+        return Inertia::render('Programs/Disagregations/Edit', [
+            'category' => $category->load('items'),
+        ]);
+    }
+
+    public function updateDisagregationCategory(Request $request, DisagregationCategory $category)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:disagregation_categories,name,' . $category->id,
+        ]);
+
+        $category->update($validated);
+
+        return redirect()->route('programs.disagregations.edit', $category->id)
+                        ->with('success', 'Category updated successfully');
+    }
+
+    public function destroyDisagregationCategory(DisagregationCategory $category)
+    {
+        $category->delete();
+        return redirect()->route('programs.disagregations.index')
+                        ->with('success', 'Disaggregation category deleted successfully');
+    }
+
+    // ==================== Disaggregation Items ====================
+
+    public function storeDisagregationItem(Request $request, DisagregationCategory $category)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $category->items()->create($validated);
+
+        return redirect()->route('programs.disagregations.edit', $category->id)
+                        ->with('success', 'Item added successfully');
+    }
+
+    public function updateDisagregationItem(Request $request, DisagregationCategory $category, DisagregationItem $item)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $item->update($validated);
+
+        return redirect()->route('programs.disagregations.edit', $category->id)
+                        ->with('success', 'Item updated successfully');
+    }
+
+    public function destroyDisagregationItem(DisagregationCategory $category, DisagregationItem $item)
+    {
+        $item->delete();
+        return redirect()->route('programs.disagregations.edit', $category->id)
+                        ->with('success', 'Item deleted successfully');
     }
 }

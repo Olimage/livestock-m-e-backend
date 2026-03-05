@@ -187,6 +187,12 @@ class NavigationService
                 'routeName' => 'programs.cross-cutting-metrics.index',
                 'icon'      => 'bi bi-grid-3x3',
             ];
+
+            $programsSubmenu[] = [
+                'name'      => 'Disaggregations',
+                'routeName' => 'programs.disagregations.index',
+                'icon'      => 'bi bi-funnel',
+            ];
         }
 
         return $programsSubmenu;

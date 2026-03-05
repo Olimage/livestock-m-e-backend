@@ -133,6 +133,17 @@ Route::middleware(['auth.web'])->group(function () {
         Route::put('/tiers/{tier}', [\App\Http\Controllers\ProgramController::class, 'updateTier'])->name('tiers.update');
         Route::delete('/tiers/{tier}', [\App\Http\Controllers\ProgramController::class, 'destroyTier'])->name('tiers.destroy');
 
+        // Disaggregation Categories & Items
+        Route::get('/disagregations', [\App\Http\Controllers\ProgramController::class, 'disagregationCategories'])->name('disagregations.index');
+        Route::get('/disagregations/create', [\App\Http\Controllers\ProgramController::class, 'createDisagregationCategory'])->name('disagregations.create');
+        Route::post('/disagregations', [\App\Http\Controllers\ProgramController::class, 'storeDisagregationCategory'])->name('disagregations.store');
+        Route::get('/disagregations/{category}/edit', [\App\Http\Controllers\ProgramController::class, 'editDisagregationCategory'])->name('disagregations.edit');
+        Route::put('/disagregations/{category}', [\App\Http\Controllers\ProgramController::class, 'updateDisagregationCategory'])->name('disagregations.update');
+        Route::delete('/disagregations/{category}', [\App\Http\Controllers\ProgramController::class, 'destroyDisagregationCategory'])->name('disagregations.destroy');
+        Route::post('/disagregations/{category}/items', [\App\Http\Controllers\ProgramController::class, 'storeDisagregationItem'])->name('disagregations.items.store');
+        Route::put('/disagregations/{category}/items/{item}', [\App\Http\Controllers\ProgramController::class, 'updateDisagregationItem'])->name('disagregations.items.update');
+        Route::delete('/disagregations/{category}/items/{item}', [\App\Http\Controllers\ProgramController::class, 'destroyDisagregationItem'])->name('disagregations.items.destroy');
+
         // Cross-Cutting Metrics
         Route::get('/cross-cutting-metrics', [\App\Http\Controllers\ProgramController::class, 'crossCuttingMetrics'])->name('cross-cutting-metrics.index');
         Route::get('/cross-cutting-metrics/create', [\App\Http\Controllers\ProgramController::class, 'createCrossCuttingMetric'])->name('cross-cutting-metrics.create');

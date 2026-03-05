@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import TopBar from './TopBar.vue'
 import NavSidebar from './NavSidebar.vue'
@@ -21,6 +21,21 @@ const closeOffcanvas = () => {
 
 const page = usePage()
 const currentUserId = page.props.auth?.user?.id || page.props.user?.id || null
+
+const notify = (message, variant = 'info') => {
+  window.dispatchEvent(new CustomEvent('app:notify', { detail: { message, variant } }))
+}
+
+watch(
+  () => page.props.flash,
+  (flash) => {
+    if (flash?.success) notify(flash.success, 'success')
+    if (flash?.error)   notify(flash.error,   'danger')
+    if (flash?.warning) notify(flash.warning,  'warning')
+    if (flash?.info)    notify(flash.info,     'info')
+  },
+  { deep: true }
+)
 </script>
 
 <template>
