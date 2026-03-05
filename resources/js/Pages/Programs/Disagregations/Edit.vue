@@ -66,7 +66,7 @@ const deleteItem = (itemId) => {
 
                     <!-- Category Name -->
                     <div class="card shadow-sm mb-4">
-                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <div class="card-header card-header-green text-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Edit Category</h5>
                             <Link href="/programs/disagregations" class="btn btn-sm btn-light">
                                 <i class="bi bi-arrow-left me-1"></i>Back to Categories
@@ -90,7 +90,7 @@ const deleteItem = (itemId) => {
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <button type="submit" class="btn btn-primary w-100" :disabled="categoryForm.processing">
+                                        <button type="submit" class="btn btn-success w-100" :disabled="categoryForm.processing">
                                             <i class="bi bi-save me-1"></i>Save Name
                                         </button>
                                     </div>
@@ -104,7 +104,7 @@ const deleteItem = (itemId) => {
                         <div class="card-header bg-light d-flex justify-content-between align-items-center">
                             <h6 class="mb-0">
                                 <i class="bi bi-list-ul me-2"></i>Items
-                                <span class="badge bg-secondary ms-2">{{ category.items.length }}</span>
+                                <span class="badge bg-success ms-2">{{ category.items.length }}</span>
                             </h6>
                         </div>
                         <div class="card-body">
@@ -189,3 +189,27 @@ const deleteItem = (itemId) => {
         </div>
     </BeLayout>
 </template>
+
+<style scoped>
+.card-header-green {
+    background-color: rgb(11, 109, 23);
+}
+
+.btn-success {
+    background-color: rgb(11, 109, 23);
+    border-color: rgb(11, 109, 23);
+}
+
+.btn-success:hover {
+    background-color: rgb(9, 87, 18);
+    border-color: rgb(9, 87, 18);
+}
+
+.btn-group .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+.table-responsive {
+    min-height: 200px;
+}
+</style>

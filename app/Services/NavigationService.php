@@ -65,7 +65,7 @@ class NavigationService
 
         if (!empty($programsSubmenu)) {
             $navItems[] = [
-                'name'    => 'Programs',
+                'name'    => 'System',
                 'icon'    => 'bi bi-diagram-3',
                 'submenu' => $programsSubmenu,
             ];

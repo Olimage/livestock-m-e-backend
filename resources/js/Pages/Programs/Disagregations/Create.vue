@@ -35,7 +35,7 @@ const submit = () => {
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card shadow-sm">
-                        <div class="card-header bg-primary text-white">
+                        <div class="card-header card-header-green text-white">
                             <h5 class="mb-0">Create New Disaggregation Category</h5>
                         </div>
                         <div class="card-body">
@@ -95,7 +95,7 @@ const submit = () => {
                                     <Link href="/programs/disagregations" class="btn btn-secondary">
                                         <i class="bi bi-arrow-left me-2"></i>Cancel
                                     </Link>
-                                    <button type="submit" class="btn btn-primary" :disabled="form.processing">
+                                    <button type="submit" class="btn btn-success" :disabled="form.processing">
                                         <i class="bi bi-save me-2"></i>Create Category
                                     </button>
                                 </div>
@@ -107,3 +107,19 @@ const submit = () => {
         </div>
     </BeLayout>
 </template>
+
+<style scoped>
+.card-header-green {
+    background-color: rgb(11, 109, 23);
+}
+
+.btn-success {
+    background-color: rgb(11, 109, 23);
+    border-color: rgb(11, 109, 23);
+}
+
+.btn-success:hover {
+    background-color: rgb(9, 87, 18);
+    border-color: rgb(9, 87, 18);
+}
+</style>

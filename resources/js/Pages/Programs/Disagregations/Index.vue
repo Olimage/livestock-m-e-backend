@@ -138,13 +138,13 @@ const getSortIcon = (column) => {
                                 <tr v-for="category in categories?.data" :key="category.id">
                                     <td><strong>{{ category.name }}</strong></td>
                                     <td>
-                                        <span class="badge bg-secondary">{{ category.items_count }} items</span>
+                                        <span class="badge bg-success">{{ category.items_count }} items</span>
                                     </td>
                                     <td><small>{{ new Date(category.created_at).toLocaleDateString() }}</small></td>
                                     <td>
                                         <div class="btn-group" role="group">
                                             <Link :href="route('programs.disagregations.edit', category.id)"
-                                                class="btn btn-sm btn-outline-primary">
+                                                class="btn btn-sm btn-outline-success">
                                             <i class="bi bi-pencil"></i>
                                             </Link>
                                             <button @click="deleteCategory(category.id)"
@@ -215,6 +215,17 @@ const getSortIcon = (column) => {
 .btn-success:hover {
     background-color: rgb(9, 87, 18);
     border-color: rgb(9, 87, 18);
+}
+
+.btn-outline-success {
+    color: rgb(11, 109, 23);
+    border-color: rgb(11, 109, 23);
+}
+
+.btn-outline-success:hover {
+    background-color: rgb(11, 109, 23);
+    border-color: rgb(11, 109, 23);
+    color: #fff;
 }
 
 .btn-group .btn {
