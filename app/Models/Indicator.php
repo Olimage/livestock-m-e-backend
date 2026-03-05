@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Helper\Slugger;
 use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -90,14 +89,24 @@ class Indicator extends Model
         return $this->hasMany(IndicatorBaselineYear::class);
     }
 
-public function disagregation(){
-    return $this->belongsToMany(
-        DisagregationItem::class,
-        'indicator_disagregations', // pivot table name
-        'indicator_id',             // FK for this model on pivot
-        'disagregation_item_id'     // FK for related model on pivot
-    );
-}
+    public function disagregation()
+    {
+        return $this->belongsToMany(
+            DisagregationItem::class,
+            'indicator_disagregations',
+            'indicator_id',
+            'disagregation_item_id'
+        );
+    }
+
+    public function disagregationCategories()
+    {
+        return DisagregationCategory::whereHas('items', function ($q) {
+            $q->whereHas('indicators', function ($q2) {
+                $q2->where('indicators.id', $this->id);
+            });
+        });
+    }
 
     // Usage:
     // Indicator::withDimension('gender_of_household_head')->get();

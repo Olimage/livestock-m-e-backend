@@ -16,7 +16,17 @@ class DisagregationItem extends Model
         return $this->belongsTo(DisagregationCategory::class);
     }
 
-    public function indicatorDisagregation()
+    public function indicators()
+    {
+        return $this->belongsToMany(
+            Indicator::class,
+            'indicator_disagregations',
+            'disagregation_item_id',
+            'indicator_id'
+        );
+    }
+
+    public function indicatorDisagregations()
     {
         return $this->hasMany(IndicatorDisagregation::class);
     }
