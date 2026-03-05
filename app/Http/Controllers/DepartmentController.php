@@ -72,12 +72,13 @@ class DepartmentController extends Controller
 
         $availableIndicators = Indicator::select('id', 'code', 'title', 'indicator_type')
             ->when($indicatorSearch, fn($q) =>
-                $q->where('code', 'like', "%{$indicatorSearch}%")
-                  ->orWhere('title', 'like', "%{$indicatorSearch}%")
+                $q->where(fn($sub) =>
+                    $sub->whereRaw('LOWER(code) LIKE ?', ['%' . strtolower($indicatorSearch) . '%'])
+                        ->orWhereRaw('LOWER(title) LIKE ?', ['%' . strtolower($indicatorSearch) . '%'])
+                )
             )
             ->whereNotIn('id', $department->indicators->pluck('id'))
             ->orderBy('code')
-            ->limit(50)
             ->get();
 
         return Inertia::render('Programs/Departments/Show', [

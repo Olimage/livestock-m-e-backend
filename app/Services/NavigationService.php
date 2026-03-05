@@ -199,6 +199,12 @@ class NavigationService
                 'routeName' => 'programs.departments.index',
                 'icon'      => 'bi bi-building',
             ];
+
+            $programsSubmenu[] = [
+                'name'      => 'Baselines',
+                'routeName' => 'programs.baselines.index',
+                'icon'      => 'bi bi-bar-chart-steps',
+            ];
         }
 
         return $programsSubmenu;

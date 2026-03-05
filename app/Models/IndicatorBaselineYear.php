@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 class IndicatorBaselineYear extends Model
@@ -13,7 +12,15 @@ class IndicatorBaselineYear extends Model
         'target_year',
         'baseline',
         'target',
-        'actual'
+        'actual',
+    ];
+
+    protected $casts = [
+        'baseline_year' => 'integer',
+        'target_year'   => 'integer',
+        'baseline'      => 'decimal:2',
+        'target'        => 'decimal:2',
+        'actual'        => 'decimal:2',
     ];
 
     public function indicator()

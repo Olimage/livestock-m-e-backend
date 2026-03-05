@@ -13,6 +13,7 @@ use App\Models\CrossCuttingMetric;
 use App\Models\Department;
 use App\Models\DisagregationCategory;
 use App\Models\DisagregationItem;
+use App\Models\IndicatorBaselineYear;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -423,18 +424,19 @@ class ProgramController extends Controller
     // ==================== Indicators ====================
     public function indicators(Request $request)
     {
-        $query = Indicator::query()->with(['tiers']);
+        $query = Indicator::query()->with(['tiers', 'departments:id,name'])
+            ->withCount('disagregation as disagregation_count');
 
-        if ($request->has('search')) {
-            $search = $request->search;
+        if ($request->search) {
+            $search = strtolower($request->search);
             $query->where(function($q) use ($search) {
-                $q->where('code', 'like', "%{$search}%")
-                  ->orWhere('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                $q->whereRaw('LOWER(code) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(title) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"]);
             });
         }
 
-        if ($request->has('indicator_type')) {
+        if ($request->indicator_type) {
             $query->where('indicator_type', $request->indicator_type);
         }
 
@@ -451,32 +453,42 @@ class ProgramController extends Controller
     public function createIndicator()
     {
         return Inertia::render('Programs/Indicators/Create', [
-            'tiers' => Tier::all()
+            'tiers' => Tier::all(),
+            'departments' => Department::orderBy('name')->get(['id', 'name']),
+            'disagregationCategories' => DisagregationCategory::with('items:id,disagregation_category_id,name')
+                ->orderBy('name')->get(['id', 'name']),
         ]);
     }
 
     public function storeIndicator(Request $request)
     {
-        $validated = $request->validate([
-            'code' => 'required|string|max:255|unique:indicators',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'indicator_type' => 'required|in:outcome,output,impact',
-            'measurement_unit' => 'nullable|string',
-            'baseline_value' => 'nullable|numeric',
-            'baseline_year' => 'nullable|integer',
-            'target_value' => 'nullable|numeric',
-            'target_year' => 'nullable|integer',
-            'data_source' => 'nullable|string',
-            'collection_frequency' => 'nullable|string',
-            'tier_ids' => 'nullable|array',
+        $request->validate([
+            'code'                   => 'required|string|max:255|unique:indicators',
+            'title'                  => 'required|string|max:255',
+            'description'            => 'nullable|string',
+            'indicator_type'         => 'required|in:outcome,output,impact',
+            'measurement_unit'       => 'nullable|string',
+            'baseline_value'         => 'nullable|numeric',
+            'baseline_year'          => 'nullable|integer',
+            'target_value'           => 'nullable|numeric',
+            'target_year'            => 'nullable|integer',
+            'data_source'            => 'nullable|string',
+            'collection_frequency'   => 'nullable|string',
+            'reporting_frequency'    => 'nullable|string',
+            'tier_ids'               => 'nullable|array',
+            'department_ids'         => 'nullable|array',
+            'disagregation_item_ids' => 'nullable|array',
         ]);
 
-        $indicator = Indicator::create($validated);
+        $indicator = Indicator::create($request->only([
+            'code', 'title', 'description', 'indicator_type', 'measurement_unit',
+            'baseline_value', 'baseline_year', 'target_value', 'target_year',
+            'data_source', 'collection_frequency', 'reporting_frequency',
+        ]));
 
-        if ($request->has('tier_ids')) {
-            $indicator->tiers()->attach($request->tier_ids);
-        }
+        $indicator->tiers()->sync($request->tier_ids ?? []);
+        $indicator->departments()->sync($request->department_ids ?? []);
+        $indicator->disagregation()->sync($request->disagregation_item_ids ?? []);
 
         return redirect()->route('programs.indicators.index')
                         ->with('success', 'Indicator created successfully');
@@ -485,29 +497,35 @@ class ProgramController extends Controller
     public function editIndicator(Indicator $indicator)
     {
         return Inertia::render('Programs/Indicators/Edit', [
-            'indicator' => $indicator->load(['tiers']),
-            'tiers' => Tier::all()
+            'indicator' => $indicator->load('tiers'),
+            'tiers'     => Tier::all(),
         ]);
     }
 
     public function updateIndicator(Request $request, Indicator $indicator)
     {
-        $validated = $request->validate([
-            'code' => 'required|string|max:255|unique:indicators,code,' . $indicator->id,
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'indicator_type' => 'required|in:outcome,output,impact',
-            'measurement_unit' => 'nullable|string',
-            'baseline_value' => 'nullable|numeric',
-            'baseline_year' => 'nullable|integer',
-            'target_value' => 'nullable|numeric',
-            'target_year' => 'nullable|integer',
-            'data_source' => 'nullable|string',
+        $request->validate([
+            'code'                 => 'required|string|max:255|unique:indicators,code,' . $indicator->id,
+            'title'                => 'required|string|max:255',
+            'description'          => 'nullable|string',
+            'indicator_type'       => 'required|in:outcome,output,impact',
+            'measurement_unit'     => 'nullable|string',
+            'baseline_value'       => 'nullable|numeric',
+            'baseline_year'        => 'nullable|integer',
+            'target_value'         => 'nullable|numeric',
+            'target_year'          => 'nullable|integer',
+            'data_source'          => 'nullable|string',
             'collection_frequency' => 'nullable|string',
-            'tier_ids' => 'nullable|array',
+            'reporting_frequency'  => 'nullable|string',
+            'tier_ids'             => 'nullable|array',
         ]);
 
-        $indicator->update($validated);
+        $indicator->update($request->only([
+            'code', 'title', 'description', 'indicator_type', 'measurement_unit',
+            'baseline_value', 'baseline_year', 'target_value', 'target_year',
+            'data_source', 'collection_frequency', 'reporting_frequency',
+        ]));
+
         $indicator->tiers()->sync($request->tier_ids ?? []);
 
         return redirect()->route('programs.indicators.index')
@@ -769,5 +787,90 @@ class ProgramController extends Controller
         $item->delete();
         return redirect()->route('programs.disagregations.edit', $category->id)
                         ->with('success', 'Item deleted successfully');
+    }
+
+    // ==================== Indicator Baseline Years ====================
+
+    public function baselines(Request $request)
+    {
+        $query = IndicatorBaselineYear::with('indicator:id,code,title')
+            ->when($request->indicator_id, fn($q) => $q->where('indicator_id', $request->indicator_id))
+            ->when($request->search, function ($q) use ($request) {
+                $q->whereHas('indicator', fn($i) =>
+                    $i->where('code', 'like', "%{$request->search}%")
+                      ->orWhere('title', 'like', "%{$request->search}%")
+                );
+            });
+
+        $baselines = $query
+            ->orderBy($request->sort_by ?? 'baseline_year', $request->sort_order ?? 'desc')
+            ->paginate($request->per_page ?? 15);
+
+        return Inertia::render('Programs/Baselines/Index', [
+            'baselines'   => $baselines,
+            'indicators'  => Indicator::orderBy('code')->get(['id', 'code', 'title']),
+            'filters'     => $request->only(['search', 'indicator_id', 'per_page', 'sort_by', 'sort_order']),
+            'totalCount'  => IndicatorBaselineYear::count(),
+        ]);
+    }
+
+    public function createBaseline()
+    {
+        return Inertia::render('Programs/Baselines/Create', [
+            'indicators' => Indicator::orderBy('code')->get(['id', 'code', 'title']),
+        ]);
+    }
+
+    public function storeBaseline(Request $request)
+    {
+        $request->validate([
+            'indicator_id'  => 'required|exists:indicators,id',
+            'baseline_year' => 'nullable|integer|min:1900|max:2100',
+            'target_year'   => 'nullable|integer|min:1900|max:2100',
+            'baseline'      => 'required|numeric',
+            'target'        => 'required|numeric',
+            'actual'        => 'required|numeric',
+        ]);
+
+        IndicatorBaselineYear::create($request->only([
+            'indicator_id', 'baseline_year', 'target_year', 'baseline', 'target', 'actual',
+        ]));
+
+        return redirect()->route('programs.baselines.index')
+                        ->with('success', 'Baseline year added successfully');
+    }
+
+    public function editBaseline(IndicatorBaselineYear $baseline)
+    {
+        return Inertia::render('Programs/Baselines/Edit', [
+            'baseline'   => $baseline->load('indicator:id,code,title'),
+            'indicators' => Indicator::orderBy('code')->get(['id', 'code', 'title']),
+        ]);
+    }
+
+    public function updateBaseline(Request $request, IndicatorBaselineYear $baseline)
+    {
+        $request->validate([
+            'indicator_id'  => 'required|exists:indicators,id',
+            'baseline_year' => 'nullable|integer|min:1900|max:2100',
+            'target_year'   => 'nullable|integer|min:1900|max:2100',
+            'baseline'      => 'required|numeric',
+            'target'        => 'required|numeric',
+            'actual'        => 'required|numeric',
+        ]);
+
+        $baseline->update($request->only([
+            'indicator_id', 'baseline_year', 'target_year', 'baseline', 'target', 'actual',
+        ]));
+
+        return redirect()->route('programs.baselines.index')
+                        ->with('success', 'Baseline year updated successfully');
+    }
+
+    public function destroyBaseline(IndicatorBaselineYear $baseline)
+    {
+        $baseline->delete();
+        return redirect()->route('programs.baselines.index')
+                        ->with('success', 'Baseline year deleted successfully');
     }
 }

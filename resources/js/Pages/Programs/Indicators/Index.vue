@@ -13,19 +13,26 @@ const search = ref(props.filters.search || '')
 const perPage = ref(props.filters.per_page || 10)
 const sortBy = ref(props.filters.sort_by || 'created_at')
 const sortOrder = ref(props.filters.sort_order || 'desc')
+const indicatorType = ref(props.filters.indicator_type || '')
 const searchTimeout = ref(null)
 
-watch([search, perPage, sortBy, sortOrder], () => {
+watch([search, perPage, sortBy, sortOrder, indicatorType], () => {
   clearTimeout(searchTimeout.value)
   searchTimeout.value = setTimeout(() => {
     router.get(route('programs.indicators.index'), {
       search: search.value,
       per_page: perPage.value,
       sort_by: sortBy.value,
-      sort_order: sortOrder.value
+      sort_order: sortOrder.value,
+      indicator_type: indicatorType.value
     }, { preserveState: true, preserveScroll: true })
   }, 300)
 })
+
+const typeBadge = (type) => {
+  const map = { impact: 'bg-danger', outcome: 'bg-warning text-dark', output: 'bg-info text-dark' }
+  return map[type] || 'bg-secondary'
+}
 
 const deleteIndicator = (id) => {
   if (confirm('Delete this indicator?')) {
@@ -84,12 +91,20 @@ const sortIcon = (column) => {
       </div>
 
       <div class="row mb-3">
-        <div class="col-md-8 mb-2">
+        <div class="col-md-5 mb-2">
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-search"></i></span>
             <input v-model="search" type="text" class="form-control"
               placeholder="Search by code, title, or description..." />
           </div>
+        </div>
+        <div class="col-md-2 mb-2">
+          <select v-model="indicatorType" class="form-select">
+            <option value="">All Types</option>
+            <option value="output">Output</option>
+            <option value="outcome">Outcome</option>
+            <option value="impact">Impact</option>
+          </select>
         </div>
         <div class="col-md-2 mb-2">
           <select v-model="perPage" class="form-select">
@@ -99,7 +114,7 @@ const sortIcon = (column) => {
             <option :value="100">100 per page</option>
           </select>
         </div>
-        <div class="col-md-2 mb-2">
+        <div class="col-md-3 mb-2">
           <Link :href="route('programs.indicators.create')" class="btn btn-success w-100">
           <i class="bi bi-plus-circle"></i> Add Indicator
           </Link>
@@ -121,11 +136,11 @@ const sortIcon = (column) => {
                     <th @click="toggleSort('title')" class="sortable">
                       Title <i :class="sortIcon('title')"></i>
                     </th>
-                    <th>Description</th>
                     <th>Type</th>
-                    <th>Baseline</th>
-                    <th>Target</th>
+                    <th>Baseline / Target</th>
+                    <th>Departments</th>
                     <th>Tiers</th>
+                    <th>Disaggregations</th>
                     <th @click="toggleSort('created_at')" class="sortable">
                       Created <i :class="sortIcon('created_at')"></i>
                     </th>
@@ -138,42 +153,54 @@ const sortIcon = (column) => {
                   </tr>
                   <tr v-for="indicator in indicators?.data" :key="indicator.id">
                     <td><span class="badge bg-success">{{ indicator.code }}</span></td>
-                    <td><strong>{{ indicator.title }}</strong></td>
                     <td>
-                      <small>{{ indicator.description ? indicator.description.substring(0, 80) + '...' : 'N/A' }}</small>
+                      <strong>{{ indicator.title }}</strong>
+                      <div v-if="indicator.measurement_unit" class="text-muted small">
+                        Unit: {{ indicator.measurement_unit }}
+                      </div>
                     </td>
                     <td>
-                      <span v-if="indicator.indicator_type" class="badge bg-info">{{ indicator.indicator_type }}</span>
+                      <span v-if="indicator.indicator_type" :class="['badge', typeBadge(indicator.indicator_type)]">
+                        {{ indicator.indicator_type }}
+                      </span>
                       <span v-else class="text-muted">—</span>
                     </td>
                     <td>
-                      <small v-if="indicator.baseline_value">
-                        {{ indicator.baseline_value }} {{ indicator.measurement_unit || '' }}<br>
-                        <span class="text-muted">({{ indicator.baseline_year }})</span>
+                      <small v-if="indicator.baseline_value || indicator.target_value">
+                        <span v-if="indicator.baseline_value">
+                          B: {{ indicator.baseline_value }} ({{ indicator.baseline_year }})
+                        </span>
+                        <br v-if="indicator.baseline_value && indicator.target_value" />
+                        <span v-if="indicator.target_value">
+                          T: {{ indicator.target_value }} ({{ indicator.target_year }})
+                        </span>
                       </small>
                       <span v-else class="text-muted">—</span>
                     </td>
                     <td>
-                      <small v-if="indicator.target_value">
-                        {{ indicator.target_value }} {{ indicator.measurement_unit || '' }}<br>
-                        <span class="text-muted">({{ indicator.target_year }})</span>
-                      </small>
-                      <span v-else class="text-muted">—</span>
+                      <span v-if="indicator.departments && indicator.departments.length > 0"
+                            v-for="dept in indicator.departments" :key="dept.id"
+                            class="badge bg-secondary me-1">{{ dept.name }}</span>
+                      <span v-else class="text-muted small">—</span>
                     </td>
                     <td>
-                      <small>
-                        <span v-if="indicator.tiers && indicator.tiers.length > 0" 
-                              v-for="tier in indicator.tiers" :key="tier.id" 
-                              class="badge bg-info me-1">{{ tier.tier }}</span>
-                        <span v-else class="text-muted">No tiers</span>
-                      </small>
+                      <span v-if="indicator.tiers && indicator.tiers.length > 0"
+                            v-for="tier in indicator.tiers" :key="tier.id"
+                            class="badge bg-success me-1">{{ tier.tier }}</span>
+                      <span v-else class="text-muted small">—</span>
+                    </td>
+                    <td>
+                      <span v-if="indicator.disagregation_count > 0" class="badge bg-info text-dark">
+                        {{ indicator.disagregation_count }} items
+                      </span>
+                      <span v-else class="text-muted small">—</span>
                     </td>
                     <td><small>{{ new Date(indicator.created_at).toLocaleDateString() }}</small></td>
                     <td>
                       <div class="btn-group" role="group">
                         <Link :href="route('programs.indicators.edit', indicator.id)"
-                          class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-pencil"></i>
+                          class="btn btn-sm btn-outline-success">
+                          <i class="bi bi-pencil"></i>
                         </Link>
                         <button @click="deleteIndicator(indicator.id)"
                           class="btn btn-sm btn-outline-danger">
@@ -243,6 +270,17 @@ const sortIcon = (column) => {
 .btn-success:hover {
   background-color: rgb(9, 87, 18);
   border-color: rgb(9, 87, 18);
+}
+
+.btn-outline-success {
+  color: rgb(11, 109, 23);
+  border-color: rgb(11, 109, 23);
+}
+
+.btn-outline-success:hover {
+  background-color: rgb(11, 109, 23);
+  border-color: rgb(11, 109, 23);
+  color: #fff;
 }
 
 .btn-group .btn {
