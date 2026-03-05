@@ -1,0 +1,3130 @@
+info:
+  name: form fieds
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}forms/indicator/fields"
+  params:
+    - name: type
+      value: impact
+      type: query
+      description: output, outcome, impact
+      disabled: true
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: success
+    request:
+      url: "{{baseUrl}}forms/indicator/fields?type=output"
+      method: GET
+      params:
+        - name: type
+          value: output
+          type: query
+          description: output, outcome, impact
+    response:
+      statusText: "200"
+      headers:
+        - name: Host
+          value: 127.0.0.1:8000
+        - name: Connection
+          value: close
+        - name: X-Powered-By
+          value: PHP/8.3.14
+        - name: Cache-Control
+          value: no-cache, private
+        - name: Date
+          value: Mon, 16 Feb 2026 12:03:39 GMT
+        - name: Content-Type
+          value: application/json
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Access-Control-Allow-Methods
+          value: POST, GET, OPTIONS, PUT, DELETE
+        - name: Access-Control-Allow-Headers
+          value: Content-Type, X-Auth-Token, Authorization, Origin
+        - name: Access-Control-Expose-Headers
+          value: Content-Length, Content-Range, X-Content-Range, X-Requested-With, X-Progress
+        - name: X-RateLimit-Limit
+          value: "200"
+        - name: X-RateLimit-Remaining
+          value: "197"
+        - name: Set-Cookie
+          value: national_livestock_information_management_system_n_lims_session=n8y35YfFwYTdJXmLfkhH80hT7XLawUfO40Z9u170; expires=Mon, 16 Feb 2026 14:03:39 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+      body:
+        type: json
+        data: |-
+          {
+              "success": true,
+              "data": [
+                  {
+                      "slug": "number_of_participants_trained_breed_improvement",
+                      "title": "Number of participants trained (breed improvement)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.6.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_actors_receiving_input_support",
+                      "title": "Number of actors receiving input support",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.6.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_related_conflicts_reported",
+                      "title": "Number of livestock related conflicts reported",
+                      "measurement_unit": "Number",
+                      "code": "OPT-1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "disease_surveillance_system_coverage",
+                      "title": "Disease surveillance system coverage",
+                      "measurement_unit": "Percentage (%)",
+                      "code": "OPT-2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_reported_outbreaks_of_transboundary_diseases_per_100_000_animals",
+                      "title": "Number of reported outbreaks of transboundary diseases per 100,000 animals",
+                      "measurement_unit": "Number",
+                      "code": "OPT-3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_human_zoonotic_disease_cases_reported",
+                      "title": "Number of human Zoonotic Disease cases reported",
+                      "measurement_unit": "Number",
+                      "code": "OPT-4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_functional_water_points_to_animals_in_grazing_reserves",
+                      "title": "Number of functional Water Points to Animals in Grazing Reserves",
+                      "measurement_unit": "Ratio",
+                      "code": "OPT-5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "total_area_of_grazing_land",
+                      "title": "Total area of grazing land",
+                      "measurement_unit": "Hectares (ha)",
+                      "code": "OPT-6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_grazing_land_in_good_excellent_condition",
+                      "title": "Percentage of grazing land in good/excellent condition",
+                      "measurement_unit": "Percentage (%)",
+                      "code": "OPT-7",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "community_animal_health_workers_cahws_deployed_and_active",
+                      "title": "Community Animal Health Workers (CAHWs) Deployed and Active",
+                      "measurement_unit": "Number",
+                      "code": "OPT-8",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_animals_registered_in_naits",
+                      "title": "Number of Animals Registered in NAITS",
+                      "measurement_unit": "Number",
+                      "code": "OPT-9",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_functional_abbatiors",
+                      "title": "Number of Functional Abbatiors",
+                      "measurement_unit": "Number",
+                      "code": "OPT-10",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_operational_breeding_ai_centers",
+                      "title": "Number of operational breeding/AI centers",
+                      "measurement_unit": "Number",
+                      "code": "OPT-11",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "total_cold_storage_capacity_for_livestock_products",
+                      "title": "Total cold storage capacity for livestock products",
+                      "measurement_unit": "Number",
+                      "code": "OPT-12",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_functional_commercial_feedmills",
+                      "title": "Number of functional commercial feedmills",
+                      "measurement_unit": "Number",
+                      "code": "OPT-13",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_functional_veterinary_diagnostic_centres",
+                      "title": "Number of functional Veterinary Diagnostic Centres",
+                      "measurement_unit": "Number",
+                      "code": "OPT-14",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "value_of_private_ppp_investment_mobilized",
+                      "title": "Value of Private/PPP Investment Mobilized",
+                      "measurement_unit": "Currency value (Naira/USD)",
+                      "code": "OPT-15",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_commercial_livestock_farms_with_active_insurance",
+                      "title": "Number of Commercial livestock Farms with Active Insurance",
+                      "measurement_unit": "Number",
+                      "code": "OPT-16",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_insured",
+                      "title": "Number of Livestock insured",
+                      "measurement_unit": "Number",
+                      "code": "OPT-17",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_conflict_mitigation_committee_members_trained",
+                      "title": "Number of Conflict Mitigation Committee Members Trained",
+                      "measurement_unit": "Number",
+                      "code": "OPT-18",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_transhumance_routes_with_formalized_access_agreements",
+                      "title": "Number of Transhumance Routes with Formalized Access Agreements",
+                      "measurement_unit": "Number",
+                      "code": "OPT-19",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_enterprises_owned_by_women_and_youth",
+                      "title": "Number of Livestock Enterprises Owned by Women and Youth",
+                      "measurement_unit": "Percentage (%)",
+                      "code": "OPT-20",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_women_youth_accessing_livestock_finance",
+                      "title": "Number of Women/Youth Accessing Livestock Finance",
+                      "measurement_unit": "Number",
+                      "code": "OPT-21",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_cottage_industries_established",
+                      "title": "Number of Livestock Cottage Industries Established",
+                      "measurement_unit": "Number",
+                      "code": "OPT-22",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_states_with_functional_nlims",
+                      "title": "Number of States with Functional NLIMS ",
+                      "measurement_unit": "Number",
+                      "code": "OPT-23",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "frequency_of_national_livestock_statistics_publication_by_fmld",
+                      "title": "Frequency of National Livestock Statistics Publication by FMLD",
+                      "measurement_unit": "Number",
+                      "code": "OPT-24",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_request_of_nlims_data",
+                      "title": "Number of request of NLIMS data ",
+                      "measurement_unit": "Number",
+                      "code": "OPT-25",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_farmers_enrolled_in_national_database",
+                      "title": "Number of Livestock Farmers Enrolled in National Database",
+                      "measurement_unit": "Percentage (%)",
+                      "code": "OPT-26",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "average_interest_rate_for_livestock_loans",
+                      "title": "Average interest rate for livestock loans",
+                      "measurement_unit": "Percentage (%)",
+                      "code": "OPT-27",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_farmers_accessing_formal_credit",
+                      "title": "Number of livestock farmers accessing formal credit",
+                      "measurement_unit": "Number",
+                      "code": "OPT-28",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_quarantine_station_coverage_at_border_crossings",
+                      "title": "Number of Quarantine station coverage at border crossings",
+                      "measurement_unit": "Number",
+                      "code": "OPT-29",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_farmers_supported_with_animal_husbandry_inputs",
+                      "title": "Number of livestock farmers supported with animal husbandry inputs",
+                      "measurement_unit": "Number",
+                      "code": "BOI-1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_sop_copies_produced_and_distributed",
+                      "title": "Number of SOP copies produced and distributed",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.6.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_farmers_supported_with_veterinary_inputs",
+                      "title": "Number of livestock farmers supported with veterinary inputs",
+                      "measurement_unit": "Number",
+                      "code": "BOI-2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "quantity_of_meat_produced_annually_mt",
+                      "title": "Quantity of Meat produced annually (Mt)",
+                      "measurement_unit": "Metric tonnes (Mt)",
+                      "code": "BOI-3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "quantity_of_milk_produced_annually_litres",
+                      "title": "Quantity of milk produced annually (Litres)",
+                      "measurement_unit": "Liters (ltrs)",
+                      "code": "BOI-4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "quantity_of_eggs_produced_annually_crates",
+                      "title": "Quantity of eggs produced annually (Crates)",
+                      "measurement_unit": "Crates",
+                      "code": "BOI-5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "weight_of_honey_produced_annually_kg",
+                      "title": "Weight of honey produced annually (kg)",
+                      "measurement_unit": "Kilograms (kg)",
+                      "code": "BOI-6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_youths_and_women_trained_and_supported_with_livestock_starter_packs",
+                      "title": "Number of youths and women trained and supported with livestock starter packs",
+                      "measurement_unit": "Number",
+                      "code": "BOI-7",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_bee_keepers_trained_and_supported_with_bee_starter_packs",
+                      "title": "Number of bee keepers trained and supported with bee starter packs",
+                      "measurement_unit": "Number",
+                      "code": "BOI-8",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_farmers_trained_in_modern_production_techniques",
+                      "title": "Number of livestock farmers trained in modern production techniques",
+                      "measurement_unit": "Number",
+                      "code": "BOI-9",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_breeder_farmers_supported_with_improved_breeds",
+                      "title": "Number of breeder farmers supported with improved breeds",
+                      "measurement_unit": "Number",
+                      "code": "BOI-10",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_animals_artificially_inseminated",
+                      "title": "Number of animals artificially inseminated",
+                      "measurement_unit": "Number",
+                      "code": "BOI-11",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_embryos_transferred_into_recipient_animals",
+                      "title": "Number of embryos transferred into recipient animals",
+                      "measurement_unit": "Number",
+                      "code": "BOI-12",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "quantity_doses_of_animal_vaccines_produced_annually_million",
+                      "title": "Quantity (doses) of animal vaccines produced annually (million)",
+                      "measurement_unit": "Number",
+                      "code": "BOI-13",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_vaccine_doses_distributed_to_states_million",
+                      "title": "Number of vaccine doses distributed to States (million)",
+                      "measurement_unit": "Number",
+                      "code": "BOI-14",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_animals_vaccinated_during_national_campaigns_million",
+                      "title": "Number of animals vaccinated during national campaigns (million)",
+                      "measurement_unit": "Number",
+                      "code": "BOI-15",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "quantity_of_disinfectants_distributed_to_states_liters",
+                      "title": "Quantity of disinfectants distributed to States (Liters)",
+                      "measurement_unit": "Litres",
+                      "code": "BOI-16",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_sensitization_awareness_campaigns_on_tads_and_zoonoses",
+                      "title": "Number of sensitization/awareness campaigns on TADs and Zoonoses",
+                      "measurement_unit": "Number",
+                      "code": "BOI-17",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "hours_of_aerial_sprays_for_pest_control",
+                      "title": "Hours of aerial sprays for pest control",
+                      "measurement_unit": "Hours (hrs)",
+                      "code": "BOI-18",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "hectares_of_land_cultivated_for_pasture_production",
+                      "title": "Hectares of land cultivated for pasture production",
+                      "measurement_unit": "Hectares (ha)",
+                      "code": "BOI-19",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "quantity_of_pasture_seeds_distributed_kg",
+                      "title": "Quantity of pasture seeds distributed (kg)",
+                      "measurement_unit": "Kilograms (kg)",
+                      "code": "BOI-20",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_export_promotion_workshops_organized",
+                      "title": "Number of livestock export promotion workshops organized",
+                      "measurement_unit": "Number",
+                      "code": "BOI-37",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_grazing_reserves_and_ranches_rehabilitated",
+                      "title": "Number of grazing reserves and ranches rehabilitated",
+                      "measurement_unit": "Number",
+                      "code": "BOI-21",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_communities_supported_with_pasture_and_water",
+                      "title": "Number of livestock communities supported with pasture and water",
+                      "measurement_unit": "Number",
+                      "code": "BOI-22",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_feed_producers_and_farmers_trained_in_alternative_feedstuff",
+                      "title": "Number of feed producers and farmers trained in alternative feedstuff",
+                      "measurement_unit": "Number",
+                      "code": "BOI-23",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_extension_workers_lews_trained",
+                      "title": "Number of Livestock Extension Workers (LEWs) trained",
+                      "measurement_unit": "Number",
+                      "code": "BOI-24",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_community_animal_health_workers_cahws_trained",
+                      "title": "Number of Community Animal Health Workers (CAHWs) trained",
+                      "measurement_unit": "Number",
+                      "code": "BOI-25",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_veterinarians_trained_through_isavet_programme",
+                      "title": "Number of Veterinarians trained through ISAVET programme",
+                      "measurement_unit": "Number",
+                      "code": "BOI-26",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_flood_prone_states_supported_with_protective_measures",
+                      "title": "Number of flood-prone states supported with protective measures",
+                      "measurement_unit": "Number",
+                      "code": "BOI-27",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_veterinary_hospitals_pahcs_constructed_rehabilitated",
+                      "title": "Number of Veterinary Hospitals/PAHCs constructed/rehabilitated",
+                      "measurement_unit": "Number",
+                      "code": "BOI-28",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_abattoirs_slaughter_houses_upgraded",
+                      "title": "Number of abattoirs/slaughter houses upgraded",
+                      "measurement_unit": "Number",
+                      "code": "BOI-29",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_live_bird_markets_rehabilitated",
+                      "title": "Number of Live Bird Markets rehabilitated",
+                      "measurement_unit": "Number",
+                      "code": "BOI-30",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_markets_rehabilitated",
+                      "title": "Number of Livestock Markets rehabilitated",
+                      "measurement_unit": "Number",
+                      "code": "BOI-31",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_cold_room_facilities_built_for_vaccine_preservation",
+                      "title": "Number of cold Room facilities built for vaccine preservation",
+                      "measurement_unit": "Number",
+                      "code": "BOI-32",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_private_investors_enrolled_and_engaged",
+                      "title": "Number of private investors enrolled and engaged",
+                      "measurement_unit": "Number",
+                      "code": "BOI-33",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_private_animal_health_providers_supported_with_equipment",
+                      "title": "Number of private animal health providers supported with equipment",
+                      "measurement_unit": "Number",
+                      "code": "BOI-34",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_ppp_projects_with_bankable_business_cases",
+                      "title": "Number of PPP projects with bankable business cases",
+                      "measurement_unit": "Number",
+                      "code": "BOI-35",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_ppp_projects_handed_over_to_private_sector",
+                      "title": "Number of PPP projects handed over to private sector",
+                      "measurement_unit": "Number",
+                      "code": "BOI-36",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_markets_linked_to_pig_producers",
+                      "title": "Number of markets linked to pig producers",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.5.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_value_actors_trained_on_sps_and_food_safety",
+                      "title": "Number of livestock value actors trained on SPS and food safety",
+                      "measurement_unit": "Number",
+                      "code": "BOI-38",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "2025_baseline_survey_for_livestock_products_and_honey_completed",
+                      "title": "2025 baseline survey for livestock products and honey completed",
+                      "measurement_unit": "Yes/No",
+                      "code": "BOI-39",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_annual_surveys_for_livestock_production_conducted",
+                      "title": "Number of annual surveys for livestock production conducted",
+                      "measurement_unit": "Number",
+                      "code": "BOI-40",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_farmers_enlisted_on_national_database",
+                      "title": "Number of livestock farmers enlisted on national database",
+                      "measurement_unit": "Number",
+                      "code": "BOI-41",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_farmers_trained_in_business_models",
+                      "title": "Number of livestock farmers trained in business models",
+                      "measurement_unit": "Number",
+                      "code": "BOI-42",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_cooperatives_linked_to_formal_markets",
+                      "title": "Number of livestock cooperatives linked to formal markets",
+                      "measurement_unit": "Number",
+                      "code": "BOI-43",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_animals_registered_on_national_traceability_system",
+                      "title": "Number of animals registered on National Traceability System",
+                      "measurement_unit": "Number",
+                      "code": "BOI-44",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_traded_in_domestic_international_markets_million",
+                      "title": "Number of Livestock traded in domestic/international markets (million)",
+                      "measurement_unit": "Number",
+                      "code": "BOI-45",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_conflict_mitigation_committees_established",
+                      "title": "Number of conflict mitigation committees established",
+                      "measurement_unit": "Number",
+                      "code": "BOI-46",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_conflict_mitigation_committee_members_trained_1",
+                      "title": "Number of conflict mitigation committee members trained",
+                      "measurement_unit": "Number",
+                      "code": "BOI-47",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "operational_situation_room_established",
+                      "title": "Operational Situation room established",
+                      "measurement_unit": "Yes/No",
+                      "code": "BOI-48",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_small_scale_dairy_farmers_supported_with_improved_breeds",
+                      "title": "Number of small-scale dairy farmers supported with improved breeds",
+                      "measurement_unit": "Number",
+                      "code": "BOI-49",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_animals_ai_for_milk_production",
+                      "title": "Number of animals AI for milk production",
+                      "measurement_unit": "Number",
+                      "code": "BOI-50",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_embryos_transferred_for_milk_production",
+                      "title": "Number of embryos transferred for milk production",
+                      "measurement_unit": "Number",
+                      "code": "BOI-51",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_milking_collection_centers_rehabilitated",
+                      "title": "Number of milking collection centers rehabilitated",
+                      "measurement_unit": "Number",
+                      "code": "BOI-52",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_milk_aggregators_supported_with_collection_tools",
+                      "title": "Number of milk aggregators supported with collection tools",
+                      "measurement_unit": "Number",
+                      "code": "BOI-53",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "national_growth_acceleration_strategy_developed_nlgas",
+                      "title": "National Growth Acceleration Strategy Developed (NLGAS)",
+                      "measurement_unit": "Yes/No",
+                      "code": "BOI-54",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_citizens_engagement_sessions_held",
+                      "title": "Number of citizens engagement sessions held",
+                      "measurement_unit": "Number",
+                      "code": "BOI-55",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_value_chain_actors_registered",
+                      "title": "Number of value chain actors registered",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.6.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_citizens_feedback_received",
+                      "title": "Number of citizens feedback received",
+                      "measurement_unit": "Number",
+                      "code": "BOI-56",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_initiatives_adjustments_made_from_feedback",
+                      "title": "Number of initiatives/adjustments made from feedback",
+                      "measurement_unit": "Number",
+                      "code": "BOI-57",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_solar_chillers_in_use",
+                      "title": "Number of solar chillers in use",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.1.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "volume_of_milk_processed_liters",
+                      "title": "Volume of milk processed (liters)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.1.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_new_dairy_cooperatives_formed",
+                      "title": "Number of new dairy cooperatives formed",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.1.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_new_milk_aggregators_operational",
+                      "title": "Number of new milk aggregators operational",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.1.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_boost_in_milk_yield_per_cow",
+                      "title": "Percentage boost in milk yield per cow",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.1.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_dairy_policies_rolled_out_active",
+                      "title": "Percentage of dairy policies rolled out/active",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.1.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_ai_and_embryo_transfers_completed",
+                      "title": "Number of AI and embryo transfers completed",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.1.7",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_persons_reached_sensitization",
+                      "title": "Number of persons reached (sensitization)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.1.8",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_persons_trained_stockmen_technicians",
+                      "title": "Number of persons trained (stockmen/technicians)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.1.9",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_active_development_partners",
+                      "title": "Number of active development partners",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.1.10",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_cost_reduction_in_feed_price",
+                      "title": "Percentage cost reduction in feed price",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.2.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_participants_trained_in_soybean_linkages",
+                      "title": "Number of participants trained in soybean linkages",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.2.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_persons_trained_capacity_building",
+                      "title": "Number of persons trained (capacity building)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.2.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "volume_of_credit_extended_to_poultry_farmers",
+                      "title": "Volume of credit extended to poultry farmers",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.2.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_processing_sites_rehabilitated",
+                      "title": "Number of processing sites rehabilitated",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.2.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_participants_sensitized_outgrower_schemes",
+                      "title": "Number of participants sensitized (outgrower schemes)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.2.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_gps_farms_established_by_private_sector",
+                      "title": "Number of GPS farms established by private sector",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.2.7",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_workshops_conducted_policy_development",
+                      "title": "Number of workshops conducted (policy development)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.2.8",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_chicks_distributed_rural_poultry_support",
+                      "title": "Number of chicks distributed (rural poultry support)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.2.9",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_community_animal_husbandry_providers_trained",
+                      "title": "Number of community animal husbandry providers trained",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.2.10",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_cooperatives_formed",
+                      "title": "Number of cooperatives formed",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.3.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_farmers_engaged_in_cooperatives",
+                      "title": "Number of farmers engaged in cooperatives",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.3.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_farmers_impacted_by_breeding_programs",
+                      "title": "Number of farmers impacted by breeding programs",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.3.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_rise_in_sheep_goat_yields",
+                      "title": "Percentage rise in sheep/goat yields",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.3.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_goat_houses_constructed",
+                      "title": "Number of goat houses constructed",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.3.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_farmers_supported_fattening_programs",
+                      "title": "Number of farmers supported (fattening programs)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.3.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_processing_centers_rehabilitated",
+                      "title": "Number of processing centers rehabilitated",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.3.7",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_fattening_cooperatives_formed",
+                      "title": "Number of fattening cooperatives formed",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.4.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_farmers_trained_cooperative_members",
+                      "title": "Number of farmers trained (cooperative members)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.4.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "tons_of_fattening_feed_distributed",
+                      "title": "Tons of fattening feed distributed",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.4.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_meat_transport_entrepreneurs_incentivized",
+                      "title": "Number of meat transport entrepreneurs incentivized",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.4.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_abattoir_modernization_projects",
+                      "title": "Number of abattoir modernization projects",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.4.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "rollout_of_abattoir_sops_states_compliant",
+                      "title": "Rollout of abattoir SOPs (% states compliant)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.4.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_butchers_vendors_trained",
+                      "title": "Number of butchers/vendors trained",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.4.7",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_modern_meat_retail_shops_incentivized",
+                      "title": "Number of modern meat retail shops incentivized",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.4.8",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_pig_farmers_supported_with_inputs",
+                      "title": "Number of pig farmers supported with inputs",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.5.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_meat_processors_trained",
+                      "title": "Number of meat processors trained",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.5.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_markets_linked_to_leather_producers",
+                      "title": "Number of markets linked to leather producers",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.6.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_micro_livestock_actors_registered",
+                      "title": "Number of micro-livestock actors registered",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.7.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_actors_trained_in_improved_husbandry",
+                      "title": "Number of actors trained in improved husbandry",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.7.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_sop_copies_distributed_micro_livestock",
+                      "title": "Number of SOP copies distributed (micro-livestock)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.7.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_farmers_supported_with_inputs_micro_livestock",
+                      "title": "Number of farmers supported with inputs (micro-livestock)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.7.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_markets_linked_to_micro_livestock_producers",
+                      "title": "Number of markets linked to micro-livestock producers",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.7.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_beehives_kept_apiculture",
+                      "title": "Number of beehives kept (apiculture)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.7.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "honey_production_volume_liters",
+                      "title": "Honey production volume (liters)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.7.7",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_honey_certified_residue_free",
+                      "title": "Percentage of honey certified residue-free",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.7.8",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_donkey_breeders_registered",
+                      "title": "Number of donkey breeders registered",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.7.9",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_donkey_farmers_supported_jennys_feed_minerals",
+                      "title": "Number of donkey farmers supported (Jennys feed minerals)",
+                      "measurement_unit": "",
+                      "code": "PPOI-1.7.10",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "quantity_of_veterinary_supplies_procured",
+                      "title": "Quantity of veterinary supplies procured",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.1.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_stockout_incidents",
+                      "title": "Number of stockout incidents",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.1.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_rise_in_disease_detection_rates",
+                      "title": "Percentage rise in disease detection rates",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.2.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_persons_trained_biosecurity_protocols",
+                      "title": "Number of persons trained (biosecurity protocols)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.2.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_veterinary_clinics_rebuilt_equipped",
+                      "title": "Number of veterinary clinics rebuilt/equipped",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.2.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "usage_levels_of_rehabilitated_clinics_capacity",
+                      "title": "Usage levels of rehabilitated clinics (% capacity)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.2.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_disease_outbreaks_prevented",
+                      "title": "Number of disease outbreaks prevented",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.2.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "improved_outbreak_detection_rates_detected_24hrs",
+                      "title": "Improved outbreak detection rates (% detected <24hrs)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.2.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_surveillance_officers_trained",
+                      "title": "Number of surveillance officers trained",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.2.7",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "system_readiness_score_surveillance_infrastructure",
+                      "title": "System readiness score (surveillance infrastructure)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.2.8",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_surveillance_vehicles_deployed",
+                      "title": "Number of surveillance vehicles deployed",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.2.9",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "improved_capacity_to_prevent_manage_outbreaks_index_score",
+                      "title": "Improved capacity to prevent/manage outbreaks (index score)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.2.10",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_vaccination_coverage_target_achieved",
+                      "title": "Percentage vaccination coverage target achieved",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.3.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "decline_in_vaccine_consumable_stockouts",
+                      "title": "Decline in vaccine/consumable stockouts",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.3.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "falling_number_of_infection_spillovers_zoonotic_diseases",
+                      "title": "Falling number of infection spillovers (zoonotic diseases)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.3.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_disease_control_campaigns_conducted",
+                      "title": "Number of disease control campaigns conducted",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.3.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_decline_in_tad_incidence",
+                      "title": "Percentage decline in TAD incidence",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.3.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_diagnostic_kits_distributed",
+                      "title": "Number of diagnostic kits distributed",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.4.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_decline_in_diagnostic_stockouts",
+                      "title": "Percentage decline in diagnostic stockouts",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.4.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_laboratories_upgraded",
+                      "title": "Number of laboratories upgraded",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.4.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_improvement_in_lab_efficiency_turnaround_time",
+                      "title": "Percentage improvement in lab efficiency (turnaround time)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.4.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_efficiency_in_data_collection_and_diagnostic_accuracy",
+                      "title": "Percentage efficiency in data collection and diagnostic accuracy",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.4.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_remapped_surveillance_points_operational",
+                      "title": "Percentage remapped surveillance points operational",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.4.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_veterinary_certificates_issued",
+                      "title": "Number of veterinary certificates issued",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.5.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_increase_in_market_access_to_export_markets",
+                      "title": "Percentage increase in market access to export markets",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.5.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_compliance_with_veterinary_regulations",
+                      "title": "Percentage compliance with veterinary regulations",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.5.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_increase_in_livestock_product_exports",
+                      "title": "Percentage increase in livestock product exports",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.5.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "database_quality_score_livestock_demographics",
+                      "title": "Database quality score (livestock demographics)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.5.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "database_usage_statistics_number_of_queries_reports",
+                      "title": "Database usage statistics (number of queries/reports)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.5.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_beehives_kept",
+                      "title": "Number of beehives kept",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.6.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "honey_production_volumes_liters",
+                      "title": "Honey production volumes (liters)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.6.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_honey_certified_residue_free_1",
+                      "title": "Percentage of honey certified residue-free",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.6.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_disease_outbreaks_in_micro_livestock_per_annum",
+                      "title": "Percentage disease outbreaks in micro-livestock per annum",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.6.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_micro_livestock_farmers_trained_in_biosecurity",
+                      "title": "Number of micro-livestock farmers trained in biosecurity",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.6.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_micro_livestock_farms_biosecurity_compliant",
+                      "title": "Number of micro-livestock farms biosecurity compliant",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.6.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_reduction_in_aquaculture_health_incidents",
+                      "title": "Percentage reduction in aquaculture health incidents",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.7.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_reduction_in_chemical_use_aquaculture",
+                      "title": "Percentage reduction in chemical use (aquaculture)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.7.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_increase_in_aquaculture_productivity",
+                      "title": "Percentage increase in aquaculture productivity",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.7.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_disease_outbreaks_prevented_contained",
+                      "title": "Number of disease outbreaks prevented/contained",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.7.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_aquaculture_farmers_trained_and_protected",
+                      "title": "Number of aquaculture farmers trained and protected",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.7.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_wildlife_officers_trained",
+                      "title": "Number of wildlife officers trained",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.8.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "level_of_knowledge_transferred_assessment_score",
+                      "title": "Level of knowledge transferred (assessment score)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.8.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_increase_in_prompt_wildlife_disease_detection",
+                      "title": "Percentage increase in prompt wildlife disease detection",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.8.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "stability_of_wildlife_ecosystem_disease_impact_score",
+                      "title": "Stability of wildlife ecosystem (disease impact score)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.8.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_disease_spillovers_from_wildlife_prevented",
+                      "title": "Number of disease spillovers from wildlife prevented",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.8.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_functional_one_health_structures_at_sub_national_levels",
+                      "title": "Number of functional One Health structures at sub-national levels",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.9.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_one_health_teams_established_and_operational",
+                      "title": "Number of One Health teams established and operational",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.9.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_alignment_with_global_one_health_best_practices",
+                      "title": "Percentage alignment with global One Health best practices",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.9.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_zoonoses_controlled_target_diseases",
+                      "title": "Percentage of zoonoses controlled (target diseases)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.9.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_one_health_multilateral_meetings_conducted",
+                      "title": "Number of One Health multilateral meetings conducted",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.9.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_woah_dues_paid_on_time",
+                      "title": "Percentage of WOAH dues paid on time",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.10.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_woah_obligations_met_reporting_standards",
+                      "title": "Percentage of WOAH obligations met (reporting standards)",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.10.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "nigeria_s_woah_performance_pathway_pvs_score",
+                      "title": "Nigeria's WOAH performance pathway (PVS) score",
+                      "measurement_unit": "",
+                      "code": "PPOI-2.10.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "volume_of_certified_pasture_seeds_produced",
+                      "title": "Volume of certified pasture seeds produced",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.1.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_pasture_seed_varieties_certified",
+                      "title": "Number of pasture seed varieties certified",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.1.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_seed_producers_trained_and_certified",
+                      "title": "Number of seed producers trained and certified",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.1.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_enforcement_activities_seed_quality_control",
+                      "title": "Number of enforcement activities (seed quality control)",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.1.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_states_with_designated_pasture_lands",
+                      "title": "Number of states with designated pasture lands",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.2.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "size_of_allocated_pasture_lands_hectares",
+                      "title": "Size of allocated pasture lands (hectares)",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.2.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "creation_of_national_feed_budget_model",
+                      "title": "Creation of national feed budget model",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.3.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "annual_feed_budget_forecast_issuance",
+                      "title": "Annual feed budget forecast issuance",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.3.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_national_workshops_on_feed_budgeting",
+                      "title": "Number of national workshops on feed budgeting",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.3.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_increase_in_pasture_and_feed_production",
+                      "title": "Percentage increase in pasture and feed production",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.4.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_year_round_pasture_farmers_trained",
+                      "title": "Number of year-round pasture farmers trained",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.4.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_annual_pasture_and_fodder_available_year_round",
+                      "title": "Percentage of annual pasture and fodder available year-round",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.4.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_hectares_under_wetland_irrigation_feed_crop_production",
+                      "title": "Number of hectares under wetland/irrigation feed crop production",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.4.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_alternative_feed_ingredients_mapped_and_analyzed",
+                      "title": "Number of alternative feed ingredients mapped and analyzed",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.5.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "completion_of_national_feed_mill_survey",
+                      "title": "Completion of national feed mill survey",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.5.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_feed_mills_mapped",
+                      "title": "Number of feed mills mapped",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.5.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_feed_ingredient_manufacturers_identified",
+                      "title": "Number of feed ingredient manufacturers identified",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.5.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_grazing_reserves_cultivated_and_seeded",
+                      "title": "Number of grazing reserves cultivated and seeded",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.6.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_pastoralists_trained_pasture_management",
+                      "title": "Number of pastoralists trained (pasture management)",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.6.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_water_facilities_built_in_grazing_reserves",
+                      "title": "Number of water facilities built in grazing reserves",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.6.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_access_roads_constructed_in_grazing_reserves",
+                      "title": "Number of access roads constructed in grazing reserves",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.6.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_youth_and_women_trained_in_conservation_enterprises",
+                      "title": "Number of youth and women trained in conservation enterprises",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.7.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_persons_capacitated_business_support_provided",
+                      "title": "Number of persons capacitated (business support provided)",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.7.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_persons_integrated_into_livestock_distribution_program",
+                      "title": "Number of persons integrated into livestock distribution program",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.7.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_grazing_reserve_managers_trained",
+                      "title": "Number of grazing reserve managers trained",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.8.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_reserve_managers_actively_deployed",
+                      "title": "Number of reserve managers actively deployed",
+                      "measurement_unit": "",
+                      "code": "PPOI-3.8.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_new_or_rehabilitated_water_points",
+                      "title": "Number of new or rehabilitated water points",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.1.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_boreholes_constructed_rehabilitated",
+                      "title": "Number of boreholes constructed/rehabilitated",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.1.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_dams_constructed_near_stock_routes",
+                      "title": "Number of dams constructed near stock routes",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.1.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_water_harvesting_systems_installed",
+                      "title": "Number of water harvesting systems installed",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.1.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_solar_powered_water_supply_systems",
+                      "title": "Number of solar-powered water supply systems",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.1.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_pastoralists_trained_in_water_conservation",
+                      "title": "Percentage of pastoralists trained in water conservation",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.2.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_water_user_associations_wuas_functional",
+                      "title": "Percentage of Water User Associations (WUAs) functional",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.2.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_water_user_associations_established",
+                      "title": "Number of Water User Associations established",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.2.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_adoption_of_rotational_grazing_systems",
+                      "title": "Percentage adoption of rotational grazing systems",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.2.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_reduction_in_farmer_herder_conflicts_related_to_water",
+                      "title": "Percentage reduction in farmer-herder conflicts related to water",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.3.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_watering_points_mapped_and_secured",
+                      "title": "Number of livestock watering points mapped and secured",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.3.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_joint_water_access_agreements_signed",
+                      "title": "Number of joint water access agreements signed",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.3.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_adoption_of_water_recycling_systems",
+                      "title": "Percentage adoption of water recycling systems",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.4.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_adoption_of_efficient_irrigation_for_fodder",
+                      "title": "Percentage adoption of efficient irrigation for fodder",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.4.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_climate_resilient_water_systems_implemented",
+                      "title": "Number of climate-resilient water systems implemented",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.4.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_solar_powered_boreholes_and_irrigation_systems",
+                      "title": "Number of solar-powered boreholes and irrigation systems",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.4.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "establishment_of_early_warning_systems_for_drought_water_shortages",
+                      "title": "Establishment of early warning systems for drought/water shortages",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.4.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "policies_and_legal_frameworks_developed",
+                      "title": "Policies and legal frameworks developed",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.5.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "national_and_state_level_legislations_established",
+                      "title": "National and State level legislations established",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.5.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_increase_in_inter_ministerial_coordination",
+                      "title": "Percentage increase in inter-ministerial coordination",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.5.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_research_output_on_livestock_water_needs",
+                      "title": "Percentage research output on livestock water needs",
+                      "measurement_unit": "",
+                      "code": "PPOI-4.5.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_financial_products_launched",
+                      "title": "Number of financial products launched",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.1.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_farmers_using_financial_services",
+                      "title": "Percentage of farmers using financial services",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.1.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_reduction_in_farmer_financial_losses",
+                      "title": "Percentage reduction in farmer financial losses",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.2.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_increase_in_farmer_income",
+                      "title": "Percentage increase in farmer income",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.2.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_farmers_linked_to_value_added_markets",
+                      "title": "Percentage of farmers linked to value-added markets",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.3.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_certification_compliance_achieved",
+                      "title": "Percentage certification compliance achieved",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.3.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_annual_export_growth_livestock_products",
+                      "title": "Percentage annual export growth (livestock products)",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.3.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "forex_earnings_from_livestock_exports",
+                      "title": "Forex earnings from livestock exports",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.3.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_facilities_developed_markets_abattoirs_processing",
+                      "title": "Number of facilities developed (markets abattoirs processing)",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.4.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_farmers_trained_in_value_chain_activities",
+                      "title": "Number of farmers trained in value chain activities",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.4.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_zones_established_within_sapz",
+                      "title": "Number of livestock zones established within SAPZ",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.4.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "total_loan_volume_disbursed",
+                      "title": "Total loan volume disbursed",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.5.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_farmers_in_livestock_credit_system",
+                      "title": "Number of farmers in livestock credit system",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.5.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_loan_repayment_rate",
+                      "title": "Percentage loan repayment rate",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.5.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_specialty_financing_initiatives_funded",
+                      "title": "Number of specialty financing initiatives funded",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.5.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_farmers_insured",
+                      "title": "Number of farmers insured",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.6.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "insurance_coverage_value_naira_and_animals_covered",
+                      "title": "Insurance coverage value (Naira and animals covered)",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.6.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "claims_settlement_rate_of_legitimate_claims_paid",
+                      "title": "Claims settlement rate (% of legitimate claims paid)",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.6.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_insurance_products_available",
+                      "title": "Number of insurance products available",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.6.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_farmers_trained_on_accessing_finance_insurance",
+                      "title": "Number of farmers trained on accessing finance/insurance",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.7.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_regional_training_programs_conducted",
+                      "title": "Number of regional training programs conducted",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.7.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_aggregation_centers_operational",
+                      "title": "Number of aggregation centers operational",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.8.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "digital_platform_usage_statistics_active_users",
+                      "title": "Digital platform usage statistics (active users)",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.8.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_sales_transactions_through_digital_platform",
+                      "title": "Number of livestock sales transactions through digital platform",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.8.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_platform_usage_data_transaction_volume_share",
+                      "title": "Percentage platform usage data (transaction volume share)",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.8.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "livestock_lending_as_of_total_agricultural_loans",
+                      "title": "Livestock lending as % of total agricultural loans",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.9.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_commercial_banks_actively_lending_to_livestock",
+                      "title": "Number of commercial banks actively lending to livestock",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.9.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "total_livestock_sector_financing_public_private",
+                      "title": "Total livestock sector financing (public + private)",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.9.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "livestock_export_growth_trajectory",
+                      "title": "Livestock export growth trajectory",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.10.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_financing_initiatives_for_market_activities",
+                      "title": "Number of financing initiatives for market activities",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.10.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_direct_jobs_created",
+                      "title": "Number of direct jobs created",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.11.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_indirect_jobs_created",
+                      "title": "Number of indirect jobs created",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.11.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_reduction_in_rural_poverty",
+                      "title": "Percentage reduction in rural poverty",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.11.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_ministerial_committee_meetings_held",
+                      "title": "Number of ministerial committee meetings held",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.12.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_ministerial_investment_conferences",
+                      "title": "Number of livestock ministerial investment conferences",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.12.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_firms_in_livestock_business_group",
+                      "title": "Number of firms in Livestock Business Group",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.12.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_letters_of_intent_lois_secured_from_investors",
+                      "title": "Number of Letters of Intent (LOIs) secured from investors",
+                      "measurement_unit": "",
+                      "code": "PPOI-5.12.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_agencies_supported_to_improve_conflict_management",
+                      "title": "Number of agencies supported to improve conflict management",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.1.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_parties_trained_in_mediation_adr_grievance_management",
+                      "title": "Number of parties trained in mediation/ADR/grievance management",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.1.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_sops_developed",
+                      "title": "Number of SOPs developed",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.1.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_sop_utilization_in_conflict_resolution",
+                      "title": "Percentage SOP utilization in conflict resolution",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.1.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_conflicts_resolved_within_90_days",
+                      "title": "Percentage of conflicts resolved within 90 days",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.1.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_conflicts_prevented_neutralized_through_rapid_intervention",
+                      "title": "Number of conflicts prevented/neutralized through rapid intervention",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.1.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_state_lga_institutions_with_improved_funding",
+                      "title": "Percentage of state/LGA institutions with improved funding",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.2.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_public_sector_and_traditional_leaders_trained",
+                      "title": "Number of public sector and traditional leaders trained",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.3.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_farmer_and_pastoral_organization_leaders_trained",
+                      "title": "Number of farmer and pastoral organization leaders trained",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.3.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_trained_leaders_actively_engaged_in_peacebuilding",
+                      "title": "Percentage of trained leaders actively engaged in peacebuilding",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.3.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_lews_recruited",
+                      "title": "Number of LEWs recruited",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.4.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_media_organizations_and_social_influencers_engaged",
+                      "title": "Number of media organizations and social influencers engaged",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.4.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_media_practitioners_trained_in_conflict_sensitive_reporting",
+                      "title": "Number of media practitioners trained in conflict-sensitive reporting",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.4.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_media_practitioners_practicing_conflict_sensitive_reporting",
+                      "title": "Percentage of media practitioners practicing conflict-sensitive reporting",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.4.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_media_promoting_peaceful_coexistence",
+                      "title": "Percentage of media promoting peaceful coexistence",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.4.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "guidelines_and_procedures_for_transhumance_migration_developed",
+                      "title": "Guidelines and procedures for transhumance migration developed",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.5.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_states_with_improved_coordination_of_transhumance",
+                      "title": "Number of states with improved coordination of transhumance",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.5.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_community_leaders_trained_in_migration_management",
+                      "title": "Number of community leaders trained in migration management",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.5.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_inter_state_migration_agreements_signed",
+                      "title": "Number of inter-state migration agreements signed",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.5.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "ecowas_transhumance_protocol_review_initiated",
+                      "title": "ECOWAS transhumance protocol review initiated",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.5.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "framework_agreement_for_ecowas_protocol_implementation",
+                      "title": "Framework agreement for ECOWAS protocol implementation",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.5.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "livestock_ranger_unit_established_and_operational",
+                      "title": "Livestock Ranger Unit established and operational",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.6.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_rangers_recruited_and_equipped",
+                      "title": "Number of livestock rangers recruited and equipped",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.6.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_ranger_recruitment_and_equipping_target",
+                      "title": "Percentage of ranger recruitment and equipping target",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.6.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "conflict_insecurity_hotspot_mapping_completed",
+                      "title": "Conflict/insecurity hotspot mapping completed",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.6.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_ranger_deployment_operations_conducted",
+                      "title": "Number of ranger deployment operations conducted",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.6.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_security_awareness_activities_among_communities",
+                      "title": "Number of security awareness activities among communities",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.6.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_community_support_for_livestock_ranger_services",
+                      "title": "Percentage community support for Livestock Ranger services",
+                      "measurement_unit": "",
+                      "code": "PPOI-6.6.7",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "baseline_facility_inventory_completed",
+                      "title": "Baseline facility inventory completed",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.1.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "design_prototypes_for_production_facilities_completed",
+                      "title": "Design prototypes for production facilities completed",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.1.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_production_facilities_constructed",
+                      "title": "Number of livestock production facilities constructed",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.1.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_herders_settled_in_new_facilities",
+                      "title": "Number of herders settled in new facilities",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.1.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_facility_utilization_product_marketing_economic_activity",
+                      "title": "Percentage of facility utilization (product marketing economic activity)",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.1.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_veterinary_clinics_constructed_equipped",
+                      "title": "Number of veterinary clinics constructed/equipped",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.2.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_private_partners_managing_concessioned_clinics",
+                      "title": "Number of private partners managing concessioned clinics",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.2.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_farmers_using_clinic_services",
+                      "title": "Number of farmers using clinic services",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.2.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_laboratories_upgraded_nvri_regional_sentinel_teaching",
+                      "title": "Number of laboratories upgraded (NVRI Regional Sentinel Teaching)",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.2.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_laboratory_samples_processed_annually",
+                      "title": "Number of laboratory samples processed annually",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.2.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_private_animal_health_service_providers_supported",
+                      "title": "Number of private animal health service providers supported",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.2.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_abattoirs_upgraded_with_meat_haulage_vehicles",
+                      "title": "Number of abattoirs upgraded with meat haulage vehicles",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.3.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_silos_and_storage_facilities_constructed",
+                      "title": "Number of silos and storage facilities constructed",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.3.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_demonstration_farms_with_irrigation_systems",
+                      "title": "Number of demonstration farms with irrigation systems",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.3.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_grazing_reserves_equipped_with_modern_infrastructure",
+                      "title": "Number of grazing reserves equipped with modern infrastructure",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.3.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_new_business_ventures_established_on_reserves",
+                      "title": "Number of new business ventures established on reserves",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.3.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_centralized_livestock_service_centers_established",
+                      "title": "Number of centralized livestock service centers established",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.4.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_satellite_rural_centers_sub_centers",
+                      "title": "Number of satellite rural centers (sub-centers)",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.4.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_service_centers_fully_operational_and_staffed",
+                      "title": "Number of service centers fully operational and staffed",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.4.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "usage_data_number_of_animals_treated_diagnosed_marketed",
+                      "title": "Usage data (number of animals treated/diagnosed/marketed)",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.4.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_temperature_controlled_vehicles_deployed",
+                      "title": "Number of temperature-controlled vehicles deployed",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.5.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_reduction_in_post_harvest_losses_perishables",
+                      "title": "Percentage reduction in post-harvest losses (perishables)",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.5.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_trailers_and_wagons_for_feed_transport",
+                      "title": "Number of livestock trailers and wagons for feed transport",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.5.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_designated_livestock_loading_unloading_hubs",
+                      "title": "Number of designated livestock loading/unloading hubs",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.5.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_vehicles_operational_and_in_use",
+                      "title": "Number of vehicles operational and in use",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.5.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_regional_processing_facility_clusters_established",
+                      "title": "Number of regional processing facility clusters established",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.6.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_modern_meat_processing_facilities_operational",
+                      "title": "Number of modern meat processing facilities operational",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.6.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_new_private_investments_in_processing_sector",
+                      "title": "Number of new private investments in processing sector",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.6.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_processing_facilities_meeting_international_standards",
+                      "title": "Number of processing facilities meeting international standards",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.6.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "tax_holiday_incentive_uptake_rate",
+                      "title": "Tax holiday incentive uptake rate",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.6.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_renewable_energy_pilot_projects",
+                      "title": "Number of renewable energy pilot projects",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.7.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_solar_powered_water_pumps_systems",
+                      "title": "Number of solar-powered water pumps/systems",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.7.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_biogas_digesters_constructed",
+                      "title": "Number of biogas digesters constructed",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.7.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_farms_adopting_renewable_energy",
+                      "title": "Number of farms adopting renewable energy",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.7.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_farms_using_green_energy",
+                      "title": "Percentage of farms using green energy",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.7.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_reduction_in_operational_energy_costs",
+                      "title": "Percentage reduction in operational energy costs",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.7.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_kilometers_of_all_weather_roads_constructed_rehabilitated",
+                      "title": "Number of kilometers of all-weather roads constructed/rehabilitated",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.8.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_all_weather_roads_with_erosion_control_safeguards",
+                      "title": "Number of all-weather roads with erosion control/safeguards",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.8.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_lga_level_last_mile_road_connectivity_projects",
+                      "title": "Number of LGA-level last-mile road connectivity projects",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.8.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "volume_of_goods_transported_on_improved_roads",
+                      "title": "Volume of goods transported on improved roads",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.8.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_reduction_in_transport_time_to_markets",
+                      "title": "Percentage reduction in transport time to markets",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.8.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_waste_collection_systems_established",
+                      "title": "Number of waste collection systems established",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.9.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_large_scale_organic_fertilizer_production_facilities",
+                      "title": "Number of large-scale organic fertilizer production facilities",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.9.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_biogas_production_facilities",
+                      "title": "Number of biogas production facilities",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.9.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "tons_of_animal_waste_processed_annually",
+                      "title": "Tons of animal waste processed annually",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.9.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_beneficiary_farmers_communities_reached",
+                      "title": "Number of beneficiary farmers/communities reached",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.9.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_pr_awareness_activities_on_waste_conversion",
+                      "title": "Number of PR/awareness activities on waste conversion",
+                      "measurement_unit": "",
+                      "code": "PPOI-7.9.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "draft_national_policy_on_livestock_extension_developed",
+                      "title": "Draft National Policy on Livestock Extension developed",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.1.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "stakeholder_validation_workshops_completed",
+                      "title": "Stakeholder validation workshops completed",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.1.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "national_policy_on_livestock_extension_approved",
+                      "title": "National Policy on Livestock Extension approved",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.1.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "policy_implementation_roadmap_disseminated",
+                      "title": "Policy implementation roadmap disseminated",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.1.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_higher_institutions_developing_livestock_extension_curricula",
+                      "title": "Number of higher institutions developing livestock extension curricula",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.1.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "schedule_of_duties_for_lew_developed_and_validated",
+                      "title": "Schedule of duties for LEW developed and validated",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.2.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_lews_formally_integrated_into_civil_service",
+                      "title": "Number of LEWs formally integrated into civil service",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.2.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_states_implementing_formal_lew_cadre",
+                      "title": "Number of states implementing formal LEW cadre",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.2.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "draft_extension_training_modules_completed_by_value_chain",
+                      "title": "Draft extension training modules completed (by value chain)",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.3.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "stakeholder_workshop_for_module_refinement_conducted",
+                      "title": "Stakeholder workshop for module refinement conducted",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.3.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "training_modules_finalized_and_published",
+                      "title": "Training modules finalized and published",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.3.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_copies_of_training_materials_produced",
+                      "title": "Number of copies of training materials produced",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.3.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_master_trainers_trained_tot_program",
+                      "title": "Number of master trainers trained (ToT program)",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.4.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_cascading_trainings_conducted_at_state_level",
+                      "title": "Number of cascading trainings conducted at state level",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.4.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_coverage_of_lew_training_recruited_workers_trained",
+                      "title": "Percentage coverage of LEW training (% recruited workers trained)",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.4.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_extension_service_calls_requests_responded_to",
+                      "title": "Number of extension service calls/requests responded to",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.5.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_priority_livestock_areas_with_active_extension_coverage",
+                      "title": "Percentage of priority livestock areas with active extension coverage",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.5.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_farmers_receiving_extension_services",
+                      "title": "Number of farmers receiving extension services",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.5.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_farmers_adopting_recommended_practices",
+                      "title": "Number of farmers adopting recommended practices",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.5.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_extension_service_priorities_rolled_out_nationally",
+                      "title": "Percentage of extension service priorities rolled out nationally",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.5.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_lew_specializing_in_pastoral_systems",
+                      "title": "Number of LEW specializing in pastoral systems",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.6.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_pastoralists_trained_on_improved_husbandry",
+                      "title": "Number of pastoralists trained on improved husbandry",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.6.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_increase_in_pastoral_herd_productivity",
+                      "title": "Percentage increase in pastoral herd productivity",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.6.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_private_sector_extension_service_providers_mapped",
+                      "title": "Number of private sector extension service providers mapped",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.7.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "sops_for_private_extension_delivery_developed",
+                      "title": "SOPs for private extension delivery developed",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.7.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_private_extension_service_providers_operationalized",
+                      "title": "Number of private extension service providers operationalized",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.7.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_extension_services_from_private_sector",
+                      "title": "Percentage of extension services from private sector",
+                      "measurement_unit": "",
+                      "code": "PPOI-8.7.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_women_and_youth_cooperative_clusters_formed",
+                      "title": "Number of women and youth cooperative clusters formed",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.1.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_cooperative_cluster_members",
+                      "title": "Number of cooperative cluster members",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.1.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_cooperative_members_trained_on_group_dynamics",
+                      "title": "Number of cooperative members trained on group dynamics",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.1.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_trained_cooperative_members_accessing_credit",
+                      "title": "Percentage of trained cooperative members accessing credit",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.1.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_women_and_youth_sensitized_on_livestock_programs",
+                      "title": "Number of women and youth sensitized on livestock programs",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.2.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "gender_policies_integrated_in_livestock_sector_documents",
+                      "title": "Gender policies integrated in livestock sector documents",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.2.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_all_women_and_all_youth_livestock_enterprises",
+                      "title": "Number of all-women and all-youth livestock enterprises",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.2.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_women_youth_livestock_farmers_linked_to_credit",
+                      "title": "Number of women/youth livestock farmers linked to credit",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.3.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "average_loan_size_per_woman_youth_borrower",
+                      "title": "Average loan size per woman/youth borrower",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.3.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_on_time_loan_repayment_rate_women_youth",
+                      "title": "Percentage on-time loan repayment rate (women/youth)",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.3.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_cottage_industries_established_1",
+                      "title": "Number of livestock cottage industries established",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.4.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "investment_in_cottage_industries",
+                      "title": "Investment in cottage industries",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.4.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_beneficiary_women_youth_trained_on_industry_management",
+                      "title": "Number of beneficiary women/youth trained on industry management",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.4.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_industries_operational_and_generating_revenue",
+                      "title": "Number of industries operational and generating revenue",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.4.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_women_and_youth_trained_in_agribusiness",
+                      "title": "Number of women and youth trained in agribusiness",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.5.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_women_youth_provided_starter_pack_inputs",
+                      "title": "Number of women/youth provided starter pack inputs",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.5.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "input_value_per_beneficiary",
+                      "title": "Input value per beneficiary",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.5.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_market_linkages_established_for_women_youth",
+                      "title": "Number of market linkages established for women/youth",
+                      "measurement_unit": "",
+                      "code": "PPOI-9.5.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_stakeholders_sensitized_for_census_awareness",
+                      "title": "Number of stakeholders sensitized for census (awareness)",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.1.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "census_design_finalized",
+                      "title": "Census design finalized",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.1.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "national_sensitization_campaign_completed",
+                      "title": "National sensitization campaign completed",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.1.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_species_enumerated",
+                      "title": "Number of livestock species enumerated",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.1.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_farmers_enumerated",
+                      "title": "Number of livestock farmers enumerated",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.1.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_infrastructure_markets_enumerated",
+                      "title": "Number of livestock infrastructure/markets enumerated",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.1.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "national_livestock_id_system_design_completed",
+                      "title": "National livestock ID system design completed",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.2.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_animals_with_unique_id_assigned",
+                      "title": "Number of animals with unique ID assigned",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.2.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "traceability_system_operational",
+                      "title": "Traceability system operational",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.2.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_traceability_system_users_trained",
+                      "title": "Number of traceability system users trained",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.2.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "livestock_data_management_system_ldms_designed",
+                      "title": "Livestock data management system (LDMS) designed",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.3.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "ldms_software_developed_and_tested",
+                      "title": "LDMS software developed and tested",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.3.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "data_analysis_and_reporting_tools_procured",
+                      "title": "Data analysis and reporting tools procured",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.3.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "computer_hardware_deployed_to_lgas_states",
+                      "title": "Computer hardware deployed to LGAs/states",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.3.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_reports_generated_and_disseminated",
+                      "title": "Number of reports generated and disseminated",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.3.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "system_maintenance_and_updates_performed",
+                      "title": "System maintenance and updates performed",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.3.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_animal_health_officers_trained_on_data_management",
+                      "title": "Number of livestock/animal health officers trained on data management",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.4.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_data_entry_personnel_trained",
+                      "title": "Number of data entry personnel trained",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.4.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_livestock_farmers_trained_on_data_collection",
+                      "title": "Number of livestock farmers trained on data collection",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.4.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_personnel_receiving_refresher_advanced_training",
+                      "title": "Number of personnel receiving refresher/advanced training",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.4.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_usage_status_reports_generated_system_performance",
+                      "title": "Number of usage status reports generated (system performance)",
+                      "measurement_unit": "",
+                      "code": "PPOI-10.4.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "total_investment_mobilized_all_sources",
+                      "title": "Total investment mobilized (all sources)",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM1.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "federal_government_budget_allocation_to_nglas",
+                      "title": "Federal government budget allocation to NGLAS",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM1.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "donor_mdb_funding_commitments_secured",
+                      "title": "Donor/MDB funding commitments secured",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM1.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "private_sector_investment_secured_letters_of_intent",
+                      "title": "Private sector investment secured (Letters of Intent)",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM1.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "state_government_co_investment",
+                      "title": "State government co-investment",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM1.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "national_joint_working_group_jwg_established_operational",
+                      "title": "National Joint Working Group (JWG) established & operational",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM2.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_jwg_meetings_held",
+                      "title": "Number of JWG meetings held",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM2.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_state_level_jwgs_established",
+                      "title": "Number of state-level JWGs established",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM2.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_jwg_recommendations_implemented",
+                      "title": "Percentage of JWG recommendations implemented",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM2.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_inter_ministerial_coordination_meetings_held",
+                      "title": "Number of inter-ministerial coordination meetings held",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM2.5",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_coordination_issues_resolved_through_jwg",
+                      "title": "Percentage of coordination issues resolved through JWG",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM2.6",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "livestock_sector_ghg_emissions_carbon_footprint",
+                      "title": "Livestock sector GHG emissions (carbon footprint)",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM3.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "number_of_grazing_reserves_under_sustainable_management",
+                      "title": "Number of grazing reserves under sustainable management",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM3.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_farmland_under_soil_conservation_practices",
+                      "title": "Percentage of farmland under soil conservation practices",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM3.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "biodiversity_conservation_livestock_breed_diversity",
+                      "title": "Biodiversity conservation (livestock breed diversity)",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM3.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_women_farmers_in_sector_programs",
+                      "title": "Percentage of women farmers in sector programs",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM4.1",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_youth_18_35_years_in_sector_programs",
+                      "title": "Percentage of youth (18-35 years) in sector programs",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM4.2",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_pastoralist_nomadic_communities_benefiting",
+                      "title": "Percentage of pastoralist/nomadic communities benefiting",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM4.3",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "percentage_of_smallholder_farmers_benefiting",
+                      "title": "Percentage of smallholder farmers benefiting",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM4.4",
+                      "type": "output"
+                  },
+                  {
+                      "slug": "gini_coefficient_for_livestock_income_distribution",
+                      "title": "Gini coefficient for livestock income distribution",
+                      "measurement_unit": "",
+                      "code": "PPOI-CCM4.5",
+                      "type": "output"
+                  }
+              ]
+          }

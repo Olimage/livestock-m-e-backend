@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Department;
+use Illuminate\Database\Seeder;
 
 class DepartmentSeeder extends Seeder
 {
@@ -13,28 +13,41 @@ class DepartmentSeeder extends Seeder
     public function run(): void
     {
         // Create main department categories
+        $ministry = Department::create([
+            'name' => 'Ministry',
+            'slug' => 'ministry',
+            'is_technical' => false,
+        ]);
+
         $units = Department::create([
             'name' => 'Units',
             'slug' => 'units',
             'is_technical' => false,
+            'parent_id' => $ministry->id
         ]);
 
         $specialDuties = Department::create([
             'name' => 'Special Duties',
             'slug' => 'special_duties',
             'is_technical' => false,
+            'parent_id' => $ministry->id
+
         ]);
 
         $commonServices = Department::create([
             'name' => 'Common Services Departments',
             'slug' => 'common_services_departments',
             'is_technical' => false,
+            'parent_id' => $ministry->id
+
         ]);
 
         $technical = Department::create([
             'name' => 'Technical Departments',
             'slug' => 'technical_departments',
             'is_technical' => true,
+            'parent_id' => $ministry->id
+
         ]);
 
         // Units Departments

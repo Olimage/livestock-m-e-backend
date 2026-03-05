@@ -1,0 +1,264 @@
+info:
+  name: get activity logs
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}activity-logs"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: success
+    request:
+      url: "{{baseUrl}}activity-logs"
+      method: GET
+    response:
+      statusText: "200"
+      headers:
+        - name: Host
+          value: 127.0.0.1:8000
+        - name: Connection
+          value: close
+        - name: X-Powered-By
+          value: PHP/8.3.14
+        - name: Cache-Control
+          value: no-cache, private
+        - name: Date
+          value: Fri, 16 Jan 2026 12:12:29 GMT
+        - name: Content-Type
+          value: application/json
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Access-Control-Allow-Methods
+          value: POST, GET, OPTIONS, PUT, DELETE
+        - name: Access-Control-Allow-Headers
+          value: Content-Type, X-Auth-Token, Authorization, Origin
+        - name: Access-Control-Expose-Headers
+          value: Content-Length, Content-Range, X-Content-Range, X-Requested-With, X-Progress
+        - name: X-RateLimit-Limit
+          value: "200"
+        - name: X-RateLimit-Remaining
+          value: "199"
+        - name: Set-Cookie
+          value: national_livestock_information_management_system_n_lims_session=GW3IUZUeVgiEqRiokQ5fqgudqT4j2LbaH6d3ojKZ; expires=Fri, 16 Jan 2026 14:12:29 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+      body:
+        type: json
+        data: |-
+          {
+              "status": true,
+              "data": {
+                  "current_page": 1,
+                  "data": [
+                      {
+                          "action": "activity-logs.index",
+                          "location": null,
+                          "device": "Desktop",
+                          "ip_address": "127.0.0.1",
+                          "created_at": "2026-01-16T12:10:52.000000Z",
+                          "updated_at": "2026-01-16T12:10:52.000000Z",
+                          "method": "GET",
+                          "url": "http://127.0.0.1:8000/api/v1/activity-logs",
+                          "user_agent": "PostmanRuntime/7.51.0",
+                          "description": "Guest performed GET request on api/v1/activity-logs",
+                          "properties": {
+                              "route": "activity-logs.index",
+                              "params": []
+                          },
+                          "status_code": 200,
+                          "callable_type": null,
+                          "callable_id": null,
+                          "db_action": null,
+                          "user": null,
+                          "callable": null
+                      },
+                      {
+                          "action": "activity-logs.index",
+                          "location": null,
+                          "device": "Desktop",
+                          "ip_address": "127.0.0.1",
+                          "created_at": "2026-01-16T12:10:34.000000Z",
+                          "updated_at": "2026-01-16T12:10:34.000000Z",
+                          "method": "GET",
+                          "url": "http://127.0.0.1:8000/api/v1/activity-logs",
+                          "user_agent": "PostmanRuntime/7.51.0",
+                          "description": "Guest performed GET request on api/v1/activity-logs",
+                          "properties": {
+                              "route": "activity-logs.index",
+                              "params": []
+                          },
+                          "status_code": 500,
+                          "callable_type": null,
+                          "callable_id": null,
+                          "db_action": null,
+                          "user": null,
+                          "callable": null
+                      },
+                      {
+                          "action": "activity-logs.index",
+                          "location": null,
+                          "device": "Desktop",
+                          "ip_address": "127.0.0.1",
+                          "created_at": "2026-01-16T12:10:07.000000Z",
+                          "updated_at": "2026-01-16T12:10:07.000000Z",
+                          "method": "GET",
+                          "url": "http://127.0.0.1:8000/api/v1/activity-logs",
+                          "user_agent": "PostmanRuntime/7.51.0",
+                          "description": "Guest performed GET request on api/v1/activity-logs",
+                          "properties": {
+                              "route": "activity-logs.index",
+                              "params": []
+                          },
+                          "status_code": 500,
+                          "callable_type": null,
+                          "callable_id": null,
+                          "db_action": null,
+                          "user": null,
+                          "callable": null
+                      },
+                      {
+                          "action": "activity-logs.index",
+                          "location": null,
+                          "device": "Desktop",
+                          "ip_address": "127.0.0.1",
+                          "created_at": "2026-01-16T12:08:52.000000Z",
+                          "updated_at": "2026-01-16T12:08:52.000000Z",
+                          "method": "GET",
+                          "url": "http://127.0.0.1:8000/api/v1/activity-logs",
+                          "user_agent": "PostmanRuntime/7.51.0",
+                          "description": "Guest performed GET request on api/v1/activity-logs",
+                          "properties": {
+                              "route": "activity-logs.index",
+                              "params": []
+                          },
+                          "status_code": 200,
+                          "callable_type": null,
+                          "callable_id": null,
+                          "db_action": null,
+                          "user": null,
+                          "callable": null
+                      },
+                      {
+                          "action": "activity-logs.index",
+                          "location": null,
+                          "device": "Desktop",
+                          "ip_address": "127.0.0.1",
+                          "created_at": "2026-01-16T12:08:17.000000Z",
+                          "updated_at": "2026-01-16T12:08:17.000000Z",
+                          "method": "GET",
+                          "url": "http://127.0.0.1:8000/api/v1/activity-logs",
+                          "user_agent": "PostmanRuntime/7.51.0",
+                          "description": "Guest performed GET request on api/v1/activity-logs",
+                          "properties": {
+                              "route": "activity-logs.index",
+                              "params": []
+                          },
+                          "status_code": 200,
+                          "callable_type": null,
+                          "callable_id": null,
+                          "db_action": null,
+                          "user": null,
+                          "callable": null
+                      },
+                      {
+                          "action": "activity-logs.index",
+                          "location": null,
+                          "device": "Desktop",
+                          "ip_address": "127.0.0.1",
+                          "created_at": "2026-01-16T12:07:22.000000Z",
+                          "updated_at": "2026-01-16T12:07:22.000000Z",
+                          "method": "GET",
+                          "url": "http://127.0.0.1:8000/api/v1/activity-logs",
+                          "user_agent": "PostmanRuntime/7.51.0",
+                          "description": "Guest performed GET request on api/v1/activity-logs",
+                          "properties": {
+                              "route": "activity-logs.index",
+                              "params": []
+                          },
+                          "status_code": 401,
+                          "callable_type": null,
+                          "callable_id": null,
+                          "db_action": null,
+                          "user": null,
+                          "callable": null
+                      },
+                      {
+                          "action": "api.locations.states",
+                          "location": null,
+                          "device": "Desktop",
+                          "ip_address": "127.0.0.1",
+                          "created_at": "2026-01-16T10:45:13.000000Z",
+                          "updated_at": "2026-01-16T10:45:13.000000Z",
+                          "method": "GET",
+                          "url": "http://127.0.0.1:8000/api/v1/locations/states?zone_id=1",
+                          "user_agent": "PostmanRuntime/7.51.0",
+                          "description": "Guest performed GET request on api/v1/locations/states",
+                          "properties": {
+                              "route": "api.locations.states",
+                              "params": []
+                          },
+                          "status_code": 200,
+                          "callable_type": null,
+                          "callable_id": null,
+                          "db_action": null,
+                          "user": null,
+                          "callable": null
+                      },
+                      {
+                          "action": "api.locations.zones",
+                          "location": null,
+                          "device": "Desktop",
+                          "ip_address": "127.0.0.1",
+                          "created_at": "2026-01-16T10:39:35.000000Z",
+                          "updated_at": "2026-01-16T10:39:35.000000Z",
+                          "method": "GET",
+                          "url": "http://127.0.0.1:8000/api/v1/locations/zones",
+                          "user_agent": "PostmanRuntime/7.51.0",
+                          "description": "Guest performed GET request on api/v1/locations/zones",
+                          "properties": {
+                              "route": "api.locations.zones",
+                              "params": []
+                          },
+                          "status_code": 200,
+                          "callable_type": null,
+                          "callable_id": null,
+                          "db_action": null,
+                          "user": null,
+                          "callable": null
+                      }
+                  ],
+                  "first_page_url": "http://127.0.0.1:8000/api/v1/activity-logs?page=1",
+                  "from": 1,
+                  "last_page": 1,
+                  "last_page_url": "http://127.0.0.1:8000/api/v1/activity-logs?page=1",
+                  "links": [
+                      {
+                          "url": null,
+                          "label": "&laquo; Previous",
+                          "active": false
+                      },
+                      {
+                          "url": "http://127.0.0.1:8000/api/v1/activity-logs?page=1",
+                          "label": "1",
+                          "active": true
+                      },
+                      {
+                          "url": null,
+                          "label": "Next &raquo;",
+                          "active": false
+                      }
+                  ],
+                  "next_page_url": null,
+                  "path": "http://127.0.0.1:8000/api/v1/activity-logs",
+                  "per_page": 15,
+                  "prev_page_url": null,
+                  "to": 8,
+                  "total": 8
+              }
+          }

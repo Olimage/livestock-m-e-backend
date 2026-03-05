@@ -1,0 +1,608 @@
+info:
+  name: get departments
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}departments"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: success
+    request:
+      url: "{{baseUrl}}departments"
+      method: GET
+    response:
+      statusText: "200"
+      headers:
+        - name: Host
+          value: 127.0.0.1:8000
+        - name: Connection
+          value: close
+        - name: X-Powered-By
+          value: PHP/8.3.14
+        - name: Cache-Control
+          value: no-cache, private
+        - name: Date
+          value: Fri, 16 Jan 2026 12:37:41 GMT
+        - name: Content-Type
+          value: application/json
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Access-Control-Allow-Methods
+          value: POST, GET, OPTIONS, PUT, DELETE
+        - name: Access-Control-Allow-Headers
+          value: Content-Type, X-Auth-Token, Authorization, Origin
+        - name: Access-Control-Expose-Headers
+          value: Content-Length, Content-Range, X-Content-Range, X-Requested-With, X-Progress
+        - name: X-RateLimit-Limit
+          value: "200"
+        - name: X-RateLimit-Remaining
+          value: "197"
+        - name: Set-Cookie
+          value: national_livestock_information_management_system_n_lims_session=GW3IUZUeVgiEqRiokQ5fqgudqT4j2LbaH6d3ojKZ; expires=Fri, 16 Jan 2026 14:37:41 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+      body:
+        type: json
+        data: |-
+          {
+              "status": true,
+              "data": [
+                  {
+                      "name": "Units",
+                      "slug": "units",
+                      "is_technical": false,
+                      "parent_id": null,
+                      "descendants": [
+                          {
+                              "name": "Legal",
+                              "slug": "legal",
+                              "is_technical": false,
+                              "parent_id": 1,
+                              "descendants": []
+                          },
+                          {
+                              "name": "Internal Audit",
+                              "slug": "internal_audit",
+                              "is_technical": false,
+                              "parent_id": 1,
+                              "descendants": []
+                          },
+                          {
+                              "name": "Press & Public Relations",
+                              "slug": "press_public_relations",
+                              "is_technical": false,
+                              "parent_id": 1,
+                              "descendants": []
+                          }
+                      ]
+                  },
+                  {
+                      "name": "Special Duties",
+                      "slug": "special_duties",
+                      "is_technical": false,
+                      "parent_id": null,
+                      "descendants": [
+                          {
+                              "name": "Protocol",
+                              "slug": "protocol",
+                              "is_technical": false,
+                              "parent_id": 2,
+                              "descendants": []
+                          },
+                          {
+                              "name": "ACTU",
+                              "slug": "actu",
+                              "is_technical": false,
+                              "parent_id": 2,
+                              "descendants": []
+                          },
+                          {
+                              "name": "Stock Verification",
+                              "slug": "stock_verification",
+                              "is_technical": false,
+                              "parent_id": 2,
+                              "descendants": []
+                          },
+                          {
+                              "name": "PPP",
+                              "slug": "ppp",
+                              "is_technical": false,
+                              "parent_id": 2,
+                              "descendants": []
+                          },
+                          {
+                              "name": "Liaison/State Office Coordination",
+                              "slug": "liaison_state_office_coordination",
+                              "is_technical": false,
+                              "parent_id": 2,
+                              "descendants": []
+                          }
+                      ]
+                  },
+                  {
+                      "name": "Common Services Departments",
+                      "slug": "common_services_departments",
+                      "is_technical": false,
+                      "parent_id": null,
+                      "descendants": [
+                          {
+                              "name": "Human Resources Management",
+                              "slug": "human_resources_management",
+                              "is_technical": false,
+                              "parent_id": 3,
+                              "descendants": [
+                                  {
+                                      "name": "Appointment, Promotion & Discipline",
+                                      "slug": "appointment_promotion_discipline",
+                                      "is_technical": false,
+                                      "parent_id": 13,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Staff Welfare & Training",
+                                      "slug": "staff_welfare_training",
+                                      "is_technical": false,
+                                      "parent_id": 13,
+                                      "descendants": []
+                                  }
+                              ]
+                          },
+                          {
+                              "name": "Finance and Accounts",
+                              "slug": "finance_and_accounts",
+                              "is_technical": false,
+                              "parent_id": 3,
+                              "descendants": [
+                                  {
+                                      "name": "Expenditure",
+                                      "slug": "expenditure",
+                                      "is_technical": false,
+                                      "parent_id": 16,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Budget",
+                                      "slug": "budget",
+                                      "is_technical": false,
+                                      "parent_id": 16,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Fiscal & Final Reporting",
+                                      "slug": "fiscal_final_reporting",
+                                      "is_technical": false,
+                                      "parent_id": 16,
+                                      "descendants": []
+                                  }
+                              ]
+                          },
+                          {
+                              "name": "Planning, Research and Statistics",
+                              "slug": "planning_research_statistics",
+                              "is_technical": false,
+                              "parent_id": 3,
+                              "descendants": [
+                                  {
+                                      "name": "Planning",
+                                      "slug": "planning",
+                                      "is_technical": false,
+                                      "parent_id": 20,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Research and Statistics",
+                                      "slug": "research_statistics",
+                                      "is_technical": false,
+                                      "parent_id": 20,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Monitoring & Evaluation",
+                                      "slug": "monitoring_evaluation",
+                                      "is_technical": false,
+                                      "parent_id": 20,
+                                      "descendants": []
+                                  }
+                              ]
+                          },
+                          {
+                              "name": "General Services",
+                              "slug": "general_services",
+                              "is_technical": false,
+                              "parent_id": 3,
+                              "descendants": [
+                                  {
+                                      "name": "General Services",
+                                      "slug": "general_services_sub",
+                                      "is_technical": false,
+                                      "parent_id": 24,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Recurrent",
+                                      "slug": "recurrent",
+                                      "is_technical": false,
+                                      "parent_id": 24,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "ICT",
+                                      "slug": "ict",
+                                      "is_technical": false,
+                                      "parent_id": 24,
+                                      "descendants": []
+                                  }
+                              ]
+                          },
+                          {
+                              "name": "Procurement",
+                              "slug": "procurement",
+                              "is_technical": false,
+                              "parent_id": 3,
+                              "descendants": [
+                                  {
+                                      "name": "Capital",
+                                      "slug": "capital",
+                                      "is_technical": false,
+                                      "parent_id": 28,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Recurrent",
+                                      "slug": "procurement_recurrent",
+                                      "is_technical": false,
+                                      "parent_id": 28,
+                                      "descendants": []
+                                  }
+                              ]
+                          },
+                          {
+                              "name": "Reform Coordination",
+                              "slug": "reform_coordination",
+                              "is_technical": false,
+                              "parent_id": 3,
+                              "descendants": [
+                                  {
+                                      "name": "Reform Coordination",
+                                      "slug": "reform_coordination_sub",
+                                      "is_technical": false,
+                                      "parent_id": 31,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "SERVICOM",
+                                      "slug": "servicom",
+                                      "is_technical": false,
+                                      "parent_id": 31,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Service Innovation",
+                                      "slug": "service_innovation",
+                                      "is_technical": false,
+                                      "parent_id": 31,
+                                      "descendants": []
+                                  }
+                              ]
+                          }
+                      ]
+                  },
+                  {
+                      "name": "Technical Departments",
+                      "slug": "technical_departments",
+                      "is_technical": true,
+                      "parent_id": null,
+                      "descendants": [
+                          {
+                              "name": "Ruminants & Monogastric Development",
+                              "slug": "ruminants_monogastric_development",
+                              "is_technical": true,
+                              "parent_id": 4,
+                              "descendants": [
+                                  {
+                                      "name": "Dairy Production",
+                                      "slug": "dairy_production",
+                                      "is_technical": true,
+                                      "parent_id": 35,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Beef Production",
+                                      "slug": "beef_production",
+                                      "is_technical": true,
+                                      "parent_id": 35,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Sheep and Goat Production",
+                                      "slug": "sheep_goat_production",
+                                      "is_technical": true,
+                                      "parent_id": 35,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Pig Production",
+                                      "slug": "pig_production",
+                                      "is_technical": true,
+                                      "parent_id": 35,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Poultry & Micro Livestock",
+                                      "slug": "poultry_micro_livestock",
+                                      "is_technical": true,
+                                      "parent_id": 35,
+                                      "descendants": []
+                                  }
+                              ]
+                          },
+                          {
+                              "name": "Animal Health & Reproductive Services",
+                              "slug": "animal_health_reproductive_services",
+                              "is_technical": true,
+                              "parent_id": 4,
+                              "descendants": [
+                                  {
+                                      "name": "Disease Prevention & Control",
+                                      "slug": "disease_prevention_control",
+                                      "is_technical": true,
+                                      "parent_id": 41,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Monogastric Animal Disease",
+                                      "slug": "monogastric_animal_disease",
+                                      "is_technical": true,
+                                      "parent_id": 41,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Vet Clinical Services & Sanitary",
+                                      "slug": "vet_clinical_services_sanitary",
+                                      "is_technical": true,
+                                      "parent_id": 41,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Reproductive Health Mgt, Artificial Insemination & Embryo Transfer",
+                                      "slug": "reproductive_health_mgt",
+                                      "is_technical": true,
+                                      "parent_id": 41,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Aquatic Health",
+                                      "slug": "aquatic_health",
+                                      "is_technical": true,
+                                      "parent_id": 41,
+                                      "descendants": []
+                                  }
+                              ]
+                          },
+                          {
+                              "name": "Ranch & Pastoral Resources Development",
+                              "slug": "ranch_pastoral_resources_development",
+                              "is_technical": true,
+                              "parent_id": 4,
+                              "descendants": [
+                                  {
+                                      "name": "Grazing Reserves & Stock Route Development",
+                                      "slug": "grazing_reserves",
+                                      "is_technical": true,
+                                      "parent_id": 47,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Ranch Development",
+                                      "slug": "ranch_development",
+                                      "is_technical": true,
+                                      "parent_id": 47,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Feed & Fodder",
+                                      "slug": "feed_fodder",
+                                      "is_technical": true,
+                                      "parent_id": 47,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Strategic Food Reserve",
+                                      "slug": "strategic_food_reserve",
+                                      "is_technical": true,
+                                      "parent_id": 47,
+                                      "descendants": []
+                                  }
+                              ]
+                          },
+                          {
+                              "name": "Pest Control Services",
+                              "slug": "pest_control_services",
+                              "is_technical": true,
+                              "parent_id": 4,
+                              "descendants": [
+                                  {
+                                      "name": "Pest and Vector Control",
+                                      "slug": "pest_vector_control",
+                                      "is_technical": true,
+                                      "parent_id": 52,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Integrated Pest Management",
+                                      "slug": "integrated_pest_management",
+                                      "is_technical": true,
+                                      "parent_id": 52,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Pesticides Quality Assurance and Lab Services",
+                                      "slug": "pesticides_quality",
+                                      "is_technical": true,
+                                      "parent_id": 52,
+                                      "descendants": []
+                                  }
+                              ]
+                          },
+                          {
+                              "name": "Quality Assurance & Certification",
+                              "slug": "quality_assurance_certification",
+                              "is_technical": true,
+                              "parent_id": 4,
+                              "descendants": [
+                                  {
+                                      "name": "Certification",
+                                      "slug": "certification",
+                                      "is_technical": true,
+                                      "parent_id": 56,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Veterinary Regulation & Inspectorate",
+                                      "slug": "veterinary_regulation",
+                                      "is_technical": true,
+                                      "parent_id": 56,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Veterinary Drug & Feed Safety",
+                                      "slug": "veterinary_drug_feed_safety",
+                                      "is_technical": true,
+                                      "parent_id": 56,
+                                      "descendants": []
+                                  }
+                              ]
+                          },
+                          {
+                              "name": "Veterinary Public Health & Epidemiology",
+                              "slug": "veterinary_public_health_epidemiology",
+                              "is_technical": true,
+                              "parent_id": 4,
+                              "descendants": [
+                                  {
+                                      "name": "Control & Health & Antimicrobial Resistance",
+                                      "slug": "control_health_antimicrobial",
+                                      "is_technical": true,
+                                      "parent_id": 60,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Veterinary Epidemiology",
+                                      "slug": "veterinary_epidemiology",
+                                      "is_technical": true,
+                                      "parent_id": 60,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Slaughterhouse & Food Safety Hygiene",
+                                      "slug": "slaughterhouse_food_safety",
+                                      "is_technical": true,
+                                      "parent_id": 60,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Animal Identification & Traceability",
+                                      "slug": "animal_identification",
+                                      "is_technical": true,
+                                      "parent_id": 60,
+                                      "descendants": []
+                                  }
+                              ]
+                          },
+                          {
+                              "name": "Livestock Extension & Business Development",
+                              "slug": "livestock_extension_business_development",
+                              "is_technical": true,
+                              "parent_id": 4,
+                              "descendants": [
+                                  {
+                                      "name": "Extension Services",
+                                      "slug": "extension_services",
+                                      "is_technical": true,
+                                      "parent_id": 65,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Business Development & Entrepreneurship",
+                                      "slug": "business_development",
+                                      "is_technical": true,
+                                      "parent_id": 65,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Gender & Youth Empowerment",
+                                      "slug": "gender_youth_empowerment",
+                                      "is_technical": true,
+                                      "parent_id": 65,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Livestock Cooperative Development",
+                                      "slug": "livestock_cooperative",
+                                      "is_technical": true,
+                                      "parent_id": 65,
+                                      "descendants": []
+                                  }
+                              ]
+                          },
+                          {
+                              "name": "Transboundary Animal Disease",
+                              "slug": "transboundary_animal_disease",
+                              "is_technical": true,
+                              "parent_id": 4,
+                              "descendants": [
+                                  {
+                                      "name": "Zoonotic Disease",
+                                      "slug": "zoonotic_disease",
+                                      "is_technical": true,
+                                      "parent_id": 70,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Cross Border Collaboration",
+                                      "slug": "cross_border_collaboration",
+                                      "is_technical": true,
+                                      "parent_id": 70,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Animal Welfare",
+                                      "slug": "animal_welfare",
+                                      "is_technical": true,
+                                      "parent_id": 70,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Wildlife Disease Control & Animal Disease Risk Analysis",
+                                      "slug": "wildlife_disease_control",
+                                      "is_technical": true,
+                                      "parent_id": 70,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Disease Management & Emergency Preparedness & Response",
+                                      "slug": "disease_management",
+                                      "is_technical": true,
+                                      "parent_id": 70,
+                                      "descendants": []
+                                  },
+                                  {
+                                      "name": "Bee Health",
+                                      "slug": "bee_health",
+                                      "is_technical": true,
+                                      "parent_id": 70,
+                                      "descendants": []
+                                  }
+                              ]
+                          }
+                      ]
+                  }
+              ]
+          }

@@ -1,0 +1,114 @@
+info:
+  name: get presidential priorities
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{baseUrl}}programs/presidential-priorities/"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: get presidential priorities
+    request:
+      url: "{{baseUrl}}programs/presidential-priorities/"
+      method: GET
+    response:
+      statusText: "200"
+      headers:
+        - name: Host
+          value: 127.0.0.1:8000
+        - name: Connection
+          value: close
+        - name: X-Powered-By
+          value: PHP/8.3.14
+        - name: Cache-Control
+          value: no-cache, private
+        - name: Date
+          value: Fri, 16 Jan 2026 09:37:46 GMT
+        - name: Content-Type
+          value: application/json
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Access-Control-Allow-Methods
+          value: POST, GET, OPTIONS, PUT, DELETE
+        - name: Access-Control-Allow-Headers
+          value: Content-Type, X-Auth-Token, Authorization, Origin
+        - name: Access-Control-Expose-Headers
+          value: Content-Length, Content-Range, X-Content-Range, X-Requested-With, X-Progress
+        - name: X-RateLimit-Limit
+          value: "200"
+        - name: X-RateLimit-Remaining
+          value: "199"
+        - name: Set-Cookie
+          value: national_livestock_information_management_system_n_lims_session=GW3IUZUeVgiEqRiokQ5fqgudqT4j2LbaH6d3ojKZ; expires=Fri, 16 Jan 2026 11:37:46 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+      body:
+        type: json
+        data: |-
+          {
+              "status": true,
+              "data": [
+                  {
+                      "code": "PP1",
+                      "title": "Boost Agriculture to Achieve Food Security",
+                      "description": "Strengthen agricultural productivity and ensure national food security with livestock as a major pillar",
+                      "uuid": "2b5c875b-3f71-4616-bb36-2269e8cf3693",
+                      "tiers": [
+                          {
+                              "tier": "Tier 0",
+                              "level": "Impact",
+                              "measurement_frequency": "Annual,Multi-year",
+                              "attribution": "Contribution (many external factors)"
+                          }
+                      ]
+                  },
+                  {
+                      "code": "PP2",
+                      "title": "Reform the Economy for Sustained and Inclusive Growth",
+                      "description": "Expand economic productivity industrialize agriculture and create inclusive jobs and income opportunities",
+                      "uuid": "c3ff41f9-2986-47f2-b42c-7f90348fb8a9",
+                      "tiers": [
+                          {
+                              "tier": "Tier 0",
+                              "level": "Impact",
+                              "measurement_frequency": "Annual,Multi-year",
+                              "attribution": "Contribution (many external factors)"
+                          }
+                      ]
+                  },
+                  {
+                      "code": "PP3",
+                      "title": "Strengthen National Security for Peace and Prosperity",
+                      "description": "Enhance peace security and stability especially addressing resource-related and communal conflicts",
+                      "uuid": "bd321d69-b032-47c3-981a-0a5a7831472e",
+                      "tiers": [
+                          {
+                              "tier": "Tier 0",
+                              "level": "Impact",
+                              "measurement_frequency": "Annual,Multi-year",
+                              "attribution": "Contribution (many external factors)"
+                          }
+                      ]
+                  },
+                  {
+                      "code": "PP4",
+                      "title": "Improve Governance for Effective Service Delivery",
+                      "description": "Institutionalize transparency accountability and performance-based public management",
+                      "uuid": "516cf969-8923-46d9-8666-1cf79aa380f2",
+                      "tiers": [
+                          {
+                              "tier": "Tier 0",
+                              "level": "Impact",
+                              "measurement_frequency": "Annual,Multi-year",
+                              "attribution": "Contribution (many external factors)"
+                          }
+                      ]
+                  }
+              ]
+          }

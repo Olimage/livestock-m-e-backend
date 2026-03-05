@@ -1,0 +1,6 @@
+name: local
+variables:
+  - name: baseUrl
+    value: http://127.0.0.1:8000/api/v1/
+  - name: token
+    value: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3YxL2F1dGgvc2lnbi1pbiIsImlhdCI6MTc3MjcxNzA1OCwiZXhwIjoxNzcyODAzNDU4LCJuYmYiOjE3NzI3MTcwNTgsImp0aSI6Ik8zWnZjazB4aG1xQW5xRXoiLCJzdWIiOiIyIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.NNUf0_CVKHmvCrBWCrKrUdxE-G2pzhqYCAP9yHcLmu4

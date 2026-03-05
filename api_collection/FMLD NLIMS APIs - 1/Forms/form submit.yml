@@ -1,0 +1,107 @@
+info:
+  name: form submit
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}forms/indicator"
+  body:
+    type: json
+    data: "{\r
+
+      \    \r
+
+      \    \"volume_of_livestock_products_exported_live_animals_meat_dairy_hides_skins\": 1,\r
+
+      \    \"number_of_jobs_created\":\"yes\"\r
+
+      \r
+
+      }"
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: success
+    request:
+      url: "{{baseUrl}}forms/indicator"
+      method: POST
+      body:
+        type: json
+        data: "{\r
+
+          \    \r
+
+          \    \"volume_of_livestock_products_exported_live_animals_meat_dairy_hides_skins\": 1,\r
+
+          \    \"number_of_jobs_created\":\"yes\"\r
+
+          \r
+
+          }"
+    response:
+      statusText: "201"
+      headers:
+        - name: Host
+          value: 127.0.0.1:8000
+        - name: Connection
+          value: close
+        - name: X-Powered-By
+          value: PHP/8.3.14
+        - name: Cache-Control
+          value: no-cache, private
+        - name: Date
+          value: Mon, 16 Feb 2026 12:47:41 GMT
+        - name: Content-Type
+          value: application/json
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Access-Control-Allow-Methods
+          value: POST, GET, OPTIONS, PUT, DELETE
+        - name: Access-Control-Allow-Headers
+          value: Content-Type, X-Auth-Token, Authorization, Origin
+        - name: Access-Control-Expose-Headers
+          value: Content-Length, Content-Range, X-Content-Range, X-Requested-With, X-Progress
+        - name: X-RateLimit-Limit
+          value: "200"
+        - name: X-RateLimit-Remaining
+          value: "199"
+        - name: Set-Cookie
+          value: national_livestock_information_management_system_n_lims_session=n8y35YfFwYTdJXmLfkhH80hT7XLawUfO40Z9u170; expires=Mon, 16 Feb 2026 14:47:41 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+      body:
+        type: json
+        data: |-
+          {
+              "success": true,
+              "message": "Indicator form submitted successfully.",
+              "data": {
+                  "submitted_at": "2026-02-16T12:47:41.115532Z",
+                  "count": 2,
+                  "values": {
+                      "volume_of_livestock_products_exported_live_animals_meat_dairy_hides_skins": {
+                          "id": 5,
+                          "value": 1,
+                          "unit": "Metric tons (MT)",
+                          "indicator_code": "OUT-3",
+                          "indicator_name": "Volume of livestock products exported (live animals meat dairy hides/skins) ",
+                          "indicator_slug": "volume_of_livestock_products_exported_live_animals_meat_dairy_hides_skins"
+                      },
+                      "number_of_jobs_created": {
+                          "id": 6,
+                          "value": "yes",
+                          "unit": "Number",
+                          "indicator_code": "OUT-4",
+                          "indicator_name": "Number of  jobs created",
+                          "indicator_slug": "number_of_jobs_created"
+                      }
+                  }
+              }
+          }

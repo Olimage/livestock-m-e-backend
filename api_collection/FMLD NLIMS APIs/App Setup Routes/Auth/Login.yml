@@ -1,0 +1,85 @@
+info:
+  name: Login
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}auth/sign-in"
+  body:
+    type: json
+    data: "{\r
+
+      \    \"email\": \"david@fmld.gov\",\r
+
+      \    \"password\": \"1234567890\"\r
+
+      }"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: success
+    request:
+      url: "{{baseUrl}}auth/sign-in"
+      method: POST
+      body:
+        type: json
+        data: "{\r
+
+          \    \"email\": \"david@fmld.gov\",\r
+
+          \    \"password\": \"1234567890\"\r
+
+          }"
+    response:
+      statusText: "200"
+      headers:
+        - name: Host
+          value: 127.0.0.1:8000
+        - name: Connection
+          value: close
+        - name: X-Powered-By
+          value: PHP/8.3.14
+        - name: Cache-Control
+          value: no-cache, private
+        - name: Date
+          value: Tue, 18 Nov 2025 10:21:39 GMT
+        - name: Content-Type
+          value: application/json
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Access-Control-Allow-Methods
+          value: POST, GET, OPTIONS, PUT, DELETE
+        - name: Access-Control-Allow-Headers
+          value: Content-Type, X-Auth-Token, Authorization, Origin
+        - name: Access-Control-Expose-Headers
+          value: Content-Length, Content-Range, X-Content-Range, X-Requested-With, X-Progress
+        - name: X-RateLimit-Limit
+          value: "200"
+        - name: X-RateLimit-Remaining
+          value: "197"
+        - name: Set-Cookie
+          value: national_livestock_information_management_system_n_lims_session=HbejYSU9eiYkFzcPSIi4m3TxfdWgzhyjz2p4R148; expires=Tue, 18 Nov 2025 12:21:39 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+      body:
+        type: json
+        data: |-
+          {
+              "status": true,
+              "message": "Login successful",
+              "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3YxL2F1dGgvc2lnbi1pbiIsImlhdCI6MTc2MzQ2MTI5OSwiZXhwIjoxNzYzNTQ3Njk5LCJuYmYiOjE3NjM0NjEyOTksImp0aSI6IkNZY3A0VVhVNDhkQ0tzajAiLCJzdWIiOiIzIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.-M8-IUlSxVSBlTr-S1fRPXETIibiCXeMaip4Krztz24",
+              "refresh_token": "WUFqxOgtJbyIbUjxN1IDS41TaF1S1d3dwlLAtu6uUxnaxYtLqjHhUmBBk821",
+              "token_type": "bearer",
+              "expires_in": 86400,
+              "user": {
+                  "id": 3,
+                  "full_name": "David",
+                  "email": "david@fmld.gov",
+                  "role": "enumerator"
+              }
+          }

@@ -1,0 +1,118 @@
+info:
+  name: get modules
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}programs/modules/"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: success
+    request:
+      url: "{{baseUrl}}programs/modules/"
+      method: GET
+    response:
+      statusText: "200"
+      headers:
+        - name: Host
+          value: 127.0.0.1:8000
+        - name: Connection
+          value: close
+        - name: X-Powered-By
+          value: PHP/8.3.14
+        - name: Cache-Control
+          value: no-cache, private
+        - name: Date
+          value: Fri, 16 Jan 2026 08:44:12 GMT
+        - name: Content-Type
+          value: application/json
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Access-Control-Allow-Methods
+          value: POST, GET, OPTIONS, PUT, DELETE
+        - name: Access-Control-Allow-Headers
+          value: Content-Type, X-Auth-Token, Authorization, Origin
+        - name: Access-Control-Expose-Headers
+          value: Content-Length, Content-Range, X-Content-Range, X-Requested-With, X-Progress
+        - name: X-RateLimit-Limit
+          value: "200"
+        - name: X-RateLimit-Remaining
+          value: "197"
+        - name: Set-Cookie
+          value: national_livestock_information_management_system_n_lims_session=GW3IUZUeVgiEqRiokQ5fqgudqT4j2LbaH6d3ojKZ; expires=Fri, 16 Jan 2026 10:44:12 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+      body:
+        type: json
+        data: |-
+          {
+              "status": true,
+              "data": [
+                  {
+                      "uuid": "4ef52f5e-6c58-4d97-a6e5-4f8cbb57d1f8",
+                      "name": "Animal Traceability",
+                      "slug": "animal-traceability",
+                      "description": "Module for tracking and tracing animals"
+                  },
+                  {
+                      "uuid": "df7c0133-7def-4a28-b90d-a74165e28e93",
+                      "name": "Health Management",
+                      "slug": "health-management",
+                      "description": "Module for managing health records and services"
+                  },
+                  {
+                      "uuid": "f17f9d32-ac48-4533-9620-50afc2cf0df0",
+                      "name": "Markets & Prices",
+                      "slug": "markets-prices",
+                      "description": "Module for monitoring market trends and prices"
+                  },
+                  {
+                      "uuid": "fa1e20b6-1665-425c-89c2-df9736cb7f3c",
+                      "name": "Infrastructure",
+                      "slug": "infrastructure",
+                      "description": "Module for managing infrastructure projects and assets"
+                  },
+                  {
+                      "uuid": "245034a9-dbdd-4399-aee7-ded0ce087368",
+                      "name": "Actors",
+                      "slug": "actors",
+                      "description": "Module for managing stakeholders and participants"
+                  },
+                  {
+                      "uuid": "5dbb9a87-14bc-47c9-ab81-85e661f52da2",
+                      "name": "PLANNING, ACTIVITIES & OPERATIONAL REPORTING (PAR)",
+                      "slug": "planning-activities-operational-reporting-par",
+                      "description": "Module for planning, activities, and operational reporting"
+                  },
+                  {
+                      "uuid": "1527da0d-e1d7-4ee4-9c42-ce2f2d7e1425",
+                      "name": "Cross-cutting entities",
+                      "slug": "cross-cutting-entities",
+                      "description": "Module for managing cross-cutting entities"
+                  },
+                  {
+                      "uuid": "61d4fe40-fbed-43bb-852d-018f5fe2d3f9",
+                      "name": "Integration Entities",
+                      "slug": "integration-entities",
+                      "description": "Module for managing integration entities"
+                  },
+                  {
+                      "uuid": "0392176f-902c-483f-a2ae-be9bd641ec0a",
+                      "name": "Indicator Registry",
+                      "slug": "indicator-registry",
+                      "description": "Module for managing indicator registry"
+                  },
+                  {
+                      "uuid": "6fbeee15-1fca-421a-a349-cefa35907bb0",
+                      "name": "Reserved Domains",
+                      "slug": "reserved-domains",
+                      "description": "Module for managing reserved domains"
+                  }
+              ]
+          }

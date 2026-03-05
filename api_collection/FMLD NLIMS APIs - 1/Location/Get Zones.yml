@@ -1,0 +1,83 @@
+info:
+  name: Get Zones
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}locations/zones"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: success
+    request:
+      url: "{{baseUrl}}locations/zones"
+      method: GET
+    response:
+      statusText: "200"
+      headers:
+        - name: Host
+          value: 127.0.0.1:8000
+        - name: Connection
+          value: close
+        - name: X-Powered-By
+          value: PHP/8.3.14
+        - name: Cache-Control
+          value: no-cache, private
+        - name: Date
+          value: Tue, 18 Nov 2025 09:35:43 GMT
+        - name: Content-Type
+          value: application/json
+        - name: X-RateLimit-Limit
+          value: "200"
+        - name: X-RateLimit-Remaining
+          value: "199"
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Set-Cookie
+          value: national_livestock_information_management_system_n_lims_session=HbejYSU9eiYkFzcPSIi4m3TxfdWgzhyjz2p4R148; expires=Tue, 18 Nov 2025 11:35:43 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+      body:
+        type: json
+        data: |-
+          {
+              "status": true,
+              "message": "Zones fetched successfully",
+              "data": [
+                  {
+                      "id": 1,
+                      "name": "North Central",
+                      "code": "NC"
+                  },
+                  {
+                      "id": 2,
+                      "name": "North East",
+                      "code": "NE"
+                  },
+                  {
+                      "id": 3,
+                      "name": "North West",
+                      "code": "NW"
+                  },
+                  {
+                      "id": 4,
+                      "name": "South East",
+                      "code": "SE"
+                  },
+                  {
+                      "id": 5,
+                      "name": "South South",
+                      "code": "SS"
+                  },
+                  {
+                      "id": 6,
+                      "name": "South West",
+                      "code": "SW"
+                  }
+              ]
+          }

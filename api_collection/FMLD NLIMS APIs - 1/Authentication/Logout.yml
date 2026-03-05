@@ -1,0 +1,65 @@
+info:
+  name: Logout
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}auth/sign-out"
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: success
+    request:
+      url: "{{baseUrl}}auth/sign-out"
+      method: POST
+    response:
+      statusText: "200"
+      headers:
+        - name: Date
+          value: Tue, 18 Nov 2025 11:27:36 GMT
+        - name: Server
+          value: Apache/2.4.58 (Ubuntu)
+        - name: Vary
+          value: Authorization
+        - name: Cache-Control
+          value: no-cache, private
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Access-Control-Allow-Methods
+          value: POST, GET, OPTIONS, PUT, DELETE
+        - name: Access-Control-Allow-Headers
+          value: Content-Type, X-Auth-Token, Authorization, Origin
+        - name: Access-Control-Expose-Headers
+          value: Content-Length, Content-Range, X-Content-Range, X-Requested-With, X-Progress
+        - name: X-RateLimit-Limit
+          value: "200"
+        - name: X-RateLimit-Remaining
+          value: "197"
+        - name: Set-Cookie
+          value: olimage_livestock_me_backend_session=AUNdzyGITRUJ0s1W7n51AfrFcJtLs67dNRb5dNwg; expires=Tue, 18 Nov 2025 13:27:36 GMT; Max-Age=7200; path=/; secure; httponly; samesite=lax
+        - name: Keep-Alive
+          value: timeout=5, max=100
+        - name: Connection
+          value: Keep-Alive
+        - name: Transfer-Encoding
+          value: chunked
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+              "status": true,
+              "message": "Logged out successfully"
+          }
+
+docs: This endpoint is used for user authentication. It accepts an email and password in the request body and returns an authentication token or result upon successful login.
