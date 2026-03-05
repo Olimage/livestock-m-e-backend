@@ -133,6 +133,12 @@ Route::middleware(['auth.web'])->group(function () {
         Route::put('/tiers/{tier}', [\App\Http\Controllers\ProgramController::class, 'updateTier'])->name('tiers.update');
         Route::delete('/tiers/{tier}', [\App\Http\Controllers\ProgramController::class, 'destroyTier'])->name('tiers.destroy');
 
+        // Departments
+        Route::get('/departments', [\App\Http\Controllers\DepartmentController::class, 'index'])->name('departments.index');
+        Route::get('/departments/{department}', [\App\Http\Controllers\DepartmentController::class, 'show'])->name('departments.show');
+        Route::post('/departments/{department}/indicators', [\App\Http\Controllers\DepartmentController::class, 'assignIndicator'])->name('departments.indicators.assign');
+        Route::delete('/departments/{department}/indicators/{indicator}', [\App\Http\Controllers\DepartmentController::class, 'removeIndicator'])->name('departments.indicators.remove');
+
         // Disaggregation Categories & Items
         Route::get('/disagregations', [\App\Http\Controllers\ProgramController::class, 'disagregationCategories'])->name('disagregations.index');
         Route::get('/disagregations/create', [\App\Http\Controllers\ProgramController::class, 'createDisagregationCategory'])->name('disagregations.create');

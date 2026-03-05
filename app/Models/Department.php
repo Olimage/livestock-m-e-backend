@@ -110,7 +110,7 @@ public function programs()
 
 public function indicators()
 {
-    return $this->hasMany(Indicator::class);
+    return $this->belongsToMany(Indicator::class, 'department_indicator');
 }
 
 public function crossCuttingMetrics()

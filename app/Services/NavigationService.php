@@ -193,6 +193,12 @@ class NavigationService
                 'routeName' => 'programs.disagregations.index',
                 'icon'      => 'bi bi-funnel',
             ];
+
+            $programsSubmenu[] = [
+                'name'      => 'Departments',
+                'routeName' => 'programs.departments.index',
+                'icon'      => 'bi bi-building',
+            ];
         }
 
         return $programsSubmenu;

@@ -89,6 +89,11 @@ class Indicator extends Model
         return $this->hasMany(IndicatorBaselineYear::class);
     }
 
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class, 'department_indicator');
+    }
+
     public function disagregation()
     {
         return $this->belongsToMany(
