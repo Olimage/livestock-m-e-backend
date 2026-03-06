@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('indicator_baseline_years', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('indicator_id')->constrained()->onDelete('cascade');
+            $table->foreignId('indicator_id')->constrained('indicators')->onDelete('cascade');
             $table->integer('baseline_year')->nullable();
             $table->integer('target_year')->nullable();
             $table->integer('baseline');
