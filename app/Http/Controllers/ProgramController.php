@@ -342,8 +342,12 @@ class ProgramController extends Controller
     // ==================== Indicators ====================
     public function indicators(Request $request)
     {
-        $query = Indicator::query()->with(['tiers', 'departments:id,name'])
-            ->withCount('disagregation as disagregation_count');
+        $query = Indicator::query()
+            ->with(['tiers', 'mainDepartment:id,name'])
+            ->withCount([
+                'disagregation as disagregation_count',
+                'supportingDepartments as supporting_departments_count',
+            ]);
 
         if ($request->search) {
             $search = strtolower($request->search);
@@ -381,21 +385,23 @@ class ProgramController extends Controller
     public function storeIndicator(Request $request)
     {
         $request->validate([
-            'code'                   => 'required|string|max:255|unique:indicators',
-            'title'                  => 'required|string|max:255',
-            'description'            => 'nullable|string',
-            'indicator_type'         => 'required|in:outcome,output,impact',
-            'measurement_unit'       => 'nullable|string',
-            'baseline_value'         => 'nullable|numeric',
-            'baseline_year'          => 'nullable|integer',
-            'target_value'           => 'nullable|numeric',
-            'target_year'            => 'nullable|integer',
-            'data_source'            => 'nullable|string',
-            'collection_frequency'   => 'nullable|string',
-            'reporting_frequency'    => 'nullable|string',
-            'tier_ids'               => 'nullable|array',
-            'department_ids'         => 'nullable|array',
-            'disagregation_item_ids' => 'nullable|array',
+            'code'                        => 'required|string|max:255|unique:indicators',
+            'title'                       => 'required|string|max:255',
+            'description'                 => 'nullable|string',
+            'indicator_type'              => 'required|in:outcome,output,impact',
+            'measurement_unit'            => 'nullable|string',
+            'baseline_value'              => 'nullable|numeric',
+            'baseline_year'               => 'nullable|integer',
+            'target_value'                => 'nullable|numeric',
+            'target_year'                 => 'nullable|integer',
+            'data_source'                 => 'nullable|string',
+            'collection_frequency'        => 'nullable|string',
+            'reporting_frequency'         => 'nullable|string',
+            'tier_ids'                    => 'nullable|array',
+            'main_department_id'          => 'nullable|exists:departments,id',
+            'supporting_department_ids'   => 'nullable|array',
+            'supporting_department_ids.*' => 'exists:departments,id',
+            'disagregation_item_ids'      => 'nullable|array',
         ]);
 
         $indicator = Indicator::create($request->only([
@@ -405,8 +411,18 @@ class ProgramController extends Controller
         ]));
 
         $indicator->tiers()->sync($request->tier_ids ?? []);
-        $indicator->departments()->sync($request->department_ids ?? []);
         $indicator->disagregation()->sync($request->disagregation_item_ids ?? []);
+
+        $deptSync = [];
+        if ($request->main_department_id) {
+            $deptSync[$request->main_department_id] = ['role' => 'main'];
+        }
+        foreach ($request->supporting_department_ids ?? [] as $id) {
+            if ($id != $request->main_department_id) {
+                $deptSync[$id] = ['role' => 'supporting'];
+            }
+        }
+        $indicator->departments()->sync($deptSync);
 
         return redirect()->route('programs.indicators.index')
                         ->with('success', 'Indicator created successfully');
@@ -414,28 +430,34 @@ class ProgramController extends Controller
 
     public function editIndicator(Indicator $indicator)
     {
+        $indicator->load(['tiers', 'mainDepartment', 'supportingDepartments']);
+
         return Inertia::render('Programs/Indicators/Edit', [
-            'indicator' => $indicator->load('tiers'),
-            'tiers'     => Tier::all(),
+            'indicator'   => $indicator,
+            'tiers'       => Tier::all(),
+            'departments' => Department::orderBy('name')->get(['id', 'name']),
         ]);
     }
 
     public function updateIndicator(Request $request, Indicator $indicator)
     {
         $request->validate([
-            'code'                 => 'required|string|max:255|unique:indicators,code,' . $indicator->id,
-            'title'                => 'required|string|max:255',
-            'description'          => 'nullable|string',
-            'indicator_type'       => 'required|in:outcome,output,impact',
-            'measurement_unit'     => 'nullable|string',
-            'baseline_value'       => 'nullable|numeric',
-            'baseline_year'        => 'nullable|integer',
-            'target_value'         => 'nullable|numeric',
-            'target_year'          => 'nullable|integer',
-            'data_source'          => 'nullable|string',
-            'collection_frequency' => 'nullable|string',
-            'reporting_frequency'  => 'nullable|string',
-            'tier_ids'             => 'nullable|array',
+            'code'                        => 'required|string|max:255|unique:indicators,code,' . $indicator->id,
+            'title'                       => 'required|string|max:255',
+            'description'                 => 'nullable|string',
+            'indicator_type'              => 'required|in:outcome,output,impact',
+            'measurement_unit'            => 'nullable|string',
+            'baseline_value'              => 'nullable|numeric',
+            'baseline_year'               => 'nullable|integer',
+            'target_value'                => 'nullable|numeric',
+            'target_year'                 => 'nullable|integer',
+            'data_source'                 => 'nullable|string',
+            'collection_frequency'        => 'nullable|string',
+            'reporting_frequency'         => 'nullable|string',
+            'tier_ids'                    => 'nullable|array',
+            'main_department_id'          => 'nullable|exists:departments,id',
+            'supporting_department_ids'   => 'nullable|array',
+            'supporting_department_ids.*' => 'exists:departments,id',
         ]);
 
         $indicator->update($request->only([
@@ -445,6 +467,17 @@ class ProgramController extends Controller
         ]));
 
         $indicator->tiers()->sync($request->tier_ids ?? []);
+
+        $deptSync = [];
+        if ($request->main_department_id) {
+            $deptSync[$request->main_department_id] = ['role' => 'main'];
+        }
+        foreach ($request->supporting_department_ids ?? [] as $id) {
+            if ($id != $request->main_department_id) {
+                $deptSync[$id] = ['role' => 'supporting'];
+            }
+        }
+        $indicator->departments()->sync($deptSync);
 
         return redirect()->route('programs.indicators.index')
                         ->with('success', 'Indicator updated successfully');

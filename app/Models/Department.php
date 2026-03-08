@@ -105,7 +105,19 @@ public function programs()
 
 public function indicators()
 {
-    return $this->belongsToMany(Indicator::class, 'department_indicator');
+    return $this->belongsToMany(Indicator::class, 'department_indicator')->withPivot('role');
+}
+
+public function mainIndicators()
+{
+    return $this->belongsToMany(Indicator::class, 'department_indicator')
+                ->wherePivot('role', 'main');
+}
+
+public function supportingIndicators()
+{
+    return $this->belongsToMany(Indicator::class, 'department_indicator')
+                ->wherePivot('role', 'supporting');
 }
 
 public function crossCuttingMetrics()

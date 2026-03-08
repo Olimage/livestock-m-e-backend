@@ -178,9 +178,16 @@ const sortIcon = (column) => {
                       <span v-else class="text-muted">—</span>
                     </td>
                     <td>
-                      <span v-if="indicator.departments && indicator.departments.length > 0"
-                            v-for="dept in indicator.departments" :key="dept.id"
-                            class="badge bg-secondary me-1">{{ dept.name }}</span>
+                      <template v-if="indicator.main_department && indicator.main_department.length > 0">
+                        <span class="badge bg-success me-1" title="Main department">
+                          <i class="bi bi-building-fill me-1"></i>{{ indicator.main_department[0].name }}
+                        </span>
+                        <span v-if="indicator.supporting_departments_count > 0"
+                              class="badge bg-secondary"
+                              :title="`${indicator.supporting_departments_count} supporting department(s)`">
+                          +{{ indicator.supporting_departments_count }}
+                        </span>
+                      </template>
                       <span v-else class="text-muted small">—</span>
                     </td>
                     <td>

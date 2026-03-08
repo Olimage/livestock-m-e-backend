@@ -91,7 +91,19 @@ class Indicator extends Model
 
     public function departments()
     {
-        return $this->belongsToMany(Department::class, 'department_indicator');
+        return $this->belongsToMany(Department::class, 'department_indicator')->withPivot('role');
+    }
+
+    public function mainDepartment()
+    {
+        return $this->belongsToMany(Department::class, 'department_indicator')
+                    ->wherePivot('role', 'main');
+    }
+
+    public function supportingDepartments()
+    {
+        return $this->belongsToMany(Department::class, 'department_indicator')
+                    ->wherePivot('role', 'supporting');
     }
 
     public function disagregation()

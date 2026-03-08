@@ -22,7 +22,8 @@ const form = useForm({
     collection_frequency: '',
     reporting_frequency: '',
     tier_ids: [],
-    department_ids: [],
+    main_department_id: '',
+    supporting_department_ids: [],
     disagregation_item_ids: []
 })
 
@@ -128,14 +129,15 @@ const submit = () => {
                             <small class="text-danger d-block">{{ form.errors.tier_ids }}</small>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label class="form-label">Departments</label>
-                            <select v-model="form.department_ids" class="form-select" multiple size="4">
+                            <label class="form-label">Main Department</label>
+                            <select v-model="form.main_department_id" class="form-select"
+                                :class="{ 'is-invalid': form.errors.main_department_id }">
+                                <option value="">— none —</option>
                                 <option v-for="dept in props.departments" :key="dept.id" :value="dept.id">
                                     {{ dept.name }}
                                 </option>
                             </select>
-                            <small class="text-muted">Hold Ctrl/Cmd to select multiple</small>
-                            <small class="text-danger d-block">{{ form.errors.department_ids }}</small>
+                            <div class="invalid-feedback">{{ form.errors.main_department_id }}</div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Disaggregation Items</label>
@@ -149,6 +151,19 @@ const submit = () => {
                             <small class="text-muted">Hold Ctrl/Cmd to select multiple</small>
                             <small class="text-danger d-block">{{ form.errors.disagregation_item_ids }}</small>
                         </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Supporting Departments</label>
+                        <select v-model="form.supporting_department_ids" class="form-select" multiple size="4"
+                            :class="{ 'is-invalid': form.errors.supporting_department_ids }">
+                            <option v-for="dept in props.departments.filter(d => d.id != form.main_department_id)"
+                                :key="dept.id" :value="dept.id">
+                                {{ dept.name }}
+                            </option>
+                        </select>
+                        <small class="text-muted">Hold Ctrl/Cmd to select multiple. The main department is excluded.</small>
+                        <div class="invalid-feedback">{{ form.errors.supporting_department_ids }}</div>
                     </div>
 
                     <div class="d-flex gap-2 mt-3">
