@@ -375,8 +375,9 @@ class ProgramController extends Controller
     public function createIndicator()
     {
         return Inertia::render('Programs/Indicators/Create', [
-            'tiers' => Tier::all(),
-            'departments' => Department::orderBy('name')->get(['id', 'name']),
+            'tiers'                   => Tier::all(),
+            'departments'             => Department::orderBy('name')->get(['id', 'name']),
+            'sectoralGoals'           => SectoralGoal::orderBy('code')->get(['id', 'code', 'title', 'description']),
             'disagregationCategories' => DisagregationCategory::with('items:id,disagregation_category_id,name')
                 ->orderBy('name')->get(['id', 'name']),
         ]);
@@ -398,6 +399,8 @@ class ProgramController extends Controller
             'collection_frequency'        => 'nullable|string',
             'reporting_frequency'         => 'nullable|string',
             'tier_ids'                    => 'nullable|array',
+            'sectoral_goal_ids'           => 'nullable|array',
+            'sectoral_goal_ids.*'         => 'exists:sectoral_goals,id',
             'main_department_id'          => 'nullable|exists:departments,id',
             'supporting_department_ids'   => 'nullable|array',
             'supporting_department_ids.*' => 'exists:departments,id',
@@ -411,6 +414,7 @@ class ProgramController extends Controller
         ]));
 
         $indicator->tiers()->sync($request->tier_ids ?? []);
+        $indicator->sectoralGoals()->sync($request->sectoral_goal_ids ?? []);
         $indicator->disagregation()->sync($request->disagregation_item_ids ?? []);
 
         $deptSync = [];
@@ -430,12 +434,15 @@ class ProgramController extends Controller
 
     public function editIndicator(Indicator $indicator)
     {
-        $indicator->load(['tiers', 'mainDepartment', 'supportingDepartments']);
+        $indicator->load(['tiers', 'sectoralGoals', 'mainDepartment', 'supportingDepartments']);
 
         return Inertia::render('Programs/Indicators/Edit', [
-            'indicator'   => $indicator,
-            'tiers'       => Tier::all(),
-            'departments' => Department::orderBy('name')->get(['id', 'name']),
+            'indicator'               => $indicator,
+            'tiers'                   => Tier::all(),
+            'departments'             => Department::orderBy('name')->get(['id', 'name']),
+            'sectoralGoals'           => SectoralGoal::orderBy('code')->get(['id', 'code', 'title', 'description']),
+            'disagregationCategories' => DisagregationCategory::with('items:id,disagregation_category_id,name')
+                ->orderBy('name')->get(['id', 'name']),
         ]);
     }
 
@@ -455,9 +462,12 @@ class ProgramController extends Controller
             'collection_frequency'        => 'nullable|string',
             'reporting_frequency'         => 'nullable|string',
             'tier_ids'                    => 'nullable|array',
+            'sectoral_goal_ids'           => 'nullable|array',
+            'sectoral_goal_ids.*'         => 'exists:sectoral_goals,id',
             'main_department_id'          => 'nullable|exists:departments,id',
             'supporting_department_ids'   => 'nullable|array',
             'supporting_department_ids.*' => 'exists:departments,id',
+            'disagregation_item_ids'      => 'nullable|array',
         ]);
 
         $indicator->update($request->only([
@@ -467,6 +477,8 @@ class ProgramController extends Controller
         ]));
 
         $indicator->tiers()->sync($request->tier_ids ?? []);
+        $indicator->sectoralGoals()->sync($request->sectoral_goal_ids ?? []);
+        $indicator->disagregation()->sync($request->disagregation_item_ids ?? []);
 
         $deptSync = [];
         if ($request->main_department_id) {

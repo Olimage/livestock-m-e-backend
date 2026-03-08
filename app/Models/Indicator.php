@@ -89,6 +89,11 @@ class Indicator extends Model
         return $this->hasMany(IndicatorBaselineYear::class);
     }
 
+    public function sectoralGoals()
+    {
+        return $this->belongsToMany(SectoralGoal::class, 'indicator_sectoral_goal');
+    }
+
     public function departments()
     {
         return $this->belongsToMany(Department::class, 'department_indicator')->withPivot('role');
