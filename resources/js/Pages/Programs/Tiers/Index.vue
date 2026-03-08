@@ -150,7 +150,6 @@ const getSortIcon = (column) => {
                                             <span class="badge bg-secondary me-1">{{ tier.indicators_count || 0 }} indicators</span>
                                             <span class="badge bg-secondary me-1">{{ tier.sectoral_goals_count || 0 }} goals</span>
                                             <span class="badge bg-secondary me-1">{{ tier.presidential_priorities_count || 0 }} priorities</span>
-                                            <span class="badge bg-secondary">{{ tier.bond_outcomes_count || 0 }} outcomes</span>
                                         </small>
                                     </td>
                                     <td><small>{{ new Date(tier.created_at).toLocaleDateString() }}</small></td>

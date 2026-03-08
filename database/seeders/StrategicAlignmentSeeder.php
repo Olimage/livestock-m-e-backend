@@ -1,7 +1,6 @@
 <?php
 namespace Database\Seeders;
 
-use App\Models\BondOutcome;
 use App\Models\NlgasPillar;
 use App\Models\PresidentialPriority;
 use App\Models\SectoralGoal;
@@ -104,66 +103,6 @@ class StrategicAlignmentSeeder extends Seeder
         ],[
             'title' => 'Strengthened Data Systems and Evidence-Based Planning',
             'description' => 'Strengthened Data Systems and Evidence-Based Planning',
-
-        ]);
-
-
-        // Bond Outcomes (idempotent + department mapping)
-        $bo1 = BondOutcome::firstOrCreate([
-            'code' => 'BO1'
-        ], [
-            'title' => 'Improved livestock productivity and enhanced health and extension services',
-            'description' => 'Strengthen national livestock production through breed improvement disease control and extension systems that boost productivity and resilience',
-
-        ]);
-
-        $bo2 = BondOutcome::firstOrCreate([
-            'code' => 'BO2'
-        ], [
-            'title' => 'Transformed livestock value chain infrastructure through PPP',
-            'description' => 'Rehabilitate and expand livestock infrastructure via PPPs to drive modernization and competitiveness',
-
-        ]);
-        $bo3 = BondOutcome::firstOrCreate([
-            'code' => 'BO3'
-        ], [
-            'title' => 'Enhanced export orientation',
-            'description' => 'Enhanced export orientation',
-
-        ]);
-        $bo4 = BondOutcome::firstOrCreate([
-            'code' => 'BO4'
-        ], [
-            'title' => 'Reduced incidences of conflicts',
-            'description' => 'Reduced incidences of conflicts',
-
-        ]);
-        $bo5 = BondOutcome::firstOrCreate([
-            'code' => 'BO5'
-        ], [
-            'title' => 'Enhanced livestock innovation and information system',
-            'description' => 'Enhanced livestock innovation and information system',
-
-        ]);
-        $bo6 = BondOutcome::firstOrCreate([
-            'code' => 'BO6'
-        ], [
-            'title' => 'Improved nutrition',
-            'description' => 'Improved nutrition',
-
-        ]);
-        $bo7 = BondOutcome::firstOrCreate([
-            'code' => 'BO7'
-        ], [
-            'title' => 'Efficient service delivery',
-            'description' => 'Efficient service delivery',
-
-        ]);
-        $bo8 = BondOutcome::firstOrCreate([
-            'code' => 'BO8'
-        ], [
-            'title' => 'E-government and citizens engagement',
-            'description' => 'E-government and citizens engagement',
 
         ]);
 

@@ -11,8 +11,8 @@ class StrategicAlignment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'presidential_priority_id', 'sectoral_goal_id', 
-        'bond_outcome_id', 'nlgas_pillar_id', 'alignment_notes'
+        'presidential_priority_id', 'sectoral_goal_id',
+        'nlgas_pillar_id', 'alignment_notes'
     ];
 
     public function presidentialPriority(): BelongsTo
@@ -23,11 +23,6 @@ class StrategicAlignment extends Model
     public function sectoralGoal(): BelongsTo
     {
         return $this->belongsTo(SectoralGoal::class);
-    }
-
-    public function bondOutcome(): BelongsTo
-    {
-        return $this->belongsTo(BondOutcome::class);
     }
 
     public function nlgasPillar(): BelongsTo

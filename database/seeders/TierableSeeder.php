@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\BondOutcome;
 use App\Models\Indicator;
 use App\Models\NlgasPillar;
 use App\Models\PresidentialPriority;
@@ -40,12 +39,6 @@ class TierableSeeder extends Seeder
             $sg->tiers()->attach($tier1->id);
         }
         $this->command->info('Attached Tier 1 to all Sectoral Goals');
-
-        $bondOutcomes = BondOutcome::all();
-        foreach ($bondOutcomes as $bo) {
-            $bo->tiers()->sync([$tier1->id, $tier2->id]);
-        }
-        $this->command->info('Attached Tier 1 and Tier 2 to all Bond Outcomes');
 
         $pillars = NlgasPillar::all();
         foreach ($pillars as $pillar) {

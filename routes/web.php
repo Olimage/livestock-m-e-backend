@@ -93,14 +93,6 @@ Route::middleware(['auth.web'])->group(function () {
         Route::put('/sectoral-goals/{goal}', [\App\Http\Controllers\ProgramController::class, 'updateSectoralGoal'])->name('sectoral-goals.update');
         Route::delete('/sectoral-goals/{goal}', [\App\Http\Controllers\ProgramController::class, 'destroySectoralGoal'])->name('sectoral-goals.destroy');
 
-        // Bond Outcomes
-        Route::get('/bond-outcomes', [\App\Http\Controllers\ProgramController::class, 'bondOutcomes'])->name('bond-outcomes.index');
-        Route::get('/bond-outcomes/create', [\App\Http\Controllers\ProgramController::class, 'createBondOutcome'])->name('bond-outcomes.create');
-        Route::post('/bond-outcomes', [\App\Http\Controllers\ProgramController::class, 'storeBondOutcome'])->name('bond-outcomes.store');
-        Route::get('/bond-outcomes/{outcome}/edit', [\App\Http\Controllers\ProgramController::class, 'editBondOutcome'])->name('bond-outcomes.edit');
-        Route::put('/bond-outcomes/{outcome}', [\App\Http\Controllers\ProgramController::class, 'updateBondOutcome'])->name('bond-outcomes.update');
-        Route::delete('/bond-outcomes/{outcome}', [\App\Http\Controllers\ProgramController::class, 'destroyBondOutcome'])->name('bond-outcomes.destroy');
-
         // NLGAS Pillars
         Route::get('/nlgas-pillars', [\App\Http\Controllers\ProgramController::class, 'nlgasPillars'])->name('nlgas-pillars.index');
         Route::get('/nlgas-pillars/create', [\App\Http\Controllers\ProgramController::class, 'createNlgasPillar'])->name('nlgas-pillars.create');

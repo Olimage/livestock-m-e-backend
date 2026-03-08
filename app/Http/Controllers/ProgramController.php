@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\PresidentialPriority;
 use App\Models\SectoralGoal;
-use App\Models\BondOutcome;
 use App\Models\NlgasPillar;
 use App\Models\Program;
 use App\Models\Tier;
@@ -179,87 +178,6 @@ class ProgramController extends Controller
         $goal->delete();
         return redirect()->route('programs.sectoral-goals.index')
                         ->with('success', 'Sectoral Goal deleted successfully');
-    }
-
-    // ==================== Bond Outcomes ====================
-    public function bondOutcomes(Request $request)
-    {
-        $query = BondOutcome::query()->with(['tiers']);
-
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('code', 'like', "%{$search}%")
-                  ->orWhere('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        $outcomes = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
-                         ->paginate($request->per_page ?? 10);
-
-        return Inertia::render('Programs/BondOutcomes/Index', [
-            'outcomes' => $outcomes,
-            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order']),
-            'totalCount' => BondOutcome::count()
-        ]);
-    }
-
-    public function createBondOutcome()
-    {
-        return Inertia::render('Programs/BondOutcomes/Create', [
-            'tiers' => Tier::all()
-        ]);
-    }
-
-    public function storeBondOutcome(Request $request)
-    {
-        $validated = $request->validate([
-            'code' => 'required|string|max:255|unique:bond_outcomes',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'tier_ids' => 'nullable|array',
-        ]);
-
-        $outcome = BondOutcome::create($validated);
-
-        if ($request->has('tier_ids')) {
-            $outcome->tiers()->attach($request->tier_ids);
-        }
-
-        return redirect()->route('programs.bond-outcomes.index')
-                        ->with('success', 'Bond Outcome created successfully');
-    }
-
-    public function editBondOutcome(BondOutcome $outcome)
-    {
-        return Inertia::render('Programs/BondOutcomes/Edit', [
-            'outcome' => $outcome->load(['tiers']),
-            'tiers' => Tier::all()
-        ]);
-    }
-
-    public function updateBondOutcome(Request $request, BondOutcome $outcome)
-    {
-        $validated = $request->validate([
-            'code' => 'required|string|max:255|unique:bond_outcomes,code,' . $outcome->id,
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'tier_ids' => 'nullable|array',
-        ]);
-
-        $outcome->update($validated);
-        $outcome->tiers()->sync($request->tier_ids ?? []);
-
-        return redirect()->route('programs.bond-outcomes.index')
-                        ->with('success', 'Bond Outcome updated successfully');
-    }
-
-    public function destroyBondOutcome(BondOutcome $outcome)
-    {
-        $outcome->delete();
-        return redirect()->route('programs.bond-outcomes.index')
-                        ->with('success', 'Bond Outcome deleted successfully');
     }
 
     // ==================== NLGAS Pillars ====================
@@ -543,7 +461,7 @@ class ProgramController extends Controller
     public function tiers(Request $request)
     {
         $query = Tier::query()
-            ->withCount(['indicators', 'sectoralGoals', 'presidentialPriorities', 'bondOutcomes']);
+            ->withCount(['indicators', 'sectoralGoals', 'presidentialPriorities']);
 
         if ($request->has('search')) {
             $search = $request->search;

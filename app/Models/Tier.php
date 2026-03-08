@@ -29,11 +29,6 @@ class Tier extends Model
         return $this->morphedByMany(PresidentialPriority::class, 'tierable');
     }
 
-    public function bondOutcomes(): MorphToMany
-    {
-        return $this->morphedByMany(BondOutcome::class, 'tierable');
-    }
-
     public function nlgasPillar(): MorphToMany
     {
         return $this->morphedByMany(NlgasPillar::class, 'tierable');

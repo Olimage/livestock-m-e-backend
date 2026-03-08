@@ -153,12 +153,6 @@ class NavigationService
             ];
 
             $programsSubmenu[] = [
-                'name'      => 'Bond Outcomes',
-                'routeName' => 'programs.bond-outcomes.index',
-                'icon'      => 'bi bi-trophy',
-            ];
-
-            $programsSubmenu[] = [
                 'name'      => 'NLGAS Pillars',
                 'routeName' => 'programs.nlgas-pillars.index',
                 'icon'      => 'bi bi-columns',

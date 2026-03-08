@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BondOutcome;
 use App\Models\Department;
 use App\Models\EnumerationRecord;
 use App\Models\MokData;
@@ -42,7 +41,6 @@ class DashboardController extends Controller
         $totalDataPendingSync = EnumerationRecord::where('sync_status', EnumerationRecord::SYNC_PENDING)->count();
         $totalDataSaved = EnumerationRecord::count();
 
-        $TotalbondOutcomesCount = BondOutcome::count();
         $TotalpresidentialPrioritiesCount = PresidentialPriority::count();
         $TotalsectoralGoalsCount = SectoralGoal::count();
         $TotalnlgasPillarsCount = NlgasPillar::count();
@@ -67,15 +65,6 @@ class DashboardController extends Controller
                 'badge' => 'Active'
             ],
 
-            [
-                'label' => 'Bond Outcomes',
-                'value' => $TotalbondOutcomesCount,
-                'icon' => 'bi bi-trophy',
-                'gradient' => 'from-emerald-500 to-teal-600',
-                'bgColor' => 'bg-emerald-50',
-                'iconColor' => 'text-emerald-600',
-                'badge' => 'Active'
-            ],
             [
                 'label' => 'Presidential Priorities',
                 'value' => $TotalpresidentialPrioritiesCount,
@@ -119,7 +108,6 @@ class DashboardController extends Controller
 
         $totalDataPendingSync = EnumerationRecord::where('sync_status', EnumerationRecord::SYNC_PENDING)->count();
         $totalDataSaved = EnumerationRecord::count();
-        $TotalbondOutcomesCount = BondOutcome::count();
         $TotalpresidentialPrioritiesCount = PresidentialPriority::count();
         $TotalsectoralGoalsCount = SectoralGoal::count();
         $TotalnlgasPillarsCount = NlgasPillar::count();
@@ -144,15 +132,6 @@ class DashboardController extends Controller
                 'badge' => 'Active'
             ],
 
-            [
-                'label' => 'Bond Outcomes',
-                'value' => $TotalbondOutcomesCount,
-                'icon' => 'bi bi-trophy',
-                'gradient' => 'from-emerald-500 to-teal-600',
-                'bgColor' => 'bg-emerald-50',
-                'iconColor' => 'text-emerald-600',
-                'badge' => 'Active'
-            ],
             [
                 'label' => 'Presidential Priorities',
                 'value' => $TotalpresidentialPrioritiesCount,

@@ -93,11 +93,6 @@ public function sectoralGoals()
     return $this->hasMany(SectoralGoal::class);
 }
 
-public function bondOutcomes()
-{
-    return $this->hasMany(BondOutcome::class);
-}
-
 public function nlgasPillars()
 {
     return $this->hasMany(NlgasPillar::class);

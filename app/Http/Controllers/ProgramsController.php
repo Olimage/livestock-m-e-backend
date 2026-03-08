@@ -7,7 +7,6 @@ use App\Models\Indicator;
 use App\Models\Module;
 use App\Models\SectoralGoal;
 use App\Models\PresidentialPriority;
-use App\Models\BondOutcome;
 
 class ProgramsController extends Controller
 {
@@ -117,27 +116,4 @@ public function getIndicators(Request $request)
             ], 500);
         }
     }
-        public function getBondOutcomes(Request $request)
-    {
-        try{
-        $bondOutcomes = BondOutcome::with('tiers')->get()->makeHidden(['id'])->map(function ($bondOutcome) {
-            $bondOutcome->tiers->each->makeHidden(['id', 'pivot', 'created_at', 'updated_at']);
-            return $bondOutcome ;
-        })->makeHidden(['created_at', 'updated_at']);
-
-        return response()->json([
-            'status' => true,
-            'data' => $bondOutcomes
-        ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Failed to retrieve indicators',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-
 }
