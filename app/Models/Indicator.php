@@ -20,10 +20,6 @@ class Indicator extends Model
         'description',
         'indicator_type',
         'measurement_unit',
-        'baseline_value',
-        'baseline_year',
-        'target_value',
-        'target_year',
         'data_source',
         'collection_frequency',
         'disaggregation_dimensions',
@@ -31,10 +27,6 @@ class Indicator extends Model
     ];
 
     protected $casts = [
-        'baseline_value' => 'decimal:2',
-        'target_value' => 'decimal:2',
-        'baseline_year' => 'integer',
-        'target_year' => 'integer',
         'collection_frequency' => 'array',
         'reporting_frequency' => 'array',
         'disaggregation_dimensions' => 'json',

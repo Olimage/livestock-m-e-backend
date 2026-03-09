@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import BeLayout from '../../../Layouts/BeLayout.vue'
 
@@ -28,10 +28,6 @@ const form = useForm({
     description: '',
     indicator_type: 'output',
     measurement_unit: '',
-    baseline_value: null,
-    baseline_year: null,
-    target_value: null,
-    target_year: null,
     data_source: '',
     collection_frequency: '',
     reporting_frequency: '',
@@ -40,7 +36,28 @@ const form = useForm({
     disagregation_item_ids: [],
     main_department_id: '',
     supporting_department_ids: [],
+    new_disagregation_categories: [],
 })
+
+// Inline new category creation state
+const showNewCategoryForm = ref(false)
+const newCategoryDraft = reactive({ name: '', items: [''] })
+
+const addItemToDraft = () => newCategoryDraft.items.push('')
+const removeItemFromDraft = (idx) => {
+    if (newCategoryDraft.items.length > 1) newCategoryDraft.items.splice(idx, 1)
+}
+const addNewCategory = () => {
+    if (!newCategoryDraft.name.trim()) return
+    form.new_disagregation_categories.push({
+        name: newCategoryDraft.name.trim(),
+        items: newCategoryDraft.items.map(i => i.trim()).filter(Boolean),
+    })
+    newCategoryDraft.name = ''
+    newCategoryDraft.items = ['']
+    showNewCategoryForm.value = false
+}
+const removeNewCategory = (idx) => form.new_disagregation_categories.splice(idx, 1)
 
 const next = () => { if (currentStep.value < 7) currentStep.value++ }
 const prev = () => { if (currentStep.value > 1) currentStep.value-- }
@@ -171,31 +188,6 @@ const typeBadgeClass = computed(() => ({
                         </div>
 
                         <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Baseline Value</label>
-                                <input v-model="form.baseline_value" type="number" step="0.01" class="form-control" />
-                                <small class="text-danger">{{ form.errors.baseline_value }}</small>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Baseline Year</label>
-                                <input v-model="form.baseline_year" type="number" class="form-control"
-                                    placeholder="e.g., 2024" />
-                                <small class="text-danger">{{ form.errors.baseline_year }}</small>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Target Value</label>
-                                <input v-model="form.target_value" type="number" step="0.01" class="form-control" />
-                                <small class="text-danger">{{ form.errors.target_value }}</small>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Target Year</label>
-                                <input v-model="form.target_year" type="number" class="form-control"
-                                    placeholder="e.g., 2030" />
-                                <small class="text-danger">{{ form.errors.target_year }}</small>
-                            </div>
-                        </div>
-
-                        <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Collection Frequency</label>
                                 <input v-model="form.collection_frequency" type="text" class="form-control"
@@ -277,8 +269,76 @@ const typeBadgeClass = computed(() => ({
 
                     <!-- ── Step 4: Disaggregations ── -->
                     <div v-show="currentStep === 4">
-                        <p class="text-muted mb-3">Select disaggregation items for this indicator.</p>
-                        <div v-if="props.disagregationCategories.length === 0" class="alert alert-warning">No disaggregation categories configured yet.</div>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <p class="text-muted mb-0">Select existing disaggregation items or create new categories.</p>
+                            <button type="button" class="btn btn-sm btn-outline-success"
+                                    @click="showNewCategoryForm = !showNewCategoryForm">
+                                <i class="bi bi-plus-circle me-1"></i>
+                                {{ showNewCategoryForm ? 'Cancel' : 'New Category' }}
+                            </button>
+                        </div>
+
+                        <!-- Inline create new category form -->
+                        <div v-if="showNewCategoryForm" class="card border-success mb-4">
+                            <div class="card-header card-header-green text-white py-2">
+                                <i class="bi bi-plus-circle me-1"></i> Create New Disaggregation Category
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Category Name *</label>
+                                    <input v-model="newCategoryDraft.name" type="text" class="form-control"
+                                           placeholder="e.g., Gender, Age Group" />
+                                </div>
+                                <label class="form-label fw-semibold">Items</label>
+                                <div v-for="(item, idx) in newCategoryDraft.items" :key="idx"
+                                     class="d-flex gap-2 mb-2">
+                                    <input v-model="newCategoryDraft.items[idx]" type="text" class="form-control"
+                                           :placeholder="`Item ${idx + 1}`" />
+                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                            @click="removeItemFromDraft(idx)"
+                                            :disabled="newCategoryDraft.items.length === 1">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+                                </div>
+                                <div class="d-flex gap-2 mt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            @click="addItemToDraft">
+                                        <i class="bi bi-plus me-1"></i>Add Item
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-success"
+                                            @click="addNewCategory"
+                                            :disabled="!newCategoryDraft.name.trim()">
+                                        <i class="bi bi-check me-1"></i>Add Category
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pending new categories -->
+                        <div v-if="form.new_disagregation_categories.length > 0" class="mb-4">
+                            <h6 class="text-uppercase fw-semibold mb-2 small text-success">
+                                <i class="bi bi-plus-circle me-1"></i>New Categories to Create
+                            </h6>
+                            <div v-for="(cat, idx) in form.new_disagregation_categories" :key="idx"
+                                 class="d-flex align-items-start gap-2 mb-2 p-2 border border-success rounded bg-light">
+                                <div class="flex-grow-1">
+                                    <span class="fw-semibold">{{ cat.name }}</span>
+                                    <span v-if="cat.items.length > 0" class="ms-2 text-muted small">
+                                        — {{ cat.items.join(', ') }}
+                                    </span>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger py-0 px-1"
+                                        @click="removeNewCategory(idx)">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Existing categories -->
+                        <div v-if="props.disagregationCategories.length === 0 && form.new_disagregation_categories.length === 0"
+                             class="alert alert-warning">
+                            No disaggregation categories configured yet. Use "New Category" to create one.
+                        </div>
                         <div v-for="cat in props.disagregationCategories" :key="cat.id" class="mb-4">
                             <h6 class="text-uppercase text-muted fw-semibold mb-2 small">
                                 <i class="bi bi-tag me-1"></i>{{ cat.name }}
@@ -302,9 +362,13 @@ const typeBadgeClass = computed(() => ({
                             </div>
                         </div>
                         <small class="text-danger">{{ form.errors.disagregation_item_ids }}</small>
-                        <div v-if="form.disagregation_item_ids.length > 0" class="mt-2 text-muted small">
+                        <div v-if="form.disagregation_item_ids.length > 0 || form.new_disagregation_categories.length > 0"
+                             class="mt-2 text-muted small">
                             <i class="bi bi-check-circle-fill text-success me-1"></i>
-                            {{ form.disagregation_item_ids.length }} item(s) selected
+                            {{ form.disagregation_item_ids.length }} existing item(s) selected
+                            <span v-if="form.new_disagregation_categories.length > 0">
+                                + {{ form.new_disagregation_categories.length }} new category(ies) to create
+                            </span>
                         </div>
                     </div>
 
@@ -412,14 +476,6 @@ const typeBadgeClass = computed(() => ({
                                             <span class="review-label">Data Source</span>
                                             <span>{{ form.data_source }}</span>
                                         </div>
-                                        <div v-if="form.baseline_value" class="review-row">
-                                            <span class="review-label">Baseline</span>
-                                            <span>{{ form.baseline_value }} ({{ form.baseline_year }})</span>
-                                        </div>
-                                        <div v-if="form.target_value" class="review-row">
-                                            <span class="review-label">Target</span>
-                                            <span>{{ form.target_value }} ({{ form.target_year }})</span>
-                                        </div>
                                         <div v-if="form.collection_frequency" class="review-row">
                                             <span class="review-label">Collection Freq.</span>
                                             <span>{{ form.collection_frequency }}</span>
@@ -465,13 +521,22 @@ const typeBadgeClass = computed(() => ({
                                 <div class="review-card">
                                     <div class="review-card-header">
                                         <i class="bi bi-funnel me-2"></i>Disaggregations
-                                        <span class="badge bg-white text-success ms-auto">{{ selectedDisaggItems.length }}</span>
+                                        <span class="badge bg-white text-success ms-auto">
+                                            {{ selectedDisaggItems.length + form.new_disagregation_categories.length }}
+                                        </span>
                                     </div>
                                     <div class="review-card-body">
-                                        <span v-if="selectedDisaggItems.length === 0" class="text-muted small">None selected</span>
+                                        <span v-if="selectedDisaggItems.length === 0 && form.new_disagregation_categories.length === 0"
+                                              class="text-muted small">None selected</span>
                                         <span v-for="i in selectedDisaggItems" :key="i.id"
                                               class="badge bg-info text-dark me-1 mb-1"
                                               :title="i.categoryName">{{ i.name }}</span>
+                                        <div v-if="form.new_disagregation_categories.length > 0" class="mt-1">
+                                            <span v-for="(cat, idx) in form.new_disagregation_categories" :key="'new-'+idx"
+                                                  class="badge bg-success me-1 mb-1">
+                                                <i class="bi bi-plus me-1"></i>{{ cat.name }}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
 

@@ -137,7 +137,6 @@ const sortIcon = (column) => {
                       Title <i :class="sortIcon('title')"></i>
                     </th>
                     <th>Type</th>
-                    <th>Baseline / Target</th>
                     <th>Departments</th>
                     <th>Tiers</th>
                     <th>Disaggregations</th>
@@ -149,7 +148,7 @@ const sortIcon = (column) => {
                 </thead>
                 <tbody>
                   <tr v-if="indicators?.data && indicators.data.length === 0">
-                    <td colspan="9" class="text-center text-muted">No indicators found</td>
+                    <td colspan="8" class="text-center text-muted">No indicators found</td>
                   </tr>
                   <tr v-for="indicator in indicators?.data" :key="indicator.id">
                     <td><span class="badge bg-success">{{ indicator.code }}</span></td>
@@ -163,18 +162,6 @@ const sortIcon = (column) => {
                       <span v-if="indicator.indicator_type" :class="['badge', typeBadge(indicator.indicator_type)]">
                         {{ indicator.indicator_type }}
                       </span>
-                      <span v-else class="text-muted">—</span>
-                    </td>
-                    <td>
-                      <small v-if="indicator.baseline_value || indicator.target_value">
-                        <span v-if="indicator.baseline_value">
-                          B: {{ indicator.baseline_value }} ({{ indicator.baseline_year }})
-                        </span>
-                        <br v-if="indicator.baseline_value && indicator.target_value" />
-                        <span v-if="indicator.target_value">
-                          T: {{ indicator.target_value }} ({{ indicator.target_year }})
-                        </span>
-                      </small>
                       <span v-else class="text-muted">—</span>
                     </td>
                     <td>

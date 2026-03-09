@@ -390,32 +390,44 @@ class ProgramController extends Controller
             'title'                       => 'required|string|max:255',
             'description'                 => 'nullable|string',
             'indicator_type'              => 'required|in:outcome,output,impact',
-            'measurement_unit'            => 'nullable|string',
-            'baseline_value'              => 'nullable|numeric',
-            'baseline_year'               => 'nullable|integer',
-            'target_value'                => 'nullable|numeric',
-            'target_year'                 => 'nullable|integer',
-            'data_source'                 => 'nullable|string',
-            'collection_frequency'        => 'nullable|string',
-            'reporting_frequency'         => 'nullable|string',
-            'tier_ids'                    => 'nullable|array',
-            'sectoral_goal_ids'           => 'nullable|array',
-            'sectoral_goal_ids.*'         => 'exists:sectoral_goals,id',
-            'main_department_id'          => 'nullable|exists:departments,id',
-            'supporting_department_ids'   => 'nullable|array',
-            'supporting_department_ids.*' => 'exists:departments,id',
-            'disagregation_item_ids'      => 'nullable|array',
+            'measurement_unit'                      => 'nullable|string',
+            'data_source'                           => 'nullable|string',
+            'collection_frequency'                  => 'nullable|string',
+            'reporting_frequency'                   => 'nullable|string',
+            'tier_ids'                              => 'nullable|array',
+            'sectoral_goal_ids'                     => 'nullable|array',
+            'sectoral_goal_ids.*'                   => 'exists:sectoral_goals,id',
+            'main_department_id'                    => 'nullable|exists:departments,id',
+            'supporting_department_ids'             => 'nullable|array',
+            'supporting_department_ids.*'           => 'exists:departments,id',
+            'disagregation_item_ids'                => 'nullable|array',
+            'new_disagregation_categories'          => 'nullable|array',
+            'new_disagregation_categories.*.name'   => 'required|string|max:255',
+            'new_disagregation_categories.*.items'  => 'nullable|array',
+            'new_disagregation_categories.*.items.*' => 'string|max:255',
         ]);
 
         $indicator = Indicator::create($request->only([
             'code', 'title', 'description', 'indicator_type', 'measurement_unit',
-            'baseline_value', 'baseline_year', 'target_value', 'target_year',
             'data_source', 'collection_frequency', 'reporting_frequency',
         ]));
 
         $indicator->tiers()->sync($request->tier_ids ?? []);
         $indicator->sectoralGoals()->sync($request->sectoral_goal_ids ?? []);
-        $indicator->disagregation()->sync($request->disagregation_item_ids ?? []);
+
+        $newItemIds = [];
+        foreach ($request->new_disagregation_categories ?? [] as $cat) {
+            if (!empty($cat['name'])) {
+                $category = DisagregationCategory::firstOrCreate(['name' => trim($cat['name'])]);
+                foreach ($cat['items'] ?? [] as $itemName) {
+                    if (!empty(trim($itemName))) {
+                        $item = $category->items()->firstOrCreate(['name' => trim($itemName)]);
+                        $newItemIds[] = $item->id;
+                    }
+                }
+            }
+        }
+        $indicator->disagregation()->sync(array_merge($request->disagregation_item_ids ?? [], $newItemIds));
 
         $deptSync = [];
         if ($request->main_department_id) {
@@ -453,32 +465,44 @@ class ProgramController extends Controller
             'title'                       => 'required|string|max:255',
             'description'                 => 'nullable|string',
             'indicator_type'              => 'required|in:outcome,output,impact',
-            'measurement_unit'            => 'nullable|string',
-            'baseline_value'              => 'nullable|numeric',
-            'baseline_year'               => 'nullable|integer',
-            'target_value'                => 'nullable|numeric',
-            'target_year'                 => 'nullable|integer',
-            'data_source'                 => 'nullable|string',
-            'collection_frequency'        => 'nullable|string',
-            'reporting_frequency'         => 'nullable|string',
-            'tier_ids'                    => 'nullable|array',
-            'sectoral_goal_ids'           => 'nullable|array',
-            'sectoral_goal_ids.*'         => 'exists:sectoral_goals,id',
-            'main_department_id'          => 'nullable|exists:departments,id',
-            'supporting_department_ids'   => 'nullable|array',
-            'supporting_department_ids.*' => 'exists:departments,id',
-            'disagregation_item_ids'      => 'nullable|array',
+            'measurement_unit'                      => 'nullable|string',
+            'data_source'                           => 'nullable|string',
+            'collection_frequency'                  => 'nullable|string',
+            'reporting_frequency'                   => 'nullable|string',
+            'tier_ids'                              => 'nullable|array',
+            'sectoral_goal_ids'                     => 'nullable|array',
+            'sectoral_goal_ids.*'                   => 'exists:sectoral_goals,id',
+            'main_department_id'                    => 'nullable|exists:departments,id',
+            'supporting_department_ids'             => 'nullable|array',
+            'supporting_department_ids.*'           => 'exists:departments,id',
+            'disagregation_item_ids'                => 'nullable|array',
+            'new_disagregation_categories'          => 'nullable|array',
+            'new_disagregation_categories.*.name'   => 'required|string|max:255',
+            'new_disagregation_categories.*.items'  => 'nullable|array',
+            'new_disagregation_categories.*.items.*' => 'string|max:255',
         ]);
 
         $indicator->update($request->only([
             'code', 'title', 'description', 'indicator_type', 'measurement_unit',
-            'baseline_value', 'baseline_year', 'target_value', 'target_year',
             'data_source', 'collection_frequency', 'reporting_frequency',
         ]));
 
         $indicator->tiers()->sync($request->tier_ids ?? []);
         $indicator->sectoralGoals()->sync($request->sectoral_goal_ids ?? []);
-        $indicator->disagregation()->sync($request->disagregation_item_ids ?? []);
+
+        $newItemIds = [];
+        foreach ($request->new_disagregation_categories ?? [] as $cat) {
+            if (!empty($cat['name'])) {
+                $category = DisagregationCategory::firstOrCreate(['name' => trim($cat['name'])]);
+                foreach ($cat['items'] ?? [] as $itemName) {
+                    if (!empty(trim($itemName))) {
+                        $item = $category->items()->firstOrCreate(['name' => trim($itemName)]);
+                        $newItemIds[] = $item->id;
+                    }
+                }
+            }
+        }
+        $indicator->disagregation()->sync(array_merge($request->disagregation_item_ids ?? [], $newItemIds));
 
         $deptSync = [];
         if ($request->main_department_id) {
