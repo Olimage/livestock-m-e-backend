@@ -517,7 +517,7 @@ class ProgramController extends Controller
         }
         $indicator->departments()->sync($deptSync);
 
-        return redirect()->route('programs.indicators.index')
+        return redirect()->route('programs.indicators.edit', $indicator->id)
                         ->with('success', 'Indicator updated successfully');
     }
 

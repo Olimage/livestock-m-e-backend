@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, reactive } from 'vue'
-import { Head, Link, useForm } from '@inertiajs/vue3'
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
 import BeLayout from '../../../Layouts/BeLayout.vue'
 
 const props = defineProps({
@@ -10,6 +10,8 @@ const props = defineProps({
     sectoralGoals: Array,
     disagregationCategories: Array,
 })
+
+const flash = computed(() => usePage().props.flash ?? {})
 
 const currentStep = ref(1)
 
@@ -74,7 +76,9 @@ const next = () => { if (currentStep.value < 8) currentStep.value++ }
 const prev = () => { if (currentStep.value > 1) currentStep.value-- }
 const goTo = (n) => { currentStep.value = n }
 
-const submit = () => form.put(route('programs.indicators.update', props.indicator.id))
+const submit = () => form.put(route('programs.indicators.update', props.indicator.id), {
+    onSuccess: () => { currentStep.value = 1 },
+})
 
 // Review computed helpers
 const selectedTiers = computed(() =>
@@ -113,6 +117,11 @@ const typeBadgeClass = computed(() => ({
             <span class="badge bg-success ms-2">{{ indicator.code }}</span>
         </h5>
         <hr />
+
+        <div v-if="flash.success" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>{{ flash.success }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
 
         <!-- Step Wizard -->
         <div class="step-wizard mb-4">
