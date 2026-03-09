@@ -447,7 +447,7 @@ class ProgramController extends Controller
 
     public function editIndicator(Indicator $indicator)
     {
-        $indicator->load(['tiers', 'sectoralGoals', 'mainDepartment', 'supportingDepartments']);
+        $indicator->load(['tiers', 'sectoralGoals', 'mainDepartment', 'supportingDepartments', 'disagregation']);
 
         return Inertia::render('Programs/Indicators/Edit', [
             'indicator'               => $indicator,
