@@ -391,6 +391,8 @@ class ProgramController extends Controller
             'description'                 => 'nullable|string',
             'indicator_type'              => 'required|in:outcome,output,impact',
             'measurement_unit'                      => 'nullable|string',
+            'baseline_value'                        => 'nullable|numeric',
+            'baseline_year'                         => 'nullable|integer',
             'collection_frequency'                  => 'nullable|string',
             'reporting_frequency'                   => 'nullable|string',
             'tier_ids'                              => 'nullable|array',
@@ -408,7 +410,7 @@ class ProgramController extends Controller
 
         $indicator = Indicator::create($request->only([
             'code', 'title', 'description', 'indicator_type', 'measurement_unit',
-            'collection_frequency', 'reporting_frequency',
+            'baseline_value', 'baseline_year', 'collection_frequency', 'reporting_frequency',
         ]));
 
         $indicator->tiers()->sync($request->tier_ids ?? []);
@@ -465,6 +467,8 @@ class ProgramController extends Controller
             'description'                 => 'nullable|string',
             'indicator_type'              => 'required|in:outcome,output,impact',
             'measurement_unit'                      => 'nullable|string',
+            'baseline_value'                        => 'nullable|numeric',
+            'baseline_year'                         => 'nullable|integer',
             'collection_frequency'                  => 'nullable|string',
             'reporting_frequency'                   => 'nullable|string',
             'tier_ids'                              => 'nullable|array',
@@ -482,7 +486,7 @@ class ProgramController extends Controller
 
         $indicator->update($request->only([
             'code', 'title', 'description', 'indicator_type', 'measurement_unit',
-            'collection_frequency', 'reporting_frequency',
+            'baseline_value', 'baseline_year', 'collection_frequency', 'reporting_frequency',
         ]));
 
         $indicator->tiers()->sync($request->tier_ids ?? []);

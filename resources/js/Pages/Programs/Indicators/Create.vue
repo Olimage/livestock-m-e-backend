@@ -28,6 +28,8 @@ const form = useForm({
     description: '',
     indicator_type: 'output',
     measurement_unit: '',
+    baseline_value: null,
+    baseline_year: null,
     collection_frequency: '',
     reporting_frequency: '',
     tier_ids: [],
@@ -177,6 +179,20 @@ const typeBadgeClass = computed(() => ({
                                 <input v-model="form.measurement_unit" type="text" class="form-control"
                                     placeholder="e.g., kg, %, units" />
                                 <small class="text-danger">{{ form.errors.measurement_unit }}</small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Baseline Value</label>
+                                <input v-model="form.baseline_value" type="number" step="0.01" class="form-control" />
+                                <small class="text-danger">{{ form.errors.baseline_value }}</small>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Baseline Year</label>
+                                <input v-model="form.baseline_year" type="number" class="form-control"
+                                    placeholder="e.g., 2024" />
+                                <small class="text-danger">{{ form.errors.baseline_year }}</small>
                             </div>
                         </div>
 
@@ -464,6 +480,10 @@ const typeBadgeClass = computed(() => ({
                                         <div v-if="form.measurement_unit" class="review-row">
                                             <span class="review-label">Unit</span>
                                             <span>{{ form.measurement_unit }}</span>
+                                        </div>
+                                        <div v-if="form.baseline_value" class="review-row">
+                                            <span class="review-label">Baseline</span>
+                                            <span>{{ form.baseline_value }} ({{ form.baseline_year }})</span>
                                         </div>
                                         <div v-if="form.collection_frequency" class="review-row">
                                             <span class="review-label">Collection Freq.</span>
