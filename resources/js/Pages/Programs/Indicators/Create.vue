@@ -28,7 +28,6 @@ const form = useForm({
     description: '',
     indicator_type: 'output',
     measurement_unit: '',
-    data_source: '',
     collection_frequency: '',
     reporting_frequency: '',
     tier_ids: [],
@@ -178,12 +177,6 @@ const typeBadgeClass = computed(() => ({
                                 <input v-model="form.measurement_unit" type="text" class="form-control"
                                     placeholder="e.g., kg, %, units" />
                                 <small class="text-danger">{{ form.errors.measurement_unit }}</small>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Data Source</label>
-                                <input v-model="form.data_source" type="text" class="form-control"
-                                    placeholder="e.g., Ministry Reports" />
-                                <small class="text-danger">{{ form.errors.data_source }}</small>
                             </div>
                         </div>
 
@@ -471,10 +464,6 @@ const typeBadgeClass = computed(() => ({
                                         <div v-if="form.measurement_unit" class="review-row">
                                             <span class="review-label">Unit</span>
                                             <span>{{ form.measurement_unit }}</span>
-                                        </div>
-                                        <div v-if="form.data_source" class="review-row">
-                                            <span class="review-label">Data Source</span>
-                                            <span>{{ form.data_source }}</span>
                                         </div>
                                         <div v-if="form.collection_frequency" class="review-row">
                                             <span class="review-label">Collection Freq.</span>

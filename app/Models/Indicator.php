@@ -20,7 +20,6 @@ class Indicator extends Model
         'description',
         'indicator_type',
         'measurement_unit',
-        'data_source',
         'collection_frequency',
         'disaggregation_dimensions',
         'reporting_frequency',

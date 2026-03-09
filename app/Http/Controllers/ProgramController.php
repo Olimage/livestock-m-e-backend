@@ -391,7 +391,6 @@ class ProgramController extends Controller
             'description'                 => 'nullable|string',
             'indicator_type'              => 'required|in:outcome,output,impact',
             'measurement_unit'                      => 'nullable|string',
-            'data_source'                           => 'nullable|string',
             'collection_frequency'                  => 'nullable|string',
             'reporting_frequency'                   => 'nullable|string',
             'tier_ids'                              => 'nullable|array',
@@ -409,7 +408,7 @@ class ProgramController extends Controller
 
         $indicator = Indicator::create($request->only([
             'code', 'title', 'description', 'indicator_type', 'measurement_unit',
-            'data_source', 'collection_frequency', 'reporting_frequency',
+            'collection_frequency', 'reporting_frequency',
         ]));
 
         $indicator->tiers()->sync($request->tier_ids ?? []);
@@ -466,7 +465,6 @@ class ProgramController extends Controller
             'description'                 => 'nullable|string',
             'indicator_type'              => 'required|in:outcome,output,impact',
             'measurement_unit'                      => 'nullable|string',
-            'data_source'                           => 'nullable|string',
             'collection_frequency'                  => 'nullable|string',
             'reporting_frequency'                   => 'nullable|string',
             'tier_ids'                              => 'nullable|array',
@@ -484,7 +482,7 @@ class ProgramController extends Controller
 
         $indicator->update($request->only([
             'code', 'title', 'description', 'indicator_type', 'measurement_unit',
-            'data_source', 'collection_frequency', 'reporting_frequency',
+            'collection_frequency', 'reporting_frequency',
         ]));
 
         $indicator->tiers()->sync($request->tier_ids ?? []);
