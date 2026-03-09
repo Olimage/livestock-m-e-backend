@@ -162,7 +162,6 @@ class IndicatorSeeder extends Seeder
                 // 'baseline_year' => !empty($data['baseline_year']) ? (int) $data['baseline_year'] : null,
                 // 'target_value' => !empty($data['target_value']) ? (float) $data['target_value'] : null,
                 // 'target_year' => !empty($data['target_year']) ? (int) $data['target_year'] : null,
-                'data_source' => $data['data_source_entities'] ?? null,
             ];
 
             Indicator::firstOrCreate(['code' => $indicatorData['code']], $indicatorData);
