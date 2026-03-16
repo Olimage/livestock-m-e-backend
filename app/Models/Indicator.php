@@ -116,6 +116,16 @@ class Indicator extends Model
         );
     }
 
+    public function linkedIndicators()
+    {
+        return $this->belongsToMany(
+            Indicator::class,
+            'indicator_links',
+            'indicator_id',
+            'linked_indicator_id'
+        );
+    }
+
     public function disagregationCategories()
     {
         return DisagregationCategory::whereHas('items', function ($q) {

@@ -9,6 +9,7 @@ const props = defineProps({
     departments: Array,
     sectoralGoals: Array,
     disagregationCategories: Array,
+    linkableIndicators: Array,
 })
 
 const flash = computed(() => usePage().props.flash ?? {})
@@ -21,9 +22,10 @@ const steps = [
     { number: 3, label: 'Tiers',               icon: 'bi-layers' },
     { number: 4, label: 'Sectoral Goals',      icon: 'bi-bullseye' },
     { number: 5, label: 'Disaggregations',     icon: 'bi-funnel' },
-    { number: 6, label: 'Main Department',     icon: 'bi-building-fill' },
-    { number: 7, label: 'Supporting Depts',    icon: 'bi-building' },
-    { number: 8, label: 'Review & Update',     icon: 'bi-check-circle' },
+    { number: 6, label: 'Linked Indicator',    icon: 'bi-link-45deg' },
+    { number: 7, label: 'Main Department',     icon: 'bi-building-fill' },
+    { number: 8, label: 'Supporting Depts',    icon: 'bi-building' },
+    { number: 9, label: 'Review & Update',     icon: 'bi-check-circle' },
 ]
 
 // Normalise array-cast frequency fields to string
@@ -49,6 +51,8 @@ const form = useForm({
         ? props.indicator.main_department[0].id : '',
     supporting_department_ids: props.indicator.supporting_departments
         ? props.indicator.supporting_departments.map(d => d.id) : [],
+    linked_indicator_ids: props.indicator.linked_indicators
+        ? props.indicator.linked_indicators.map(i => i.id) : [],
     new_disagregation_categories: [],
 })
 
@@ -72,7 +76,7 @@ const addNewCategory = () => {
 }
 const removeNewCategory = (idx) => form.new_disagregation_categories.splice(idx, 1)
 
-const next = () => { if (currentStep.value < 8) currentStep.value++ }
+const next = () => { if (currentStep.value < 9) currentStep.value++ }
 const prev = () => { if (currentStep.value > 1) currentStep.value-- }
 const goTo = (n) => { currentStep.value = n }
 
@@ -102,6 +106,17 @@ const selectedDisaggItems = computed(() => {
     })
     return result
 })
+
+const linkedSearch = ref('')
+const filteredLinkable = computed(() => {
+    const q = linkedSearch.value.toLowerCase()
+    return (props.linkableIndicators ?? []).filter(ind =>
+        !q || ind.code.toLowerCase().includes(q) || ind.title.toLowerCase().includes(q)
+    )
+})
+const selectedLinkedIndicators = computed(() =>
+    (props.linkableIndicators ?? []).filter(i => form.linked_indicator_ids.includes(i.id))
+)
 
 const typeBadgeClass = computed(() => ({
     impact:  'bg-danger',
@@ -147,14 +162,14 @@ const typeBadgeClass = computed(() => ({
             <div class="card-header card-header-green text-white d-flex align-items-center justify-content-between">
                 <h6 class="mb-0">
                     <i :class="['bi', steps[currentStep - 1].icon, 'me-2']"></i>
-                    Step {{ currentStep }} of 8 — {{ steps[currentStep - 1].label }}
+                    Step {{ currentStep }} of 9 — {{ steps[currentStep - 1].label }}
                 </h6>
-                <small class="opacity-75">{{ Math.round((currentStep / 8) * 100) }}% complete</small>
+                <small class="opacity-75">{{ Math.round((currentStep / 9) * 100) }}% complete</small>
             </div>
 
             <!-- Progress bar -->
             <div class="progress" style="height: 3px; border-radius: 0;">
-                <div class="progress-bar bg-success" :style="{ width: ((currentStep / 8) * 100) + '%' }"></div>
+                <div class="progress-bar bg-success" :style="{ width: ((currentStep / 9) * 100) + '%' }"></div>
             </div>
 
             <div class="card-body">
@@ -252,6 +267,20 @@ const typeBadgeClass = computed(() => ({
                                         </div>
                                         <span v-if="!selectedMainDept && selectedSupportingDepts.length === 0"
                                               class="text-muted small">None</span>
+                                    </div>
+                                </div>
+                                <div class="review-card">
+                                    <div class="review-card-header">
+                                        <i class="bi bi-link-45deg me-2"></i>Linked Indicators
+                                        <span class="badge bg-white text-success ms-auto">{{ selectedLinkedIndicators.length }}</span>
+                                    </div>
+                                    <div class="review-card-body">
+                                        <span v-if="selectedLinkedIndicators.length === 0" class="text-muted small">None linked</span>
+                                        <span v-for="ind in selectedLinkedIndicators" :key="ind.id"
+                                              class="badge me-1 mb-1"
+                                              :class="ind.indicator_type === 'impact' ? 'bg-danger' : 'bg-warning text-dark'">
+                                            {{ ind.code }}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -505,8 +534,52 @@ const typeBadgeClass = computed(() => ({
                         </div>
                     </div>
 
-                    <!-- ── Step 6: Main Department ── -->
+                    <!-- ── Step 6: Linked Indicator ── -->
                     <div v-show="currentStep === 6">
+                        <p class="text-muted mb-3">Link this indicator to an impact or outcome indicator.</p>
+                        <div class="mb-3">
+                            <input v-model="linkedSearch" type="text" class="form-control"
+                                   placeholder="Search by code or title..." />
+                        </div>
+                        <div v-if="filteredLinkable.length === 0" class="alert alert-info">
+                            No impact or outcome indicators available to link.
+                        </div>
+                        <div class="row">
+                            <div v-for="ind in filteredLinkable" :key="ind.id" class="col-md-6 mb-3">
+                                <label :for="`link-ind-${ind.id}`" class="d-block">
+                                    <div class="selection-card"
+                                         :class="{ 'selected': form.linked_indicator_ids.includes(ind.id) }">
+                                        <div class="d-flex align-items-start gap-2">
+                                            <input class="form-check-input mt-1 flex-shrink-0"
+                                                   type="checkbox"
+                                                   :id="`link-ind-${ind.id}`"
+                                                   :value="ind.id"
+                                                   v-model="form.linked_indicator_ids" />
+                                            <div>
+                                                <div class="fw-semibold">
+                                                    <span class="badge bg-secondary me-1">{{ ind.code }}</span>
+                                                    {{ ind.title }}
+                                                </div>
+                                                <div class="mt-1">
+                                                    <span :class="['badge', ind.indicator_type === 'impact' ? 'bg-danger' : 'bg-warning text-dark']">
+                                                        {{ ind.indicator_type }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <small class="text-danger">{{ form.errors.linked_indicator_ids }}</small>
+                        <div v-if="form.linked_indicator_ids.length > 0" class="mt-2 text-muted small">
+                            <i class="bi bi-check-circle-fill text-success me-1"></i>
+                            {{ form.linked_indicator_ids.length }} indicator(s) linked
+                        </div>
+                    </div>
+
+                    <!-- ── Step 7: Main Department ── -->
+                    <div v-show="currentStep === 7">
                         <p class="text-muted mb-3">Select the primary department responsible for this indicator.</p>
                         <div v-if="props.departments.length === 0" class="alert alert-warning">No departments configured yet.</div>
                         <div class="row">
@@ -533,8 +606,8 @@ const typeBadgeClass = computed(() => ({
                         <small class="text-danger">{{ form.errors.main_department_id }}</small>
                     </div>
 
-                    <!-- ── Step 7: Supporting Departments ── -->
-                    <div v-show="currentStep === 7">
+                    <!-- ── Step 8: Supporting Departments ── -->
+                    <div v-show="currentStep === 8">
                         <p class="text-muted mb-3">
                             Select supporting (collaborating) departments.
                             <span v-if="selectedMainDept" class="badge bg-success ms-1">
@@ -544,7 +617,7 @@ const typeBadgeClass = computed(() => ({
                         <div v-if="!form.main_department_id" class="alert alert-warning">
                             <i class="bi bi-exclamation-triangle me-2"></i>
                             No main department selected. You can
-                            <button type="button" class="btn btn-link p-0 alert-link" @click="goTo(6)">go back to Step 6</button>
+                            <button type="button" class="btn btn-link p-0 alert-link" @click="goTo(7)">go back to Step 7</button>
                             to select one.
                         </div>
                         <div v-if="props.departments.filter(d => d.id != form.main_department_id).length === 0" class="alert alert-info">
@@ -575,8 +648,8 @@ const typeBadgeClass = computed(() => ({
                         </div>
                     </div>
 
-                    <!-- ── Step 8: Review & Update ── -->
-                    <div v-show="currentStep === 8">
+                    <!-- ── Step 9: Review & Update ── -->
+                    <div v-show="currentStep === 9">
                         <p class="text-muted mb-4">Review all selections before updating.</p>
 
                         <div class="row g-3">
@@ -671,6 +744,22 @@ const typeBadgeClass = computed(() => ({
                                     </div>
                                 </div>
 
+                                <!-- Linked Indicators -->
+                                <div class="review-card">
+                                    <div class="review-card-header">
+                                        <i class="bi bi-link-45deg me-2"></i>Linked Indicators
+                                        <span class="badge bg-white text-success ms-auto">{{ selectedLinkedIndicators.length }}</span>
+                                    </div>
+                                    <div class="review-card-body">
+                                        <span v-if="selectedLinkedIndicators.length === 0" class="text-muted small">None linked</span>
+                                        <span v-for="ind in selectedLinkedIndicators" :key="ind.id"
+                                              class="badge me-1 mb-1"
+                                              :class="ind.indicator_type === 'impact' ? 'bg-danger' : 'bg-warning text-dark'">
+                                            {{ ind.code }}
+                                        </span>
+                                    </div>
+                                </div>
+
                                 <!-- Departments -->
                                 <div class="review-card">
                                     <div class="review-card-header">
@@ -707,7 +796,7 @@ const typeBadgeClass = computed(() => ({
                             </Link>
                         </div>
                         <div>
-                            <button v-if="currentStep < 8" type="button" class="btn btn-success" @click="next">
+                            <button v-if="currentStep < 9" type="button" class="btn btn-success" @click="next">
                                 Next <i class="bi bi-arrow-right ms-1"></i>
                             </button>
                             <button v-else type="submit" class="btn btn-success" :disabled="form.processing">

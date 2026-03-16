@@ -380,6 +380,8 @@ class ProgramController extends Controller
             'sectoralGoals'           => SectoralGoal::orderBy('code')->get(['id', 'code', 'title', 'description']),
             'disagregationCategories' => DisagregationCategory::with('items:id,disagregation_category_id,name')
                 ->orderBy('name')->get(['id', 'name']),
+            'linkableIndicators'      => Indicator::whereIn('indicator_type', ['impact', 'outcome'])
+                ->orderBy('code')->get(['id', 'code', 'title', 'indicator_type']),
         ]);
     }
 
@@ -406,6 +408,8 @@ class ProgramController extends Controller
             'new_disagregation_categories.*.name'   => 'required|string|max:255',
             'new_disagregation_categories.*.items'  => 'nullable|array',
             'new_disagregation_categories.*.items.*' => 'string|max:255',
+            'linked_indicator_ids'                  => 'nullable|array',
+            'linked_indicator_ids.*'                => 'exists:indicators,id',
         ]);
 
         $indicator = Indicator::create($request->only([
@@ -440,6 +444,7 @@ class ProgramController extends Controller
             }
         }
         $indicator->departments()->sync($deptSync);
+        $indicator->linkedIndicators()->sync($request->linked_indicator_ids ?? []);
 
         return redirect()->route('programs.indicators.index')
                         ->with('success', 'Indicator created successfully');
@@ -447,7 +452,7 @@ class ProgramController extends Controller
 
     public function editIndicator(Indicator $indicator)
     {
-        $indicator->load(['tiers', 'sectoralGoals', 'mainDepartment', 'supportingDepartments', 'disagregation']);
+        $indicator->load(['tiers', 'sectoralGoals', 'mainDepartment', 'supportingDepartments', 'disagregation', 'linkedIndicators']);
 
         return Inertia::render('Programs/Indicators/Edit', [
             'indicator'               => $indicator,
@@ -456,6 +461,9 @@ class ProgramController extends Controller
             'sectoralGoals'           => SectoralGoal::orderBy('code')->get(['id', 'code', 'title', 'description']),
             'disagregationCategories' => DisagregationCategory::with('items:id,disagregation_category_id,name')
                 ->orderBy('name')->get(['id', 'name']),
+            'linkableIndicators'      => Indicator::whereIn('indicator_type', ['impact', 'outcome'])
+                ->where('id', '!=', $indicator->id)
+                ->orderBy('code')->get(['id', 'code', 'title', 'indicator_type']),
         ]);
     }
 
@@ -482,6 +490,8 @@ class ProgramController extends Controller
             'new_disagregation_categories.*.name'   => 'required|string|max:255',
             'new_disagregation_categories.*.items'  => 'nullable|array',
             'new_disagregation_categories.*.items.*' => 'string|max:255',
+            'linked_indicator_ids'                  => 'nullable|array',
+            'linked_indicator_ids.*'                => 'exists:indicators,id',
         ]);
 
         $indicator->update($request->only([
@@ -516,6 +526,7 @@ class ProgramController extends Controller
             }
         }
         $indicator->departments()->sync($deptSync);
+        $indicator->linkedIndicators()->sync($request->linked_indicator_ids ?? []);
 
         return redirect()->route('programs.indicators.edit', $indicator->id)
                         ->with('success', 'Indicator updated successfully');
