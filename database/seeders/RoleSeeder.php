@@ -64,6 +64,8 @@ class RoleSeeder extends Seeder
             ],
         ];
 
+        Role::truncate();
+
         foreach ($data as $datum) {
             Role::create($datum);
         }
