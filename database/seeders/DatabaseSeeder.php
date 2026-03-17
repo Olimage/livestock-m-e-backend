@@ -21,21 +21,21 @@ class DatabaseSeeder extends Seeder
         
         $this->call([
 
-            // ZonesSeeder::class,
-            // UserSeeder::class,
-            // ModuleSeeder::class,
-            // DepartmentSeeder::class,
+            ZonesSeeder::class,
+            UserSeeder::class,
+            ModuleSeeder::class,
+            DepartmentSeeder::class,
             RoleSeeder::class,
     
-            // PermissionSeeder::class,
-            // MockDataSeeder::class,
-            // IndicatorTierClassificationSeeder::class,
-            // StrategicAlignmentSeeder::class,
-            // IndicatorSeeder::class,
-            // DisagregationSeeder::class,
-            // ProgramSeeder::class,
-            // CrossCuttingMetricSeeder::class,
-            // TierableSeeder::class,
+            PermissionSeeder::class,
+            MockDataSeeder::class,
+            IndicatorTierClassificationSeeder::class,
+            StrategicAlignmentSeeder::class,
+            IndicatorSeeder::class,
+            DisagregationSeeder::class,
+            ProgramSeeder::class,
+            CrossCuttingMetricSeeder::class,
+            TierableSeeder::class,
         ]);
     }
 }

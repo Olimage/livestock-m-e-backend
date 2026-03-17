@@ -25,40 +25,40 @@ class NavigationService
 
  
         // Enumerations (single entry; create actions available on index page)
-        if ($user->isAdmin() || $user->can('manage-enumerations')) {
-            $navItems[] = [
-                'name'      => 'Enumerations',
-                'routeName' => 'enumerations.index',
-                'icon'      => 'bi bi-list-check',
-            ];
-        }
+        // if ($user->isAdmin() || $user->can('manage-enumerations')) {
+        //     $navItems[] = [
+        //         'name'      => 'Enumerations',
+        //         'routeName' => 'enumerations.index',
+        //         'icon'      => 'bi bi-list-check',
+        //     ];
+        // }
 
         // Build Reports submenu based on permissions
         $reportsSubmenu = [];
         
-        if ($user->isAdmin() || $user->can('view-summary-reports')) {
-            $reportsSubmenu[] = [
-                'name'      => 'Summary',
-                'routeName' => 'baseline-saved-data',
-                'icon'      => 'bi bi-file-text'
-            ];
-        }
+        // if ($user->isAdmin() || $user->can('view-summary-reports')) {
+        //     $reportsSubmenu[] = [
+        //         'name'      => 'Summary',
+        //         'routeName' => 'baseline-saved-data',
+        //         'icon'      => 'bi bi-file-text'
+        //     ];
+        // }
         
-        if ($user->isAdmin() || $user->can('view-detailed-reports')) {
-            $reportsSubmenu[] = [
-                'name'      => 'Detailed',
-                'routeName' => 'baseline-saved-data',
-                'icon'      => 'bi bi-file-earmark-spreadsheet'
-            ];
-        }
+        // if ($user->isAdmin() || $user->can('view-detailed-reports')) {
+        //     $reportsSubmenu[] = [
+        //         'name'      => 'Detailed',
+        //         'routeName' => 'baseline-saved-data',
+        //         'icon'      => 'bi bi-file-earmark-spreadsheet'
+        //     ];
+        // }
 
-        if (!empty($reportsSubmenu)) {
-            $navItems[] = [
-                'name'    => 'Reports',
-                'icon'    => 'bi bi-file-earmark-text',
-                'submenu' => $reportsSubmenu,
-            ];
-        }
+        // if (!empty($reportsSubmenu)) {
+        //     $navItems[] = [
+        //         'name'    => 'Reports',
+        //         'icon'    => 'bi bi-file-earmark-text',
+        //         'submenu' => $reportsSubmenu,
+        //     ];
+        // }
 
         // Programs (with submenus)
         $programsSubmenu = self::programsMenu($user);
