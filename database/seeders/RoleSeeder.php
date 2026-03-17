@@ -35,6 +35,9 @@ class RoleSeeder extends Seeder
                 'slug' => 'permanent_secretary'
             ],
             [
+                'name' => 'Director',
+                'slug' => 'director'
+            ],  [
                 'name' => 'Field Agent',
                 'slug' => 'field_agent'
             ],
