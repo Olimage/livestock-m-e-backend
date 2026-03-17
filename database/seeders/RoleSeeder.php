@@ -35,9 +35,6 @@ class RoleSeeder extends Seeder
                 'slug' => 'permanent_secretary'
             ],
             [
-                'name' => 'Director',
-                'slug' => 'director'
-            ],  [
                 'name' => 'Field Agent',
                 'slug' => 'field_agent'
             ],
@@ -48,18 +45,22 @@ class RoleSeeder extends Seeder
             [
                 'name' => 'User',
                 'slug' => 'user'
-            ], 
+            ],
             [
                 'name' => 'Enumerator',
                 'slug' => 'enumerator'
-            ], 
+            ],
             [
                 'name' => 'Supervisor',
                 'slug' => 'supervisor'
             ],
             [
-                'name'=> 'Livestock Extension Officer',
-                'slug'=> 'livestock_extension_officer'
+                'name' => 'Livestock Extension Officer',
+                'slug' => 'livestock_extension_officer'
+            ],
+            [
+                'name' => 'Director',
+                'slug' => 'director'
             ],
         ];
 
