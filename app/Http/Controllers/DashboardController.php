@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\EnumerationRecord;
+use App\Models\Indicator;
 use App\Models\MokData;
 use App\Models\NlgasPillar;
 use App\Models\PresidentialPriority;
@@ -39,7 +40,6 @@ class DashboardController extends Controller
             ->pluck('value', 'name');
 
         $totalDataPendingSync = EnumerationRecord::where('sync_status', EnumerationRecord::SYNC_PENDING)->count();
-        $totalDataSaved = EnumerationRecord::count();
 
         $TotalpresidentialPrioritiesCount = PresidentialPriority::count();
         $TotalsectoralGoalsCount = SectoralGoal::count();
@@ -56,9 +56,9 @@ class DashboardController extends Controller
                 'badge' => 'Active'
             ],
             [
-                'label' => 'Records Saved',
-                'value' => $totalDataSaved,
-                'icon' => 'bi bi-database-fill-check',
+                'label' => 'Total Indicators',
+                'value' => Indicator::count(),
+                'icon' => 'bi bi-bar-chart-fill',
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
                 'iconColor' => 'text-emerald-600',
@@ -107,7 +107,6 @@ class DashboardController extends Controller
             ->pluck('value', 'name');
 
         $totalDataPendingSync = EnumerationRecord::where('sync_status', EnumerationRecord::SYNC_PENDING)->count();
-        $totalDataSaved = EnumerationRecord::count();
         $TotalpresidentialPrioritiesCount = PresidentialPriority::count();
         $TotalsectoralGoalsCount = SectoralGoal::count();
         $TotalnlgasPillarsCount = NlgasPillar::count();
@@ -123,9 +122,9 @@ class DashboardController extends Controller
                 'badge' => 'Active'
             ],
             [
-                'label' => 'Records Saved',
-                'value' => $totalDataSaved,
-                'icon' => 'bi bi-database-fill-check',
+                'label' => 'Total Indicators',
+                'value' => Indicator::count(),
+                'icon' => 'bi bi-bar-chart-fill',
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
                 'iconColor' => 'text-emerald-600',
