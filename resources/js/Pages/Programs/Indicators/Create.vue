@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, watch } from 'vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import BeLayout from '../../../Layouts/BeLayout.vue'
 
@@ -9,6 +9,7 @@ const props = defineProps({
     disagregationCategories: Array,
     linkableIndicators: Array,
     indicatorTiers: Array,
+    bondDeliverables: Array,
 })
 
 const currentStep = ref(1)
@@ -39,6 +40,7 @@ const form = useForm({
     main_department_id: '',
     supporting_department_ids: [],
     new_disagregation_categories: [],
+    bond_deliverable_id: '',
 })
 
 // Inline new category creation state
@@ -106,6 +108,18 @@ const typeBadgeClass = computed(() => {
 })
 const selectedTierName = computed(() =>
     props.indicatorTiers?.find(t => t.id == form.indicator_tier_id)?.name || '—'
+)
+
+// Use a ref + watch so reactivity works reliably with Inertia useForm
+const isBondOutput = ref(false)
+watch(() => form.indicator_tier_id, (tierId) => {
+    const tier = props.indicatorTiers?.find(t => t.id == tierId)
+    isBondOutput.value = tier?.prefix === 'BOI'
+    if (!isBondOutput.value) form.bond_deliverable_id = ''
+}, { immediate: true })
+
+const selectedBondDeliverable = computed(() =>
+    props.bondDeliverables?.find(b => b.id == form.bond_deliverable_id)
 )
 </script>
 
@@ -192,6 +206,23 @@ const selectedTierName = computed(() =>
                                     placeholder="e.g., kg, %, units" />
                                 <small class="text-danger">{{ form.errors.measurement_unit }}</small>
                             </div>
+                        </div>
+
+                        <!-- Bond Deliverable selector — only shown for Bond Output tier -->
+                        <div v-if="isBondOutput" class="mb-3 p-3 border border-success rounded bond-deliverable-section">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-bookmark-check-fill text-success me-2"></i>Bond Deliverable
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select v-model="form.bond_deliverable_id" class="form-select"
+                                :class="{ 'is-invalid': form.errors.bond_deliverable_id }">
+                                <option value="">— Select bond deliverable —</option>
+                                <option v-for="bd in bondDeliverables" :key="bd.id" :value="bd.id">
+                                    {{ bd.code }} — {{ bd.deliverable }}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback">{{ form.errors.bond_deliverable_id }}</div>
+                            <div class="form-text">Link this indicator to a bond deliverable.</div>
                         </div>
 
                         <div class="row">
@@ -502,6 +533,13 @@ const selectedTierName = computed(() =>
                                             <span class="review-label">Type</span>
                                             <span :class="['badge', typeBadgeClass]">{{ selectedTierName }}</span>
                                         </div>
+                                        <div v-if="isBondOutput" class="review-row">
+                                            <span class="review-label">Bond Deliverable</span>
+                                            <span v-if="selectedBondDeliverable" class="badge bg-success">
+                                                {{ selectedBondDeliverable.code }}
+                                            </span>
+                                            <span v-else class="text-muted small">None selected</span>
+                                        </div>
                                         <div v-if="form.measurement_unit" class="review-row">
                                             <span class="review-label">Unit</span>
                                             <span>{{ form.measurement_unit }}</span>
@@ -614,7 +652,7 @@ const selectedTierName = computed(() =>
                             </Link>
                         </div>
                         <div>
-                            <button v-if="currentStep < 8" type="button" class="btn btn-success" @click="next">
+                            <button v-if="currentStep < 7" type="button" class="btn btn-success" @click="next">
                                 Next <i class="bi bi-arrow-right ms-1"></i>
                             </button>
                             <button v-else type="submit" class="btn btn-success" :disabled="form.processing">
@@ -691,6 +729,10 @@ const selectedTierName = computed(() =>
 
 .text-green {
     color: rgb(11, 109, 23);
+}
+
+.bond-deliverable-section {
+    background-color: rgba(11, 109, 23, 0.04);
 }
 
 /* ── Selection Cards ── */

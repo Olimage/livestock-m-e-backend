@@ -183,6 +183,12 @@ class NavigationService
             ];
 
             $programsSubmenu[] = [
+                'name'      => 'Bond Deliverables',
+                'routeName' => 'programs.bond-deliverables.index',
+                'icon'      => 'bi bi-bookmark-check',
+            ];
+
+            $programsSubmenu[] = [
                 'name'      => 'Cross-Cutting Metrics',
                 'routeName' => 'programs.cross-cutting-metrics.index',
                 'icon'      => 'bi bi-grid-3x3',

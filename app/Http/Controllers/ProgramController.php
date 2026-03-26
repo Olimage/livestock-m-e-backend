@@ -387,6 +387,7 @@ class ProgramController extends Controller
             'linkableIndicators'      => Indicator::with('indicatorTier:id,name')
                 ->whereIn('indicator_tier_id', $impactOutcomeTierIds)
                 ->orderBy('code')->get(['id', 'code', 'title', 'indicator_tier_id']),
+            'bondDeliverables'        => \App\Models\BondDeliverable::orderBy('code')->get(['id', 'code', 'deliverable']),
         ]);
     }
 
@@ -414,6 +415,7 @@ class ProgramController extends Controller
             'new_disagregation_categories.*.items.*' => 'string|max:255',
             'linked_indicator_ids'                  => 'nullable|array',
             'linked_indicator_ids.*'                => 'exists:indicators,id',
+            'bond_deliverable_id'                   => 'nullable|exists:bond_deliverables,id',
         ]);
 
         $indicator = Indicator::create($request->only([
@@ -448,6 +450,7 @@ class ProgramController extends Controller
         }
         $indicator->departments()->sync($deptSync);
         $indicator->linkedIndicators()->sync($request->linked_indicator_ids ?? []);
+        $indicator->bondDeliverables()->sync($request->bond_deliverable_id ? [$request->bond_deliverable_id] : []);
 
         return redirect()->route('programs.indicators.index')
                         ->with('success', 'Indicator created successfully');
@@ -455,21 +458,23 @@ class ProgramController extends Controller
 
     public function editIndicator(Indicator $indicator)
     {
-        $indicator->load(['indicatorTier:id,name,prefix', 'sectoralGoals', 'mainDepartment', 'supportingDepartments', 'disagregation', 'linkedIndicators']);
+        $indicator->load(['indicatorTier:id,name,prefix', 'sectoralGoals', 'mainDepartment', 'supportingDepartments', 'disagregation', 'linkedIndicators', 'bondDeliverables:id']);
 
         $impactOutcomeTierIds = IndicatorTier::whereIn('name', ['Impact', 'Outcome'])->pluck('id');
 
         return Inertia::render('Programs/Indicators/Edit', [
-            'indicator'               => $indicator,
-            'indicatorTiers'          => IndicatorTier::orderBy('name')->get(['id', 'name', 'prefix']),
-            'departments'             => Department::orderBy('name')->get(['id', 'name']),
-            'sectoralGoals'           => SectoralGoal::orderBy('code')->get(['id', 'code', 'title', 'description']),
-            'disagregationCategories' => DisagregationCategory::with('items:id,disagregation_category_id,name')
+            'indicator'                  => $indicator,
+            'currentBondDeliverableId'   => $indicator->bondDeliverables->first()?->id,
+            'indicatorTiers'             => IndicatorTier::orderBy('name')->get(['id', 'name', 'prefix']),
+            'departments'                => Department::orderBy('name')->get(['id', 'name']),
+            'sectoralGoals'              => SectoralGoal::orderBy('code')->get(['id', 'code', 'title', 'description']),
+            'disagregationCategories'    => DisagregationCategory::with('items:id,disagregation_category_id,name')
                 ->orderBy('name')->get(['id', 'name']),
-            'linkableIndicators'      => Indicator::with('indicatorTier:id,name')
+            'linkableIndicators'         => Indicator::with('indicatorTier:id,name')
                 ->whereIn('indicator_tier_id', $impactOutcomeTierIds)
                 ->where('id', '!=', $indicator->id)
                 ->orderBy('code')->get(['id', 'code', 'title', 'indicator_tier_id']),
+            'bondDeliverables'           => \App\Models\BondDeliverable::orderBy('code')->get(['id', 'code', 'deliverable']),
         ]);
     }
 
@@ -497,6 +502,7 @@ class ProgramController extends Controller
             'new_disagregation_categories.*.items.*' => 'string|max:255',
             'linked_indicator_ids'                  => 'nullable|array',
             'linked_indicator_ids.*'                => 'exists:indicators,id',
+            'bond_deliverable_id'                   => 'nullable|exists:bond_deliverables,id',
         ]);
 
         $indicator->update($request->only([
@@ -531,6 +537,7 @@ class ProgramController extends Controller
         }
         $indicator->departments()->sync($deptSync);
         $indicator->linkedIndicators()->sync($request->linked_indicator_ids ?? []);
+        $indicator->bondDeliverables()->sync($request->bond_deliverable_id ? [$request->bond_deliverable_id] : []);
 
         return redirect()->route('programs.indicators.edit', $indicator->id)
                         ->with('success', 'Indicator updated successfully');

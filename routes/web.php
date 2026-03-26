@@ -163,6 +163,14 @@ Route::middleware(['auth.web'])->group(function () {
         Route::put('/disagregations/{category}/items/{item}', [\App\Http\Controllers\ProgramController::class, 'updateDisagregationItem'])->name('disagregations.items.update');
         Route::delete('/disagregations/{category}/items/{item}', [\App\Http\Controllers\ProgramController::class, 'destroyDisagregationItem'])->name('disagregations.items.destroy');
 
+        // Bond Deliverables
+        Route::get('/bond-deliverables', [\App\Http\Controllers\BondDeliverableController::class, 'index'])->name('bond-deliverables.index');
+        Route::get('/bond-deliverables/create', [\App\Http\Controllers\BondDeliverableController::class, 'create'])->name('bond-deliverables.create');
+        Route::post('/bond-deliverables', [\App\Http\Controllers\BondDeliverableController::class, 'store'])->name('bond-deliverables.store');
+        Route::get('/bond-deliverables/{bondDeliverable}/edit', [\App\Http\Controllers\BondDeliverableController::class, 'edit'])->name('bond-deliverables.edit');
+        Route::put('/bond-deliverables/{bondDeliverable}', [\App\Http\Controllers\BondDeliverableController::class, 'update'])->name('bond-deliverables.update');
+        Route::delete('/bond-deliverables/{bondDeliverable}', [\App\Http\Controllers\BondDeliverableController::class, 'destroy'])->name('bond-deliverables.destroy');
+
         // Cross-Cutting Metrics
         Route::get('/cross-cutting-metrics', [\App\Http\Controllers\ProgramController::class, 'crossCuttingMetrics'])->name('cross-cutting-metrics.index');
         Route::get('/cross-cutting-metrics/create', [\App\Http\Controllers\ProgramController::class, 'createCrossCuttingMetric'])->name('cross-cutting-metrics.create');

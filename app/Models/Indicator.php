@@ -134,6 +134,11 @@ class Indicator extends Model
         });
     }
 
+    public function bondDeliverables()
+    {
+        return $this->belongsToMany(BondDeliverable::class, 'bond_deliverable_indicator');
+    }
+
     // Usage:
     // Indicator::withDimension('gender_of_household_head')->get();
     // Indicator::withCategory('livestock_production_system', 'pastoral')->get();

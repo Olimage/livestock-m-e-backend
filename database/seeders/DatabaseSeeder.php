@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             ProgramSeeder::class,
             CrossCuttingMetricSeeder::class,
             TierableSeeder::class,
+            BondDeliverableSeeder::class,
         ]);
     }
 }
