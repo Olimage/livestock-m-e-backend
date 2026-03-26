@@ -5,33 +5,35 @@ import BeLayout from '../../../Layouts/BeLayout.vue'
 
 const props = defineProps({
   indicators: Object,
+  indicatorTiers: Array,
   filters: Object,
-  totalCount: Number
+  totalCount: Number,
 })
 
-const search = ref(props.filters.search || '')
-const perPage = ref(props.filters.per_page || 10)
-const sortBy = ref(props.filters.sort_by || 'created_at')
-const sortOrder = ref(props.filters.sort_order || 'desc')
-const indicatorType = ref(props.filters.indicator_type || '')
-const searchTimeout = ref(null)
+const search          = ref(props.filters.search || '')
+const perPage         = ref(props.filters.per_page || 10)
+const sortBy          = ref(props.filters.sort_by || 'created_at')
+const sortOrder       = ref(props.filters.sort_order || 'desc')
+const indicatorTierId = ref(props.filters.indicator_tier_id || '')
+const searchTimeout   = ref(null)
 
-watch([search, perPage, sortBy, sortOrder, indicatorType], () => {
+watch([search, perPage, sortBy, sortOrder, indicatorTierId], () => {
   clearTimeout(searchTimeout.value)
   searchTimeout.value = setTimeout(() => {
     router.get(route('programs.indicators.index'), {
-      search: search.value,
-      per_page: perPage.value,
-      sort_by: sortBy.value,
-      sort_order: sortOrder.value,
-      indicator_type: indicatorType.value
+      search:            search.value,
+      per_page:          perPage.value,
+      sort_by:           sortBy.value,
+      sort_order:        sortOrder.value,
+      indicator_tier_id: indicatorTierId.value,
     }, { preserveState: true, preserveScroll: true })
   }, 300)
 })
 
-const typeBadge = (type) => {
+const tierBadge = (tierName) => {
+  if (!tierName) return 'bg-secondary'
   const map = { impact: 'bg-danger', outcome: 'bg-warning text-dark', output: 'bg-info text-dark' }
-  return map[type] || 'bg-secondary'
+  return map[tierName.toLowerCase()] || 'bg-primary'
 }
 
 const deleteIndicator = (id) => {
@@ -99,11 +101,9 @@ const sortIcon = (column) => {
           </div>
         </div>
         <div class="col-md-2 mb-2">
-          <select v-model="indicatorType" class="form-select">
+          <select v-model="indicatorTierId" class="form-select">
             <option value="">All Types</option>
-            <option value="output">Output</option>
-            <option value="outcome">Outcome</option>
-            <option value="impact">Impact</option>
+            <option v-for="t in indicatorTiers" :key="t.id" :value="t.id">{{ t.name }}</option>
           </select>
         </div>
         <div class="col-md-2 mb-2">
@@ -138,7 +138,6 @@ const sortIcon = (column) => {
                     </th>
                     <th>Type</th>
                     <th>Departments</th>
-                    <th>Tiers</th>
                     <th>Disaggregations</th>
                     <th @click="toggleSort('created_at')" class="sortable">
                       Created <i :class="sortIcon('created_at')"></i>
@@ -148,7 +147,7 @@ const sortIcon = (column) => {
                 </thead>
                 <tbody>
                   <tr v-if="indicators?.data && indicators.data.length === 0">
-                    <td colspan="8" class="text-center text-muted">No indicators found</td>
+                    <td colspan="7" class="text-center text-muted">No indicators found</td>
                   </tr>
                   <tr v-for="indicator in indicators?.data" :key="indicator.id">
                     <td><span class="badge bg-success">{{ indicator.code }}</span></td>
@@ -159,8 +158,8 @@ const sortIcon = (column) => {
                       </div>
                     </td>
                     <td>
-                      <span v-if="indicator.indicator_type" :class="['badge', typeBadge(indicator.indicator_type)]">
-                        {{ indicator.indicator_type }}
+                      <span v-if="indicator.indicator_tier" :class="['badge', tierBadge(indicator.indicator_tier.name)]">
+                        {{ indicator.indicator_tier.name }}
                       </span>
                       <span v-else class="text-muted">—</span>
                     </td>
@@ -175,12 +174,6 @@ const sortIcon = (column) => {
                           +{{ indicator.supporting_departments_count }}
                         </span>
                       </template>
-                      <span v-else class="text-muted small">—</span>
-                    </td>
-                    <td>
-                      <span v-if="indicator.tiers && indicator.tiers.length > 0"
-                            v-for="tier in indicator.tiers" :key="tier.id"
-                            class="badge bg-success me-1">{{ tier.tier }}</span>
                       <span v-else class="text-muted small">—</span>
                     </td>
                     <td>

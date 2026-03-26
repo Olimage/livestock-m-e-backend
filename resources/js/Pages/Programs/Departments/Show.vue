@@ -43,9 +43,10 @@ watch(indicatorQuery, (val) => {
     }, 300)
 })
 
-const indicatorTypeBadge = (type) => {
+const indicatorTypeBadge = (tierName) => {
+    if (!tierName) return 'bg-secondary'
     const map = { impact: 'bg-danger', outcome: 'bg-warning text-dark', output: 'bg-info text-dark' }
-    return map[type] || 'bg-secondary'
+    return map[tierName.toLowerCase()] || 'bg-primary'
 }
 </script>
 
@@ -125,8 +126,8 @@ const indicatorTypeBadge = (type) => {
                                                         <small>{{ indicator.title }}</small>
                                                     </td>
                                                     <td>
-                                                        <span :class="['badge', indicatorTypeBadge(indicator.indicator_type)]">
-                                                            {{ indicator.indicator_type }}
+                                                        <span :class="['badge', indicatorTypeBadge(indicator.indicator_tier?.name)]">
+                                                            {{ indicator.indicator_tier?.name || '—' }}
                                                         </span>
                                                     </td>
                                                     <td>

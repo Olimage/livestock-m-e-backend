@@ -2,8 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Helper\Slugger;
 use App\Models\Indicator;
+use App\Models\IndicatorTier;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class IndicatorSeeder extends Seeder
 {
@@ -17,162 +21,171 @@ class IndicatorSeeder extends Seeder
             return;
         }
 
-        // Skip the first two lines
+        // Skip the first two lines and the empty line after header
         fgetcsv($handle);
         fgetcsv($handle);
-
-        // Read header
         $header = fgetcsv($handle);
+        fgetcsv($handle); // empty line after header
 
-        // Skip the empty line after header
-        fgetcsv($handle);
-
-        $count = 0;
-        $errors = 0;
-
+        $rows = [];
         while (($row = fgetcsv($handle)) !== false) {
-            // Skip empty rows
             if (empty(array_filter($row))) {
                 continue;
             }
-
-            // Ensure we have the right number of columns
             if (count($row) !== count($header)) {
-                $errors++;
                 continue;
             }
+            $rows[] = $row;
+        }
+        fclose($handle);
 
+        if (empty($rows)) {
+            $this->command->warn('No rows found in CSV.');
+            return;
+        }
+
+        // Fetch all existing codes in one query
+        $existingCodes = Indicator::pluck('code')->flip();
+
+        // Pre-load indicator tiers keyed by lowercase name (e.g. 'output' => 1)
+        $tierMap = IndicatorTier::pluck('id', 'name')
+            ->mapWithKeys(fn($id, $name) => [strtolower($name) => $id]);
+
+        $defaultTierId = $tierMap['output'] ?? $tierMap->first();
+
+        // Track slugs used in this batch to ensure uniqueness
+        $existingSlugs = Indicator::pluck('slug')->flip();
+        $batchSlugs    = [];
+
+        $now    = now()->toDateTimeString();
+        $errors = 0;
+        $skipped = 0;
+        $batch  = [];
+
+        foreach ($rows as $row) {
             $data = array_combine($header, $row);
 
-            // Convert encoding to UTF-8 to handle Windows-1252 characters
+            // Convert encoding
             $data = array_map(function ($value) {
                 $value = mb_convert_encoding($value, 'UTF-8', 'Windows-1252');
-                // Clean up any invalid UTF-8 characters
-                $value = iconv('UTF-8', 'UTF-8//IGNORE', $value);
-                return $value;
+                return iconv('UTF-8', 'UTF-8//IGNORE', $value);
             }, $data);
 
-            // Skip if no code
             if (empty($data['indicator_code'])) {
                 continue;
             }
 
-            $disagg = $data['disaggregation_dimensions'] ?? null;
-            if ($disagg) {
-                // Split by newlines and bullet points
-                $disaggArray = preg_split('/[\n\r•]+/', $disagg, -1, PREG_SPLIT_NO_EMPTY);
-
-                $processed = [];
-
-                foreach ($disaggArray as $item) {
-                    $item = trim($item, " .\t\n\r\0\v");
-                    $item = iconv('UTF-8', 'UTF-8//IGNORE', $item);
-
-                    if (empty($item)) {
-                        continue;
-                    }
-
-                    // Check if item has parentheses for subitems
-                    if (preg_match('/^(.+?)\s*\(([^)]+)\)(.*)$/', $item, $matches)) {
-                        $name = trim($matches[1]);
-                        $subitemsStr = $matches[2];
-
-                        // Normalize the name: remove "By " prefix and convert to snake_case
-                        $name = preg_replace('/^by\s+/i', '', $name);
-                        $name = trim($name);
-                        $name = strtolower($name);
-                        $name = str_replace([' ', '-'], '_', $name);
-
-                        // Parse subitems
-                        $subitems = preg_split('/[,\n\r]+/', $subitemsStr, -1, PREG_SPLIT_NO_EMPTY);
-                        $subitems = array_map(function ($sub) {
-                            $sub = trim($sub, " .\t\n\r\0\v");
-                            // Remove nested parenthetical descriptions
-                            $sub = preg_replace('/\s*\([^)]*\)/i', '', $sub);
-                            $sub = strtolower(trim($sub));
-                            return trim($sub);
-                        }, $subitems);
-                        $subitems = array_filter($subitems);
-
-                        // Add as associative array element with string key
-                        $processed[$name] = array_values($subitems);
-                    } else {
-                        // No parentheses - normalize and check for splitting
-                        $name = preg_replace('/^by\s+/i', '', $item);
-                        $name = trim($name);
-
-                        // Check if name has "/" for splitting into multiple items
-                        if (strpos($name, '/') !== false) {
-                            $parts = preg_split('/\s*\/\s*/', $name, -1, PREG_SPLIT_NO_EMPTY);
-                            foreach ($parts as $part) {
-                                $part = trim($part);
-                                $part = strtolower($part);
-                                $part = str_replace([' ', '-'], '_', $part);
-                                if (!empty($part)) {
-                                    $processed[] = $part;  // Indexed element
-                                }
-                            }
-                        } else {
-                            $name = strtolower($name);
-                            $name = str_replace([' ', '-'], '_', $name);
-                            if (!empty($name)) {
-                                $processed[] = $name;  // Indexed element
-                            }
-                        }
-                    }
-                }
-
-                $disagg = !empty($processed) ? $processed : null;
-            } else {
-                $disagg = null;
+            // Skip existing records
+            if (isset($existingCodes[$data['indicator_code']])) {
+                $skipped++;
+                continue;
             }
 
-            $reportingFreq = trim($data['reporting_frequency'] ?? '');
-            if (!empty($reportingFreq)) {
-                // Remove bullet points and extra punctuation
-                $reportingFreq = str_replace('•', '', $reportingFreq);
-                $reportingFreq = rtrim($reportingFreq, '.');
+            $disagg = $this->parseDisaggregation($data['disaggregation_dimensions'] ?? null);
+            $reportingFreq = $this->parseFrequency($data['reporting_frequency'] ?? '');
 
-                // Split by forward slash or comma to create array
-                $freqArray = preg_split('/[\s\/,]+/', $reportingFreq, -1, PREG_SPLIT_NO_EMPTY);
+            $categoryKey = strtolower(trim($data['indicator_category'] ?? '') ?: 'output');
+            $tierId = $tierMap[$categoryKey] ?? $defaultTierId;
 
-                // Trim, clean, and filter each value
-                $freqArray = array_map(function ($freq) {
-                    return trim($freq, " .\t\n\r\0\v");
-                }, $freqArray);
+            $title = $data['indicator_name'] ?? '';
+            $slug = $this->generateUniqueSlug($title, $existingSlugs, $batchSlugs);
+            $batchSlugs[$slug] = true;
 
-                $freqArray = array_filter($freqArray);
-                $reportingFreq = !empty($freqArray) ? array_values($freqArray) : null;
-            } else {
-                $reportingFreq = null;
-            }
-
-            $category = trim($data['indicator_category'] ?? '');
-            $category = $category ?: 'output';
-
-            $indicatorData = [
-                'code' => $data['indicator_code'],
-                'title' => $data['indicator_name'] ?? '',
-                'description' => $data['indicator_description'] ?? '',
-                'indicator_type' => strtolower($category),
-                'measurement_unit' => $data['unit_of_measure'] ?? null,
-                'disaggregation_dimensions' => $disagg,
-                'collection_frequency' => $reportingFreq,
-                // 'baseline_value' => !empty($data['baseline_value']) ? (float) $data['baseline_value'] : null,
-                // 'baseline_year' => !empty($data['baseline_year']) ? (int) $data['baseline_year'] : null,
-                // 'target_value' => !empty($data['target_value']) ? (float) $data['target_value'] : null,
-                // 'target_year' => !empty($data['target_year']) ? (int) $data['target_year'] : null,
+            $batch[] = [
+                'uuid'                    => (string) Str::uuid(),
+                'code'                    => $data['indicator_code'],
+                'title'                   => $title,
+                'slug'                    => $slug,
+                'description'             => $data['indicator_description'] ?? '',
+                'indicator_tier_id'       => $tierId,
+                'measurement_unit'        => $data['unit_of_measure'] ?? null,
+                'disaggregation_dimensions' => $disagg ? json_encode($disagg) : null,
+                'collection_frequency'    => $reportingFreq ? json_encode($reportingFreq) : null,
+                'reporting_frequency'     => $reportingFreq ? json_encode($reportingFreq) : null,
+                'created_at'              => $now,
+                'updated_at'              => $now,
             ];
-
-            Indicator::firstOrCreate(['code' => $indicatorData['code']], $indicatorData);
-            $count++;
         }
 
-        fclose($handle);
+        // Insert in chunks to avoid query size limits
+        $count = 0;
+        foreach (array_chunk($batch, 100) as $chunk) {
+            DB::table('indicators')->insert($chunk);
+            $count += count($chunk);
+        }
 
-        $this->command->info("Indicators seeded successfully! Total: {$count}");
+        $this->command->info("Indicators seeded successfully! Inserted: {$count}, Skipped (existing): {$skipped}");
         if ($errors > 0) {
             $this->command->warn("Skipped rows with column mismatch: {$errors}");
         }
+    }
+
+    private function generateUniqueSlug(string $title, $existingSlugs, array &$batchSlugs): string
+    {
+        $base = Slugger::slugify($title, '_', true);
+        $slug = $base;
+        $i = 1;
+        while (isset($existingSlugs[$slug]) || isset($batchSlugs[$slug])) {
+            $slug = $base . '_' . $i++;
+        }
+        return $slug;
+    }
+
+    private function parseDisaggregation(?string $disagg): ?array
+    {
+        if (empty($disagg)) {
+            return null;
+        }
+
+        $disaggArray = preg_split('/[\n\r•]+/', $disagg, -1, PREG_SPLIT_NO_EMPTY);
+        $processed   = [];
+
+        foreach ($disaggArray as $item) {
+            $item = trim(iconv('UTF-8', 'UTF-8//IGNORE', $item), " .\t\n\r\0\v");
+            if (empty($item)) {
+                continue;
+            }
+
+            if (preg_match('/^(.+?)\s*\(([^)]+)\)(.*)$/', $item, $matches)) {
+                $name        = strtolower(str_replace([' ', '-'], '_', preg_replace('/^by\s+/i', '', trim($matches[1]))));
+                $subitems    = preg_split('/[,\n\r]+/', $matches[2], -1, PREG_SPLIT_NO_EMPTY);
+                $subitems    = array_values(array_filter(array_map(function ($sub) {
+                    return strtolower(trim(preg_replace('/\s*\([^)]*\)/i', '', $sub), " .\t\n\r\0\v"));
+                }, $subitems)));
+                $processed[$name] = $subitems;
+            } else {
+                $name = preg_replace('/^by\s+/i', '', $item);
+                if (strpos($name, '/') !== false) {
+                    foreach (preg_split('/\s*\/\s*/', $name, -1, PREG_SPLIT_NO_EMPTY) as $part) {
+                        $part = strtolower(str_replace([' ', '-'], '_', trim($part)));
+                        if (!empty($part)) {
+                            $processed[] = $part;
+                        }
+                    }
+                } else {
+                    $name = strtolower(str_replace([' ', '-'], '_', trim($name)));
+                    if (!empty($name)) {
+                        $processed[] = $name;
+                    }
+                }
+            }
+        }
+
+        return !empty($processed) ? $processed : null;
+    }
+
+    private function parseFrequency(string $reportingFreq): ?array
+    {
+        $reportingFreq = rtrim(str_replace('•', '', trim($reportingFreq)), '.');
+        if (empty($reportingFreq)) {
+            return null;
+        }
+
+        $freqArray = array_values(array_filter(array_map(
+            fn($f) => trim($f, " .\t\n\r\0\v"),
+            preg_split('/[\s\/,]+/', $reportingFreq, -1, PREG_SPLIT_NO_EMPTY)
+        )));
+
+        return !empty($freqArray) ? $freqArray : null;
     }
 }

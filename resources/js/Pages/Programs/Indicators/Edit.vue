@@ -5,11 +5,11 @@ import BeLayout from '../../../Layouts/BeLayout.vue'
 
 const props = defineProps({
     indicator: Object,
-    tiers: Array,
     departments: Array,
     sectoralGoals: Array,
     disagregationCategories: Array,
     linkableIndicators: Array,
+    indicatorTiers: Array,
 })
 
 const flash = computed(() => usePage().props.flash ?? {})
@@ -19,13 +19,12 @@ const currentStep = ref(1)
 const steps = [
     { number: 1, label: 'Overview',            icon: 'bi-eye' },
     { number: 2, label: 'Basic Info',          icon: 'bi-info-circle' },
-    { number: 3, label: 'Tiers',               icon: 'bi-layers' },
-    { number: 4, label: 'Sectoral Goals',      icon: 'bi-bullseye' },
-    { number: 5, label: 'Disaggregations',     icon: 'bi-funnel' },
-    { number: 6, label: 'Linked Indicator',    icon: 'bi-link-45deg' },
-    { number: 7, label: 'Main Department',     icon: 'bi-building-fill' },
-    { number: 8, label: 'Supporting Depts',    icon: 'bi-building' },
-    { number: 9, label: 'Review & Update',     icon: 'bi-check-circle' },
+    { number: 3, label: 'Sectoral Goals',      icon: 'bi-bullseye' },
+    { number: 4, label: 'Disaggregations',     icon: 'bi-funnel' },
+    { number: 5, label: 'Linked Indicator',    icon: 'bi-link-45deg' },
+    { number: 6, label: 'Main Department',     icon: 'bi-building-fill' },
+    { number: 7, label: 'Supporting Depts',    icon: 'bi-building' },
+    { number: 8, label: 'Review & Update',     icon: 'bi-check-circle' },
 ]
 
 // Normalise array-cast frequency fields to string
@@ -35,14 +34,12 @@ const form = useForm({
     code:               props.indicator.code,
     title:              props.indicator.title,
     description:        props.indicator.description || '',
-    indicator_type:     props.indicator.indicator_type || 'output',
+    indicator_tier_id:  props.indicator.indicator_tier_id || '',
     measurement_unit:   props.indicator.measurement_unit || '',
     baseline_value:     props.indicator.baseline_value,
     baseline_year:      props.indicator.baseline_year,
     collection_frequency:  toFreqString(props.indicator.collection_frequency),
     reporting_frequency:   toFreqString(props.indicator.reporting_frequency),
-    tier_ids: props.indicator.tiers
-        ? props.indicator.tiers.map(t => t.id) : [],
     sectoral_goal_ids: props.indicator.sectoral_goals
         ? props.indicator.sectoral_goals.map(g => g.id) : [],
     disagregation_item_ids: props.indicator.disagregation
@@ -76,7 +73,7 @@ const addNewCategory = () => {
 }
 const removeNewCategory = (idx) => form.new_disagregation_categories.splice(idx, 1)
 
-const next = () => { if (currentStep.value < 9) currentStep.value++ }
+const next = () => { if (currentStep.value < 8) currentStep.value++ }
 const prev = () => { if (currentStep.value > 1) currentStep.value-- }
 const goTo = (n) => { currentStep.value = n }
 
@@ -85,9 +82,6 @@ const submit = () => form.put(route('programs.indicators.update', props.indicato
 })
 
 // Review computed helpers
-const selectedTiers = computed(() =>
-    props.tiers.filter(t => form.tier_ids.includes(t.id))
-)
 const selectedGoals = computed(() =>
     props.sectoralGoals.filter(g => form.sectoral_goal_ids.includes(g.id))
 )
@@ -118,11 +112,15 @@ const selectedLinkedIndicators = computed(() =>
     (props.linkableIndicators ?? []).filter(i => form.linked_indicator_ids.includes(i.id))
 )
 
-const typeBadgeClass = computed(() => ({
-    impact:  'bg-danger',
-    outcome: 'bg-warning text-dark',
-    output:  'bg-info text-dark',
-}[form.indicator_type] || 'bg-secondary'))
+const typeBadgeClass = computed(() => {
+    const tier = props.indicatorTiers?.find(t => t.id == form.indicator_tier_id)
+    if (!tier) return 'bg-secondary'
+    const map = { impact: 'bg-danger', outcome: 'bg-warning text-dark', output: 'bg-info text-dark' }
+    return map[tier.name.toLowerCase()] || 'bg-primary'
+})
+const selectedTierName = computed(() =>
+    props.indicatorTiers?.find(t => t.id == form.indicator_tier_id)?.name || '—'
+)
 </script>
 
 <template>
@@ -162,14 +160,14 @@ const typeBadgeClass = computed(() => ({
             <div class="card-header card-header-green text-white d-flex align-items-center justify-content-between">
                 <h6 class="mb-0">
                     <i :class="['bi', steps[currentStep - 1].icon, 'me-2']"></i>
-                    Step {{ currentStep }} of 9 — {{ steps[currentStep - 1].label }}
+                    Step {{ currentStep }} of 8 — {{ steps[currentStep - 1].label }}
                 </h6>
-                <small class="opacity-75">{{ Math.round((currentStep / 9) * 100) }}% complete</small>
+                <small class="opacity-75">{{ Math.round((currentStep / 8) * 100) }}% complete</small>
             </div>
 
             <!-- Progress bar -->
             <div class="progress" style="height: 3px; border-radius: 0;">
-                <div class="progress-bar bg-success" :style="{ width: ((currentStep / 9) * 100) + '%' }"></div>
+                <div class="progress-bar bg-success" :style="{ width: ((currentStep / 8) * 100) + '%' }"></div>
             </div>
 
             <div class="card-body">
@@ -193,7 +191,7 @@ const typeBadgeClass = computed(() => ({
                                         </div>
                                         <div class="review-row">
                                             <span class="review-label">Type</span>
-                                            <span :class="['badge', typeBadgeClass]">{{ form.indicator_type }}</span>
+                                            <span :class="['badge', typeBadgeClass]">{{ selectedTierName }}</span>
                                         </div>
                                         <div v-if="form.measurement_unit" class="review-row">
                                             <span class="review-label">Unit</span>
@@ -219,16 +217,6 @@ const typeBadgeClass = computed(() => ({
                                 </div>
                             </div>
                             <div class="col-md-6 d-flex flex-column gap-3">
-                                <div class="review-card">
-                                    <div class="review-card-header">
-                                        <i class="bi bi-layers me-2"></i>Tiers
-                                        <span class="badge bg-white text-success ms-auto">{{ selectedTiers.length }}</span>
-                                    </div>
-                                    <div class="review-card-body">
-                                        <span v-if="selectedTiers.length === 0" class="text-muted small">None</span>
-                                        <span v-for="t in selectedTiers" :key="t.id" class="badge bg-success me-1 mb-1">{{ t.tier }}</span>
-                                    </div>
-                                </div>
                                 <div class="review-card">
                                     <div class="review-card-header">
                                         <i class="bi bi-bullseye me-2"></i>Sectoral Goals
@@ -278,7 +266,7 @@ const typeBadgeClass = computed(() => ({
                                         <span v-if="selectedLinkedIndicators.length === 0" class="text-muted small">None linked</span>
                                         <span v-for="ind in selectedLinkedIndicators" :key="ind.id"
                                               class="badge me-1 mb-1"
-                                              :class="ind.indicator_type === 'impact' ? 'bg-danger' : 'bg-warning text-dark'">
+                                              :class="ind.indicator_tier?.name?.toLowerCase() === 'impact' ? 'bg-danger' : 'bg-warning text-dark'">
                                             {{ ind.code }}
                                         </span>
                                     </div>
@@ -319,13 +307,12 @@ const typeBadgeClass = computed(() => ({
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Indicator Type *</label>
-                                <select v-model="form.indicator_type" class="form-select"
-                                    :class="{ 'is-invalid': form.errors.indicator_type }">
-                                    <option value="output">Output</option>
-                                    <option value="outcome">Outcome</option>
-                                    <option value="impact">Impact</option>
+                                <select v-model="form.indicator_tier_id" class="form-select"
+                                    :class="{ 'is-invalid': form.errors.indicator_tier_id }">
+                                    <option value="">— Select type —</option>
+                                    <option v-for="t in indicatorTiers" :key="t.id" :value="t.id">{{ t.name }}</option>
                                 </select>
-                                <div class="invalid-feedback">{{ form.errors.indicator_type }}</div>
+                                <div class="invalid-feedback">{{ form.errors.indicator_tier_id }}</div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Measurement Unit</label>
@@ -365,39 +352,8 @@ const typeBadgeClass = computed(() => ({
                         </div>
                     </div>
 
-                    <!-- ── Step 3: Tiers ── -->
+                    <!-- ── Step 3: Sectoral Goals ── -->
                     <div v-show="currentStep === 3">
-                        <p class="text-muted mb-3">Select the measurement tier(s) for this indicator.</p>
-                        <div v-if="props.tiers.length === 0" class="alert alert-warning">No tiers configured yet.</div>
-                        <div class="row">
-                            <div v-for="tier in props.tiers" :key="tier.id" class="col-md-6 mb-3">
-                                <label :for="`tier-${tier.id}`" class="d-block">
-                                    <div class="selection-card" :class="{ 'selected': form.tier_ids.includes(tier.id) }">
-                                        <div class="d-flex align-items-start gap-2">
-                                            <input class="form-check-input mt-1 flex-shrink-0"
-                                                   type="checkbox"
-                                                   :id="`tier-${tier.id}`"
-                                                   :value="tier.id"
-                                                   v-model="form.tier_ids" />
-                                            <div>
-                                                <div class="fw-semibold">{{ tier.tier }} — {{ tier.level }}</div>
-                                                <div class="text-muted small">{{ tier.measurement_frequency }}</div>
-                                                <div class="text-muted small">Attribution: {{ tier.attribution }}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                        <small class="text-danger">{{ form.errors.tier_ids }}</small>
-                        <div v-if="form.tier_ids.length > 0" class="mt-2 text-muted small">
-                            <i class="bi bi-check-circle-fill text-success me-1"></i>
-                            {{ form.tier_ids.length }} tier(s) selected
-                        </div>
-                    </div>
-
-                    <!-- ── Step 4: Sectoral Goals ── -->
-                    <div v-show="currentStep === 4">
                         <p class="text-muted mb-3">Select the sectoral goal(s) this indicator contributes to.</p>
                         <div v-if="props.sectoralGoals.length === 0" class="alert alert-warning">No sectoral goals configured yet.</div>
                         <div class="row">
@@ -429,8 +385,8 @@ const typeBadgeClass = computed(() => ({
                         </div>
                     </div>
 
-                    <!-- ── Step 5: Disaggregations ── -->
-                    <div v-show="currentStep === 5">
+                    <!-- ── Step 4: Disaggregations ── -->
+                    <div v-show="currentStep === 4">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <p class="text-muted mb-0">Select existing disaggregation items or create new categories.</p>
                             <button type="button" class="btn btn-sm btn-outline-success"
@@ -534,8 +490,8 @@ const typeBadgeClass = computed(() => ({
                         </div>
                     </div>
 
-                    <!-- ── Step 6: Linked Indicator ── -->
-                    <div v-show="currentStep === 6">
+                    <!-- ── Step 5: Linked Indicator ── -->
+                    <div v-show="currentStep === 5">
                         <p class="text-muted mb-3">Link this indicator to an impact or outcome indicator.</p>
                         <div class="mb-3">
                             <input v-model="linkedSearch" type="text" class="form-control"
@@ -561,8 +517,8 @@ const typeBadgeClass = computed(() => ({
                                                     {{ ind.title }}
                                                 </div>
                                                 <div class="mt-1">
-                                                    <span :class="['badge', ind.indicator_type === 'impact' ? 'bg-danger' : 'bg-warning text-dark']">
-                                                        {{ ind.indicator_type }}
+                                                    <span :class="['badge', ind.indicator_tier?.name?.toLowerCase() === 'impact' ? 'bg-danger' : 'bg-warning text-dark']">
+                                                        {{ ind.indicator_tier?.name || '—' }}
                                                     </span>
                                                 </div>
                                             </div>
@@ -578,8 +534,8 @@ const typeBadgeClass = computed(() => ({
                         </div>
                     </div>
 
-                    <!-- ── Step 7: Main Department ── -->
-                    <div v-show="currentStep === 7">
+                    <!-- ── Step 6: Main Department ── -->
+                    <div v-show="currentStep === 6">
                         <p class="text-muted mb-3">Select the primary department responsible for this indicator.</p>
                         <div v-if="props.departments.length === 0" class="alert alert-warning">No departments configured yet.</div>
                         <div class="row">
@@ -606,8 +562,8 @@ const typeBadgeClass = computed(() => ({
                         <small class="text-danger">{{ form.errors.main_department_id }}</small>
                     </div>
 
-                    <!-- ── Step 8: Supporting Departments ── -->
-                    <div v-show="currentStep === 8">
+                    <!-- ── Step 7: Supporting Departments ── -->
+                    <div v-show="currentStep === 7">
                         <p class="text-muted mb-3">
                             Select supporting (collaborating) departments.
                             <span v-if="selectedMainDept" class="badge bg-success ms-1">
@@ -617,7 +573,7 @@ const typeBadgeClass = computed(() => ({
                         <div v-if="!form.main_department_id" class="alert alert-warning">
                             <i class="bi bi-exclamation-triangle me-2"></i>
                             No main department selected. You can
-                            <button type="button" class="btn btn-link p-0 alert-link" @click="goTo(7)">go back to Step 7</button>
+                            <button type="button" class="btn btn-link p-0 alert-link" @click="goTo(6)">go back to Step 6</button>
                             to select one.
                         </div>
                         <div v-if="props.departments.filter(d => d.id != form.main_department_id).length === 0" class="alert alert-info">
@@ -648,8 +604,8 @@ const typeBadgeClass = computed(() => ({
                         </div>
                     </div>
 
-                    <!-- ── Step 9: Review & Update ── -->
-                    <div v-show="currentStep === 9">
+                    <!-- ── Step 8: Review & Update ── -->
+                    <div v-show="currentStep === 8">
                         <p class="text-muted mb-4">Review all selections before updating.</p>
 
                         <div class="row g-3">
@@ -670,7 +626,7 @@ const typeBadgeClass = computed(() => ({
                                         </div>
                                         <div class="review-row">
                                             <span class="review-label">Type</span>
-                                            <span :class="['badge', typeBadgeClass]">{{ form.indicator_type }}</span>
+                                            <span :class="['badge', typeBadgeClass]">{{ selectedTierName }}</span>
                                         </div>
                                         <div v-if="form.measurement_unit" class="review-row">
                                             <span class="review-label">Unit</span>
@@ -697,18 +653,6 @@ const typeBadgeClass = computed(() => ({
                             </div>
 
                             <div class="col-md-6 d-flex flex-column gap-3">
-                                <!-- Tiers -->
-                                <div class="review-card">
-                                    <div class="review-card-header">
-                                        <i class="bi bi-layers me-2"></i>Tiers
-                                        <span class="badge bg-white text-success ms-auto">{{ selectedTiers.length }}</span>
-                                    </div>
-                                    <div class="review-card-body">
-                                        <span v-if="selectedTiers.length === 0" class="text-muted small">None selected</span>
-                                        <span v-for="t in selectedTiers" :key="t.id" class="badge bg-success me-1 mb-1">{{ t.tier }}</span>
-                                    </div>
-                                </div>
-
                                 <!-- Sectoral Goals -->
                                 <div class="review-card">
                                     <div class="review-card-header">
@@ -754,7 +698,7 @@ const typeBadgeClass = computed(() => ({
                                         <span v-if="selectedLinkedIndicators.length === 0" class="text-muted small">None linked</span>
                                         <span v-for="ind in selectedLinkedIndicators" :key="ind.id"
                                               class="badge me-1 mb-1"
-                                              :class="ind.indicator_type === 'impact' ? 'bg-danger' : 'bg-warning text-dark'">
+                                              :class="ind.indicator_tier?.name?.toLowerCase() === 'impact' ? 'bg-danger' : 'bg-warning text-dark'">
                                             {{ ind.code }}
                                         </span>
                                     </div>

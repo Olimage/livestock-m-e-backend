@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Helper\Slugger;
 use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -18,7 +17,7 @@ class Indicator extends Model
         'title',
         'slug',
         'description',
-        'indicator_type',
+        'indicator_tier_id',
         'measurement_unit',
         'baseline_value',
         'baseline_year',
@@ -60,9 +59,9 @@ class Indicator extends Model
         });
     }
 
-    public function tiers(): MorphToMany
+    public function indicatorTier()
     {
-        return $this->morphToMany(Tier::class, 'tierable');
+        return $this->belongsTo(IndicatorTier::class);
     }
 
     public function scopeWithDimension($query, $dimension)

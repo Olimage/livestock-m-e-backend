@@ -8,6 +8,7 @@ use App\Models\NlgasPillar;
 use App\Models\Program;
 use App\Models\Tier;
 use App\Models\Indicator;
+use App\Models\IndicatorTier;
 use App\Models\CrossCuttingMetric;
 use App\Models\Department;
 use App\Models\DisagregationCategory;
@@ -33,7 +34,7 @@ class ProgramController extends Controller
         }
 
         $priorities = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
-                           ->paginate($request->per_page ?? 10);
+                           ->paginate($request->per_page ?? 10)->withQueryString();
 
         return Inertia::render('Programs/PresidentialPriorities/Index', [
             'priorities' => $priorities,
@@ -114,7 +115,7 @@ class ProgramController extends Controller
         }
 
         $goals = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
-                      ->paginate($request->per_page ?? 10);
+                      ->paginate($request->per_page ?? 10)->withQueryString();
 
         return Inertia::render('Programs/SectoralGoals/Index', [
             'goals' => $goals,
@@ -195,7 +196,7 @@ class ProgramController extends Controller
         }
 
         $pillars = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
-                        ->paginate($request->per_page ?? 10);
+                        ->paginate($request->per_page ?? 10)->withQueryString();
 
         return Inertia::render('Programs/NlgasPillars/Index', [
             'pillars' => $pillars,
@@ -279,7 +280,7 @@ class ProgramController extends Controller
         }
 
         $programs = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
-                         ->paginate($request->per_page ?? 10);
+                         ->paginate($request->per_page ?? 10)->withQueryString();
 
         return Inertia::render('Programs/Programs/Index', [
             'programs' => $programs,
@@ -343,7 +344,7 @@ class ProgramController extends Controller
     public function indicators(Request $request)
     {
         $query = Indicator::query()
-            ->with(['tiers', 'mainDepartment:id,name'])
+            ->with(['mainDepartment:id,name', 'indicatorTier:id,name,prefix'])
             ->withCount([
                 'disagregation as disagregation_count',
                 'supportingDepartments as supporting_departments_count',
@@ -358,30 +359,34 @@ class ProgramController extends Controller
             });
         }
 
-        if ($request->indicator_type) {
-            $query->where('indicator_type', $request->indicator_type);
+        if ($request->indicator_tier_id) {
+            $query->where('indicator_tier_id', $request->indicator_tier_id);
         }
 
         $indicators = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
-                           ->paginate($request->per_page ?? 10);
+                           ->paginate($request->per_page ?? 10)->withQueryString();
 
         return Inertia::render('Programs/Indicators/Index', [
-            'indicators' => $indicators,
-            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order', 'indicator_type']),
-            'totalCount' => Indicator::count()
+            'indicators'     => $indicators,
+            'indicatorTiers' => IndicatorTier::orderBy('name')->get(['id', 'name', 'prefix']),
+            'filters'        => $request->only(['search', 'per_page', 'sort_by', 'sort_order', 'indicator_tier_id']),
+            'totalCount'     => Indicator::count(),
         ]);
     }
 
     public function createIndicator()
     {
+        $impactOutcomeTierIds = IndicatorTier::whereIn('name', ['Impact', 'Outcome'])->pluck('id');
+
         return Inertia::render('Programs/Indicators/Create', [
-            'tiers'                   => Tier::all(),
+            'indicatorTiers'          => IndicatorTier::orderBy('name')->get(['id', 'name', 'prefix']),
             'departments'             => Department::orderBy('name')->get(['id', 'name']),
             'sectoralGoals'           => SectoralGoal::orderBy('code')->get(['id', 'code', 'title', 'description']),
             'disagregationCategories' => DisagregationCategory::with('items:id,disagregation_category_id,name')
                 ->orderBy('name')->get(['id', 'name']),
-            'linkableIndicators'      => Indicator::whereIn('indicator_type', ['impact', 'outcome'])
-                ->orderBy('code')->get(['id', 'code', 'title', 'indicator_type']),
+            'linkableIndicators'      => Indicator::with('indicatorTier:id,name')
+                ->whereIn('indicator_tier_id', $impactOutcomeTierIds)
+                ->orderBy('code')->get(['id', 'code', 'title', 'indicator_tier_id']),
         ]);
     }
 
@@ -391,13 +396,12 @@ class ProgramController extends Controller
             'code'                        => 'required|string|max:255|unique:indicators',
             'title'                       => 'required|string|max:255',
             'description'                 => 'nullable|string',
-            'indicator_type'              => 'required|in:outcome,output,impact',
+            'indicator_tier_id'           => 'required|exists:indicator_tiers,id',
             'measurement_unit'                      => 'nullable|string',
             'baseline_value'                        => 'nullable|numeric',
             'baseline_year'                         => 'nullable|integer',
             'collection_frequency'                  => 'nullable|string',
             'reporting_frequency'                   => 'nullable|string',
-            'tier_ids'                              => 'nullable|array',
             'sectoral_goal_ids'                     => 'nullable|array',
             'sectoral_goal_ids.*'                   => 'exists:sectoral_goals,id',
             'main_department_id'                    => 'nullable|exists:departments,id',
@@ -413,11 +417,10 @@ class ProgramController extends Controller
         ]);
 
         $indicator = Indicator::create($request->only([
-            'code', 'title', 'description', 'indicator_type', 'measurement_unit',
+            'code', 'title', 'description', 'indicator_tier_id', 'measurement_unit',
             'baseline_value', 'baseline_year', 'collection_frequency', 'reporting_frequency',
         ]));
 
-        $indicator->tiers()->sync($request->tier_ids ?? []);
         $indicator->sectoralGoals()->sync($request->sectoral_goal_ids ?? []);
 
         $newItemIds = [];
@@ -452,18 +455,21 @@ class ProgramController extends Controller
 
     public function editIndicator(Indicator $indicator)
     {
-        $indicator->load(['tiers', 'sectoralGoals', 'mainDepartment', 'supportingDepartments', 'disagregation', 'linkedIndicators']);
+        $indicator->load(['indicatorTier:id,name,prefix', 'sectoralGoals', 'mainDepartment', 'supportingDepartments', 'disagregation', 'linkedIndicators']);
+
+        $impactOutcomeTierIds = IndicatorTier::whereIn('name', ['Impact', 'Outcome'])->pluck('id');
 
         return Inertia::render('Programs/Indicators/Edit', [
             'indicator'               => $indicator,
-            'tiers'                   => Tier::all(),
+            'indicatorTiers'          => IndicatorTier::orderBy('name')->get(['id', 'name', 'prefix']),
             'departments'             => Department::orderBy('name')->get(['id', 'name']),
             'sectoralGoals'           => SectoralGoal::orderBy('code')->get(['id', 'code', 'title', 'description']),
             'disagregationCategories' => DisagregationCategory::with('items:id,disagregation_category_id,name')
                 ->orderBy('name')->get(['id', 'name']),
-            'linkableIndicators'      => Indicator::whereIn('indicator_type', ['impact', 'outcome'])
+            'linkableIndicators'      => Indicator::with('indicatorTier:id,name')
+                ->whereIn('indicator_tier_id', $impactOutcomeTierIds)
                 ->where('id', '!=', $indicator->id)
-                ->orderBy('code')->get(['id', 'code', 'title', 'indicator_type']),
+                ->orderBy('code')->get(['id', 'code', 'title', 'indicator_tier_id']),
         ]);
     }
 
@@ -473,13 +479,12 @@ class ProgramController extends Controller
             'code'                        => 'required|string|max:255|unique:indicators,code,' . $indicator->id,
             'title'                       => 'required|string|max:255',
             'description'                 => 'nullable|string',
-            'indicator_type'              => 'required|in:outcome,output,impact',
+            'indicator_tier_id'           => 'required|exists:indicator_tiers,id',
             'measurement_unit'                      => 'nullable|string',
             'baseline_value'                        => 'nullable|numeric',
             'baseline_year'                         => 'nullable|integer',
             'collection_frequency'                  => 'nullable|string',
             'reporting_frequency'                   => 'nullable|string',
-            'tier_ids'                              => 'nullable|array',
             'sectoral_goal_ids'                     => 'nullable|array',
             'sectoral_goal_ids.*'                   => 'exists:sectoral_goals,id',
             'main_department_id'                    => 'nullable|exists:departments,id',
@@ -495,11 +500,10 @@ class ProgramController extends Controller
         ]);
 
         $indicator->update($request->only([
-            'code', 'title', 'description', 'indicator_type', 'measurement_unit',
+            'code', 'title', 'description', 'indicator_tier_id', 'measurement_unit',
             'baseline_value', 'baseline_year', 'collection_frequency', 'reporting_frequency',
         ]));
 
-        $indicator->tiers()->sync($request->tier_ids ?? []);
         $indicator->sectoralGoals()->sync($request->sectoral_goal_ids ?? []);
 
         $newItemIds = [];
@@ -539,11 +543,84 @@ class ProgramController extends Controller
                         ->with('success', 'Indicator deleted successfully');
     }
 
+    // ==================== Indicator Tiers ====================
+    public function indicatorTiers(Request $request)
+    {
+        $query = IndicatorTier::withCount('indicators');
+
+        if ($request->search) {
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%")
+                  ->orWhere('prefix', 'like', "%{$request->search}%");
+            });
+        }
+
+        $tiers = $query->orderBy($request->sort_by ?? 'name', $request->sort_order ?? 'asc')
+                       ->paginate($request->per_page ?? 10)->withQueryString();
+
+        return Inertia::render('Programs/IndicatorTiers/Index', [
+            'tiers'      => $tiers,
+            'filters'    => $request->only(['search', 'per_page', 'sort_by', 'sort_order']),
+            'totalCount' => IndicatorTier::count(),
+        ]);
+    }
+
+    public function createIndicatorTier()
+    {
+        return Inertia::render('Programs/IndicatorTiers/Create');
+    }
+
+    public function storeIndicatorTier(Request $request)
+    {
+        $validated = $request->validate([
+            'name'   => 'required|string|max:255|unique:indicator_tiers,name',
+            'prefix' => 'required|string|max:20|unique:indicator_tiers,prefix',
+        ]);
+
+        IndicatorTier::create($validated);
+
+        return redirect()->route('programs.indicator-tiers.index')
+                        ->with('success', 'Indicator tier created successfully');
+    }
+
+    public function editIndicatorTier(IndicatorTier $indicatorTier)
+    {
+        return Inertia::render('Programs/IndicatorTiers/Edit', [
+            'indicatorTier' => $indicatorTier,
+        ]);
+    }
+
+    public function updateIndicatorTier(Request $request, IndicatorTier $indicatorTier)
+    {
+        $validated = $request->validate([
+            'name'   => 'required|string|max:255|unique:indicator_tiers,name,' . $indicatorTier->id,
+            'prefix' => 'required|string|max:20|unique:indicator_tiers,prefix,' . $indicatorTier->id,
+        ]);
+
+        $indicatorTier->update($validated);
+
+        return redirect()->route('programs.indicator-tiers.index')
+                        ->with('success', 'Indicator tier updated successfully');
+    }
+
+    public function destroyIndicatorTier(IndicatorTier $indicatorTier)
+    {
+        if ($indicatorTier->indicators()->exists()) {
+            return redirect()->route('programs.indicator-tiers.index')
+                            ->with('error', 'Cannot delete a tier that has indicators assigned to it.');
+        }
+
+        $indicatorTier->delete();
+
+        return redirect()->route('programs.indicator-tiers.index')
+                        ->with('success', 'Indicator tier deleted successfully');
+    }
+
     // ==================== Tiers ====================
     public function tiers(Request $request)
     {
         $query = Tier::query()
-            ->withCount(['indicators', 'sectoralGoals', 'presidentialPriorities']);
+            ->withCount(['sectoralGoals', 'presidentialPriorities']);
 
         if ($request->has('search')) {
             $search = $request->search;
@@ -555,7 +632,7 @@ class ProgramController extends Controller
         }
 
         $tiers = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
-                      ->paginate($request->per_page ?? 10);
+                      ->paginate($request->per_page ?? 10)->withQueryString();
 
         return Inertia::render('Programs/Tiers/Index', [
             'tiers' => $tiers,
@@ -629,7 +706,7 @@ class ProgramController extends Controller
         }
 
         $metrics = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
-                        ->paginate($request->per_page ?? 10);
+                        ->paginate($request->per_page ?? 10)->withQueryString();
 
         return Inertia::render('Programs/CrossCuttingMetrics/Index', [
             'metrics' => $metrics,
@@ -698,7 +775,7 @@ class ProgramController extends Controller
         }
 
         $categories = $query->orderBy($request->sort_by ?? 'name', $request->sort_order ?? 'asc')
-                            ->paginate($request->per_page ?? 15);
+                            ->paginate($request->per_page ?? 15)->withQueryString();
 
         return Inertia::render('Programs/Disagregations/Index', [
             'categories' => $categories,
@@ -804,7 +881,7 @@ class ProgramController extends Controller
 
         $baselines = $query
             ->orderBy($request->sort_by ?? 'baseline_year', $request->sort_order ?? 'desc')
-            ->paginate($request->per_page ?? 15);
+            ->paginate($request->per_page ?? 15)->withQueryString();
 
         return Inertia::render('Programs/Baselines/Index', [
             'baselines'   => $baselines,

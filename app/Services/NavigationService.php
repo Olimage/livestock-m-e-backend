@@ -171,6 +171,12 @@ class NavigationService
             ];
 
             $programsSubmenu[] = [
+                'name'      => 'Indicator Types',
+                'routeName' => 'programs.indicator-tiers.index',
+                'icon'      => 'bi bi-tags',
+            ];
+
+            $programsSubmenu[] = [
                 'name'      => 'Tiers',
                 'routeName' => 'programs.tiers.index',
                 'icon'      => 'bi bi-layers',

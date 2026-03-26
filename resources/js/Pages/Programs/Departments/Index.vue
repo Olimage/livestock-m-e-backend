@@ -9,29 +9,34 @@ const props = defineProps({
     totalCount: Number
 })
 
-const search = ref(props.filters.search || '')
-const perPage = ref(props.filters.per_page || 15)
-const sortBy = ref(props.filters.sort_by || 'name')
+const search    = ref(props.filters.search || '')
+const perPage   = ref(props.filters.per_page || 15)
+const sortBy    = ref(props.filters.sort_by || 'name')
 const sortOrder = ref(props.filters.sort_order || 'asc')
-const type = ref(props.filters.type || '')
+const type      = ref(props.filters.type || '')
+const agency    = ref(props.filters.agency || '')
 
 const searchTimeout = ref(null)
 
-watch([search, perPage, sortBy, sortOrder, type], () => {
+watch([search, perPage, sortBy, sortOrder, type, agency], () => {
     clearTimeout(searchTimeout.value)
     searchTimeout.value = setTimeout(() => {
-        router.get('/programs/departments', {
-            search: search.value,
-            per_page: perPage.value,
-            sort_by: sortBy.value,
+        router.get(route('programs.departments.index'), {
+            search:     search.value,
+            per_page:   perPage.value,
+            sort_by:    sortBy.value,
             sort_order: sortOrder.value,
-            type: type.value
-        }, {
-            preserveState: true,
-            preserveScroll: true
-        })
+            type:       type.value,
+            agency:     agency.value,
+        }, { preserveState: true, preserveScroll: true })
     }, 300)
 })
+
+const deleteDepartment = (id) => {
+    if (confirm('Delete this department?')) {
+        router.delete(route('programs.departments.destroy', id), { preserveScroll: true })
+    }
+}
 
 const toggleSort = (column) => {
     if (sortBy.value === column) {
@@ -99,12 +104,24 @@ const getSortIcon = (column) => {
                     </select>
                 </div>
                 <div class="col-md-2 mb-2">
-                    <select v-model="perPage" class="form-select">
-                        <option :value="15">15 per page</option>
-                        <option :value="25">25 per page</option>
-                        <option :value="50">50 per page</option>
-                        <option :value="100">100 per page</option>
+                    <select v-model="agency" class="form-select">
+                        <option value="">Agency: All</option>
+                        <option value="agency">Agency only</option>
+                        <option value="non-agency">Non-Agency</option>
                     </select>
+                </div>
+                <div class="col-md-1 mb-2">
+                    <select v-model="perPage" class="form-select">
+                        <option :value="15">15</option>
+                        <option :value="25">25</option>
+                        <option :value="50">50</option>
+                        <option :value="100">100</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <Link :href="route('programs.departments.create')" class="btn btn-success w-100">
+                        <i class="bi bi-plus-circle"></i> Add Department
+                    </Link>
                 </div>
             </div>
         </div>
@@ -122,6 +139,7 @@ const getSortIcon = (column) => {
                                     </th>
                                     <th>Parent</th>
                                     <th>Type</th>
+                                    <th>Agency</th>
                                     <th>Indicators</th>
                                     <th @click="toggleSort('created_at')" class="sortable">
                                         Created <i :class="getSortIcon('created_at')"></i>
@@ -131,10 +149,12 @@ const getSortIcon = (column) => {
                             </thead>
                             <tbody>
                                 <tr v-if="departments?.data && departments.data.length === 0">
-                                    <td colspan="6" class="text-center text-muted">No departments found</td>
+                                    <td colspan="7" class="text-center text-muted">No departments found</td>
                                 </tr>
                                 <tr v-for="dept in departments?.data" :key="dept.id">
-                                    <td><strong>{{ dept.name }}</strong></td>
+                                    <td>
+                                        <strong>{{ dept.name }}</strong>
+                                    </td>
                                     <td>
                                         <span v-if="dept.parent" class="text-muted small">
                                             <i class="bi bi-diagram-2 me-1"></i>{{ dept.parent.name }}
@@ -146,16 +166,33 @@ const getSortIcon = (column) => {
                                         <span v-else class="badge bg-light text-dark border">Non-Technical</span>
                                     </td>
                                     <td>
+                                        <span v-if="dept.is_agency" class="badge bg-info text-dark">
+                                            <i class="bi bi-bank me-1"></i>Agency
+                                        </span>
+                                        <span v-else class="text-muted small">—</span>
+                                    </td>
+                                    <td>
                                         <span class="badge bg-success">{{ dept.indicators_count }} indicators</span>
                                     </td>
                                     <td><small>{{ new Date(dept.created_at).toLocaleDateString() }}</small></td>
                                     <td>
                                         <div class="btn-group" role="group">
                                             <Link :href="route('programs.departments.show', dept.id)"
-                                                class="btn btn-sm btn-outline-success"
+                                                class="btn btn-sm btn-outline-secondary"
                                                 title="Manage indicators">
                                                 <i class="bi bi-diagram-3"></i>
                                             </Link>
+                                            <Link :href="route('programs.departments.edit', dept.id)"
+                                                class="btn btn-sm btn-outline-success"
+                                                title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </Link>
+                                            <button @click="deleteDepartment(dept.id)"
+                                                class="btn btn-sm btn-outline-danger"
+                                                :disabled="dept.indicators_count > 0"
+                                                :title="dept.indicators_count > 0 ? 'Cannot delete — has indicators' : 'Delete'">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>

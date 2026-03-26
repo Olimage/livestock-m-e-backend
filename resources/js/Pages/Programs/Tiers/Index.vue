@@ -68,7 +68,7 @@ const getSortIcon = (column) => {
         <div class="row mb-2">
             <div class="col-lg-12">
                 <p class="text-muted">
-                    Manage measurement tiers for indicators and frameworks. Total: <strong>{{ totalCount }}</strong>
+                    Manage measurement tiers for goals, priorities and pillars. Total: <strong>{{ totalCount }}</strong>
                 </p>
             </div>
         </div>
@@ -147,7 +147,6 @@ const getSortIcon = (column) => {
                                     <td><small>{{ tier.attribution }}</small></td>
                                     <td>
                                         <small>
-                                            <span class="badge bg-secondary me-1">{{ tier.indicators_count || 0 }} indicators</span>
                                             <span class="badge bg-secondary me-1">{{ tier.sectoral_goals_count || 0 }} goals</span>
                                             <span class="badge bg-secondary me-1">{{ tier.presidential_priorities_count || 0 }} priorities</span>
                                         </small>

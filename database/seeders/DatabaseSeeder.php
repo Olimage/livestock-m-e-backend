@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             MockDataSeeder::class,
             IndicatorTierClassificationSeeder::class,
+            IndicatorTierSeeder::class,
             StrategicAlignmentSeeder::class,
             IndicatorSeeder::class,
             DisagregationSeeder::class,

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Indicator;
 use App\Models\IndicatorForm;
+use App\Models\IndicatorTier;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -26,19 +27,25 @@ class IndicatorFormController extends Controller
 
     public function getIndicatorFormFields(Request $request)
     {
-        $query = Indicator::query();
+        $query = Indicator::query()->with('indicatorTier:id,name,prefix');
+
         if ($request->has('type')) {
-            $type = $request->get('type');
-            $query->where('indicator_type', $type);
+            $tier = IndicatorTier::where('name', $request->get('type'))
+                ->orWhere('prefix', strtoupper($request->get('type')))
+                ->first();
+            if ($tier) {
+                $query->where('indicator_tier_id', $tier->id);
+            }
         }
 
-        $indicators = $query->get(['slug', 'title', 'measurement_unit', 'code', 'indicator_type'])->map(function ($indicator) {
+        $indicators = $query->get(['id', 'slug', 'title', 'measurement_unit', 'code', 'indicator_tier_id'])->map(function ($indicator) {
             return [
-                'slug' => $indicator->slug,
-                'title' => $indicator->title,
+                'slug'             => $indicator->slug,
+                'title'            => $indicator->title,
                 'measurement_unit' => $indicator->measurement_unit,
-                'code' => $indicator->code,
-                'type' => $indicator->indicator_type,
+                'code'             => $indicator->code,
+                'type'             => $indicator->indicatorTier?->name,
+                'type_prefix'      => $indicator->indicatorTier?->prefix,
             ];
         });
 

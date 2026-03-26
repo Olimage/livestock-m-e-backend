@@ -10,11 +10,13 @@ class Department extends Model
         'name',
         'slug',
         'is_technical',
+        'is_agency',
         'parent_id'
     ];
 
-    protected $casts =[
-        'is_technical' => 'boolean'
+    protected $casts = [
+        'is_technical' => 'boolean',
+        'is_agency'    => 'boolean',
     ];
 
     public function users(){
