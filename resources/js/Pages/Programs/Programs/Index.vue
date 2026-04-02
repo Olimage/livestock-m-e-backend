@@ -6,7 +6,6 @@ import BeLayout from '../../../Layouts/BeLayout.vue'
 const props = defineProps({
     programs: Object,
     filters: Object,
-    pillars: Array,
     totalCount: Number
 })
 
@@ -14,11 +13,10 @@ const search = ref(props.filters.search || '')
 const perPage = ref(props.filters.per_page || 10)
 const sortBy = ref(props.filters.sort_by || 'created_at')
 const sortOrder = ref(props.filters.sort_order || 'desc')
-const pillarId = ref(props.filters.pillar_id || '')
 
 const searchTimeout = ref(null)
 
-watch([search, perPage, sortBy, sortOrder, pillarId], () => {
+watch([search, perPage, sortBy, sortOrder], () => {
     clearTimeout(searchTimeout.value)
     searchTimeout.value = setTimeout(() => {
         router.get('/programs/programs', {
@@ -26,7 +24,6 @@ watch([search, perPage, sortBy, sortOrder, pillarId], () => {
             per_page: perPage.value,
             sort_by: sortBy.value,
             sort_order: sortOrder.value,
-            pillar_id: pillarId.value
         }, {
             preserveState: true,
             preserveScroll: true
@@ -100,14 +97,6 @@ const getSortIcon = (column) => {
                             placeholder="Search by code or title..." />
                     </div>
                 </div>
-                <div class="col-md-3 mb-2">
-                    <select v-model="pillarId" class="form-select">
-                        <option value="">All Pillars</option>
-                        <option v-for="pillar in pillars" :key="pillar.id" :value="pillar.id">
-                            {{ pillar.code }} - {{ pillar.title }}
-                        </option>
-                    </select>
-                </div>
                 <div class="col-md-2 mb-2">
                     <select v-model="perPage" class="form-select">
                         <option :value="10">10 per page</option>
@@ -138,7 +127,6 @@ const getSortIcon = (column) => {
                                     <th @click="toggleSort('title')" class="sortable">
                                         Title <i :class="getSortIcon('title')"></i>
                                     </th>
-                                    <th>NLGAS Pillar</th>
                                     <th @click="toggleSort('created_at')" class="sortable">
                                         Created <i :class="getSortIcon('created_at')"></i>
                                     </th>
@@ -152,12 +140,6 @@ const getSortIcon = (column) => {
                                 <tr v-for="program in programs?.data" :key="program.id">
                                     <td><span class="badge bg-primary">{{ program.code }}</span></td>
                                     <td><strong>{{ program.title }}</strong></td>
-                                    <td>
-                                        <small v-if="program.nlgas_pillar">
-                                            {{ program.nlgas_pillar.code }} - {{ program.nlgas_pillar.title }}
-                                        </small>
-                                        <span v-else class="text-muted">N/A</span>
-                                    </td>
                                     <td><small>{{ new Date(program.created_at).toLocaleDateString() }}</small></td>
                                     <td>
                                         <div class="btn-group" role="group">

@@ -265,7 +265,7 @@ class ProgramController extends Controller
     // ==================== Programs ====================
     public function programs(Request $request)
     {
-        $query = Program::query()->with(['nlgasPillar']);
+        $query = Program::query();
 
         if ($request->has('search')) {
             $search = $request->search;
@@ -275,32 +275,24 @@ class ProgramController extends Controller
             });
         }
 
-        if ($request->has('pillar_id')) {
-            $query->where('nlgas_pillar_id', $request->pillar_id);
-        }
-
         $programs = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
                          ->paginate($request->per_page ?? 10)->withQueryString();
 
         return Inertia::render('Programs/Programs/Index', [
             'programs' => $programs,
-            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order', 'pillar_id']),
-            'pillars' => NlgasPillar::all(),
+            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order']),
             'totalCount' => Program::count()
         ]);
     }
 
     public function createProgram()
     {
-        return Inertia::render('Programs/Programs/Create', [
-            'pillars' => NlgasPillar::all()
-        ]);
+        return Inertia::render('Programs/Programs/Create');
     }
 
     public function storeProgram(Request $request)
     {
         $validated = $request->validate([
-            'nlgas_pillar_id' => 'required|exists:nlgas_pillars,id',
             'code' => 'required|string|max:255|unique:programs',
             'title' => 'required|string|max:255',
         ]);
@@ -314,15 +306,13 @@ class ProgramController extends Controller
     public function editProgram(Program $program)
     {
         return Inertia::render('Programs/Programs/Edit', [
-            'program' => $program->load(['nlgasPillar']),
-            'pillars' => NlgasPillar::all()
+            'program' => $program,
         ]);
     }
 
     public function updateProgram(Request $request, Program $program)
     {
         $validated = $request->validate([
-            'nlgas_pillar_id' => 'required|exists:nlgas_pillars,id',
             'code' => 'required|string|max:255|unique:programs,code,' . $program->id,
             'title' => 'required|string|max:255',
         ]);

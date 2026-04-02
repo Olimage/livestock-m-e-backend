@@ -60,6 +60,12 @@ class NavigationService
         //     ];
         // }
 
+        // Result Chain
+        $resultChainItems = self::resultChainMenu($user);
+        foreach ($resultChainItems as $rcItem) {
+            $navItems[] = $rcItem;
+        }
+
         // Programs (with submenus)
         $programsSubmenu = self::programsMenu($user);
 
@@ -133,6 +139,77 @@ class NavigationService
         return $settingsSubmenu;
 
 
+    }
+
+    public static function resultChainMenu($user)
+    {
+        if (!$user->isAdmin() && !$user->can('manage-programs')) {
+            return [];
+        }
+
+        // Return a single top-level item with a flat submenu using section headers
+        return [
+            [
+                'name'    => 'Result Chain',
+                'icon'    => 'bi bi-diagram-2',
+                'submenu' => [
+                    [
+                        'name'      => 'Inputs',
+                        'routeName' => 'result-chain.inputs.index',
+                        'icon'      => 'bi bi-box-arrow-in-down',
+                    ],
+                    ['section' => 'Activities'],
+                    [
+                        'name'      => 'Programs',
+                        'routeName' => 'programs.programs.index',
+                        'icon'      => 'bi bi-folder',
+                    ],
+                    [
+                        'name'      => 'Activities',
+                        'routeName' => 'result-chain.activities.index',
+                        'icon'      => 'bi bi-lightning',
+                    ],
+                    ['section' => 'Outputs'],
+                    [
+                        'name'      => 'Output Indicators',
+                        'routeName' => 'result-chain.output-indicators.index',
+                        'icon'      => 'bi bi-graph-up-arrow',
+                    ],
+                    [
+                        'name'      => 'Bond Output Indicators',
+                        'routeName' => 'result-chain.bond-output-indicators.index',
+                        'icon'      => 'bi bi-bookmark-check',
+                    ],
+                    [
+                        'name'      => 'Program Output Indicators',
+                        'routeName' => 'result-chain.program-output-indicators.index',
+                        'icon'      => 'bi bi-folder-check',
+                    ],
+                    ['section' => 'Outcomes'],
+                    [
+                        'name'      => 'Outcome Indicators',
+                        'routeName' => 'result-chain.outcome-indicators.index',
+                        'icon'      => 'bi bi-graph-up',
+                    ],
+                    [
+                        'name'      => 'Sectorial Goals',
+                        'routeName' => 'programs.sectoral-goals.index',
+                        'icon'      => 'bi bi-flag',
+                    ],
+                    ['section' => 'Impacts'],
+                    [
+                        'name'      => 'Impact Indicators',
+                        'routeName' => 'result-chain.impact-indicators.index',
+                        'icon'      => 'bi bi-bar-chart-line',
+                    ],
+                    [
+                        'name'      => 'Presidential Priorities',
+                        'routeName' => 'programs.presidential-priorities.index',
+                        'icon'      => 'bi bi-star',
+                    ],
+                ],
+            ],
+        ];
     }
 
     public static function programsMenu($user)

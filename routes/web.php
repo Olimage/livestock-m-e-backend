@@ -180,6 +180,63 @@ Route::middleware(['auth.web'])->group(function () {
         Route::delete('/cross-cutting-metrics/{crossCuttingMetric}', [\App\Http\Controllers\ProgramController::class, 'destroyCrossCuttingMetric'])->name('cross-cutting-metrics.destroy');
     });
 
+    // Result Chain Routes
+    Route::prefix('result-chain')->name('result-chain.')->group(function () {
+        // Inputs
+        Route::get('/inputs', [\App\Http\Controllers\ResultChainController::class, 'inputs'])->name('inputs.index');
+
+        // Activities
+        Route::get('/activities', [\App\Http\Controllers\ResultChainController::class, 'activities'])->name('activities.index');
+        Route::get('/activities/create', [\App\Http\Controllers\ResultChainController::class, 'createActivity'])->name('activities.create');
+        Route::post('/activities', [\App\Http\Controllers\ResultChainController::class, 'storeActivity'])->name('activities.store');
+        Route::get('/activities/{activity}/edit', [\App\Http\Controllers\ResultChainController::class, 'editActivity'])->name('activities.edit');
+        Route::put('/activities/{activity}', [\App\Http\Controllers\ResultChainController::class, 'updateActivity'])->name('activities.update');
+        Route::delete('/activities/{activity}', [\App\Http\Controllers\ResultChainController::class, 'destroyActivity'])->name('activities.destroy');
+
+        // Output Indicators
+        Route::get('/output-indicators', [\App\Http\Controllers\ResultChainController::class, 'outputIndicators'])->name('output-indicators.index');
+        Route::get('/output-indicators/create', [\App\Http\Controllers\ResultChainController::class, 'createOutputIndicator'])->name('output-indicators.create');
+        Route::post('/output-indicators', [\App\Http\Controllers\ResultChainController::class, 'storeOutputIndicator'])->name('output-indicators.store');
+        Route::get('/output-indicators/{outputIndicator}/edit', [\App\Http\Controllers\ResultChainController::class, 'editOutputIndicator'])->name('output-indicators.edit');
+        Route::put('/output-indicators/{outputIndicator}', [\App\Http\Controllers\ResultChainController::class, 'updateOutputIndicator'])->name('output-indicators.update');
+        Route::delete('/output-indicators/{outputIndicator}', [\App\Http\Controllers\ResultChainController::class, 'destroyOutputIndicator'])->name('output-indicators.destroy');
+
+        // Bond Output Indicators
+        Route::get('/bond-output-indicators', [\App\Http\Controllers\ResultChainController::class, 'bondOutputIndicators'])->name('bond-output-indicators.index');
+        Route::get('/bond-output-indicators/create', [\App\Http\Controllers\ResultChainController::class, 'createBondOutputIndicator'])->name('bond-output-indicators.create');
+        Route::post('/bond-output-indicators', [\App\Http\Controllers\ResultChainController::class, 'storeBondOutputIndicator'])->name('bond-output-indicators.store');
+        Route::get('/bond-output-indicators/{bondOutputIndicator}/edit', [\App\Http\Controllers\ResultChainController::class, 'editBondOutputIndicator'])->name('bond-output-indicators.edit');
+        Route::put('/bond-output-indicators/{bondOutputIndicator}', [\App\Http\Controllers\ResultChainController::class, 'updateBondOutputIndicator'])->name('bond-output-indicators.update');
+        Route::delete('/bond-output-indicators/{bondOutputIndicator}', [\App\Http\Controllers\ResultChainController::class, 'destroyBondOutputIndicator'])->name('bond-output-indicators.destroy');
+
+        // Pillar Program Output Indicators
+        Route::get('/program-output-indicators', [\App\Http\Controllers\ResultChainController::class, 'pillarProgramOutputIndicators'])->name('program-output-indicators.index');
+        Route::get('/program-output-indicators/create', [\App\Http\Controllers\ResultChainController::class, 'createPillarProgramOutputIndicator'])->name('program-output-indicators.create');
+        Route::post('/program-output-indicators', [\App\Http\Controllers\ResultChainController::class, 'storePillarProgramOutputIndicator'])->name('program-output-indicators.store');
+        Route::get('/program-output-indicators/{pillarProgramOutputIndicator}/edit', [\App\Http\Controllers\ResultChainController::class, 'editPillarProgramOutputIndicator'])->name('program-output-indicators.edit');
+        Route::put('/program-output-indicators/{pillarProgramOutputIndicator}', [\App\Http\Controllers\ResultChainController::class, 'updatePillarProgramOutputIndicator'])->name('program-output-indicators.update');
+        Route::delete('/program-output-indicators/{pillarProgramOutputIndicator}', [\App\Http\Controllers\ResultChainController::class, 'destroyPillarProgramOutputIndicator'])->name('program-output-indicators.destroy');
+
+        // Outcome Indicators
+        Route::get('/outcome-indicators', [\App\Http\Controllers\ResultChainController::class, 'outcomeIndicators'])->name('outcome-indicators.index');
+        Route::get('/outcome-indicators/create', [\App\Http\Controllers\ResultChainController::class, 'createOutcomeIndicator'])->name('outcome-indicators.create');
+        Route::post('/outcome-indicators', [\App\Http\Controllers\ResultChainController::class, 'storeOutcomeIndicator'])->name('outcome-indicators.store');
+        Route::get('/outcome-indicators/{outcomeIndicator}/edit', [\App\Http\Controllers\ResultChainController::class, 'editOutcomeIndicator'])->name('outcome-indicators.edit');
+        Route::put('/outcome-indicators/{outcomeIndicator}', [\App\Http\Controllers\ResultChainController::class, 'updateOutcomeIndicator'])->name('outcome-indicators.update');
+        Route::delete('/outcome-indicators/{outcomeIndicator}', [\App\Http\Controllers\ResultChainController::class, 'destroyOutcomeIndicator'])->name('outcome-indicators.destroy');
+
+        // Impact Indicators
+        Route::get('/impact-indicators', [\App\Http\Controllers\ResultChainController::class, 'impactIndicators'])->name('impact-indicators.index');
+        Route::get('/impact-indicators/create', [\App\Http\Controllers\ResultChainController::class, 'createImpactIndicator'])->name('impact-indicators.create');
+        Route::post('/impact-indicators', [\App\Http\Controllers\ResultChainController::class, 'storeImpactIndicator'])->name('impact-indicators.store');
+        Route::get('/impact-indicators/{impactIndicator}/edit', [\App\Http\Controllers\ResultChainController::class, 'editImpactIndicator'])->name('impact-indicators.edit');
+        Route::put('/impact-indicators/{impactIndicator}', [\App\Http\Controllers\ResultChainController::class, 'updateImpactIndicator'])->name('impact-indicators.update');
+        Route::delete('/impact-indicators/{impactIndicator}', [\App\Http\Controllers\ResultChainController::class, 'destroyImpactIndicator'])->name('impact-indicators.destroy');
+
+        // Disaggregation quick-add (JSON endpoint used by indicator forms)
+        Route::post('/disagregation-items/quick-add', [\App\Http\Controllers\ResultChainController::class, 'quickAddDisagregationItem'])->name('disagregation-items.quick-add');
+    });
+
     // Enumeration Records Routes
     Route::prefix('enumerations')->name('enumerations.')->group(function () {
         Route::get('/', [EnumerationController::class, 'index'])->name('index');

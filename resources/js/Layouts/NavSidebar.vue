@@ -47,15 +47,22 @@
                 <!-- Submenu -->
                 <transition name="submenu">
                   <ul class="submenu nav flex-column" v-show="isSubmenuOpen(item.name)">
-                    <li class="nav-item" v-for="subItem in item.submenu" :key="subItem.name">
-                      <Link :href="subItem.url || route(subItem.routeName)" 
-                            class="nav-link submenu-link" 
-                            :class="{ active: isActive(subItem.routeName) }"
-                            @click="onNavClick">
-                        <i :class="subItem.icon"></i>
-                        <span class="nav-text">{{ subItem.name }}</span>
-                      </Link>
-                    </li>
+                    <template v-for="subItem in item.submenu" :key="subItem.section || subItem.name">
+                      <!-- Section header -->
+                      <li v-if="subItem.section" class="submenu-section-header nav-text">
+                        <span>{{ subItem.section }}</span>
+                      </li>
+                      <!-- Regular submenu link -->
+                      <li v-else class="nav-item">
+                        <Link :href="subItem.url || route(subItem.routeName)"
+                              class="nav-link submenu-link"
+                              :class="{ active: isActive(subItem.routeName) }"
+                              @click="onNavClick">
+                          <i :class="subItem.icon"></i>
+                          <span class="nav-text">{{ subItem.name }}</span>
+                        </Link>
+                      </li>
+                    </template>
                   </ul>
                 </transition>
               </li>
@@ -151,8 +158,8 @@ export default {
     // Auto-open submenu if current route is a submenu item
     this.menuItems.forEach(item => {
       if (item.submenu) {
-        const hasActiveChild = item.submenu.some(subItem => 
-          this.isActive(subItem.routeName)
+        const hasActiveChild = item.submenu.some(subItem =>
+          !subItem.section && this.isActive(subItem.routeName)
         )
         if (hasActiveChild) {
           this.openSubmenus.push(item.name)
@@ -168,7 +175,7 @@ export default {
     
     isActiveParent(item) {
       if (!item.submenu) return false
-      return item.submenu.some(subItem => this.isActive(subItem.routeName))
+      return item.submenu.some(subItem => !subItem.section && this.isActive(subItem.routeName))
     },
 
     isSubmenuOpen(itemName) {
@@ -334,6 +341,19 @@ export default {
   margin-right: 0;
   font-size: 0.75rem;
   transition: transform 0.3s ease;
+}
+
+/* Section headers in submenu */
+.submenu-section-header {
+  padding: 0.5rem 1rem 0.2rem 1.5rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  pointer-events: none;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin-top: 0.25rem;
 }
 
 /* Submenu styles */
