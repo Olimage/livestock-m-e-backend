@@ -1,0 +1,10 @@
+# Use this workspace to collaborate
+workspace:
+  id: ""
+
+localResources:
+  collections:
+    - ..\FMLD NLIMS APIs.postman_collection.json
+  specs:
+    - ..\vendor\google\grpc-gcp\src\grpc_gcp.proto
+    - ..\vendor\google\gax\src\Testing\mocks.proto
