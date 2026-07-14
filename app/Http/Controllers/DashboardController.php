@@ -7,7 +7,6 @@ use App\Models\EnumerationRecord;
 use App\Models\Indicator;
 use App\Models\MokData;
 use App\Models\NlgasPillar;
-use App\Models\PresidentialPriority;
 use App\Models\SectoralGoal;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -41,7 +40,6 @@ class DashboardController extends Controller
 
         $totalDataPendingSync = EnumerationRecord::where('sync_status', EnumerationRecord::SYNC_PENDING)->count();
 
-        $TotalpresidentialPrioritiesCount = PresidentialPriority::count();
         $TotalsectoralGoalsCount = SectoralGoal::count();
         $TotalnlgasPillarsCount = NlgasPillar::count();
 
@@ -65,15 +63,6 @@ class DashboardController extends Controller
                 'badge' => 'Active'
             ],
 
-            [
-                'label' => 'Presidential Priorities',
-                'value' => $TotalpresidentialPrioritiesCount,
-                'icon' => 'bi bi-star-fill',
-                'gradient' => 'from-emerald-500 to-teal-600',
-                'bgColor' => 'bg-emerald-50',
-                'iconColor' => 'text-emerald-600',
-                'badge' => 'Active'
-            ],
             [
                 'label' => 'Sectoral Goals',
                 'value' => $TotalsectoralGoalsCount,
@@ -107,7 +96,6 @@ class DashboardController extends Controller
             ->pluck('value', 'name');
 
         $totalDataPendingSync = EnumerationRecord::where('sync_status', EnumerationRecord::SYNC_PENDING)->count();
-        $TotalpresidentialPrioritiesCount = PresidentialPriority::count();
         $TotalsectoralGoalsCount = SectoralGoal::count();
         $TotalnlgasPillarsCount = NlgasPillar::count();
 
@@ -131,15 +119,6 @@ class DashboardController extends Controller
                 'badge' => 'Active'
             ],
 
-            [
-                'label' => 'Presidential Priorities',
-                'value' => $TotalpresidentialPrioritiesCount,
-                'icon' => 'bi bi-star-fill',
-                'gradient' => 'from-emerald-500 to-teal-600',
-                'bgColor' => 'bg-emerald-50',
-                'iconColor' => 'text-emerald-600',
-                'badge' => 'Active'
-            ],
             [
                 'label' => 'Sectoral Goals',
                 'value' => $TotalsectoralGoalsCount,

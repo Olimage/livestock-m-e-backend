@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PresidentialPriority;
 use App\Models\SectoralGoal;
 use App\Models\NlgasPillar;
 use App\Models\Program;
-use App\Models\Tier;
 use App\Models\Indicator;
 use App\Models\IndicatorTier;
 use App\Models\CrossCuttingMetric;
@@ -19,91 +17,10 @@ use Inertia\Inertia;
 
 class ProgramController extends Controller
 {
-    // ==================== Presidential Priorities ====================
-    public function presidentialPriorities(Request $request)
-    {
-        $query = PresidentialPriority::query()->with(['tiers']);
-
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('code', 'like', "%{$search}%")
-                  ->orWhere('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        $priorities = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
-                           ->paginate($request->per_page ?? 10)->withQueryString();
-
-        return Inertia::render('Programs/PresidentialPriorities/Index', [
-            'priorities' => $priorities,
-            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order']),
-            'totalCount' => PresidentialPriority::count()
-        ]);
-    }
-
-    public function createPresidentialPriority()
-    {
-        return Inertia::render('Programs/PresidentialPriorities/Create', [
-            'tiers' => Tier::all()
-        ]);
-    }
-
-    public function storePresidentialPriority(Request $request)
-    {
-        $validated = $request->validate([
-            'code' => 'required|string|max:255|unique:presidential_priorities',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'tier_ids' => 'nullable|array',
-        ]);
-
-        $priority = PresidentialPriority::create($validated);
-
-        if ($request->has('tier_ids')) {
-            $priority->tiers()->attach($request->tier_ids);
-        }
-
-        return redirect()->route('programs.presidential-priorities.index')
-                        ->with('success', 'Presidential Priority created successfully');
-    }
-
-    public function editPresidentialPriority(PresidentialPriority $priority)
-    {
-        return Inertia::render('Programs/PresidentialPriorities/Edit', [
-            'priority' => $priority->load(['tiers']),
-            'tiers' => Tier::all()
-        ]);
-    }
-
-    public function updatePresidentialPriority(Request $request, PresidentialPriority $priority)
-    {
-        $validated = $request->validate([
-            'code' => 'required|string|max:255|unique:presidential_priorities,code,' . $priority->id,
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'tier_ids' => 'nullable|array',
-        ]);
-
-        $priority->update($validated);
-        $priority->tiers()->sync($request->tier_ids ?? []);
-
-        return redirect()->route('programs.presidential-priorities.index')
-                        ->with('success', 'Presidential Priority updated successfully');
-    }
-
-    public function destroyPresidentialPriority(PresidentialPriority $priority)
-    {
-        $priority->delete();
-        return redirect()->route('programs.presidential-priorities.index')
-                        ->with('success', 'Presidential Priority deleted successfully');
-    }
-
     // ==================== Sectoral Goals ====================
     public function sectoralGoals(Request $request)
     {
-        $query = SectoralGoal::query()->with(['tiers']);
+        $query = SectoralGoal::query();
 
         if ($request->has('search')) {
             $search = $request->search;
@@ -126,9 +43,7 @@ class ProgramController extends Controller
 
     public function createSectoralGoal()
     {
-        return Inertia::render('Programs/SectoralGoals/Create', [
-            'tiers' => Tier::all()
-        ]);
+        return Inertia::render('Programs/SectoralGoals/Create');
     }
 
     public function storeSectoralGoal(Request $request)
@@ -137,14 +52,9 @@ class ProgramController extends Controller
             'code' => 'required|string|max:255|unique:sectoral_goals',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'tier_ids' => 'nullable|array',
         ]);
 
-        $goal = SectoralGoal::create($validated);
-
-        if ($request->has('tier_ids')) {
-            $goal->tiers()->attach($request->tier_ids);
-        }
+        SectoralGoal::create($validated);
 
         return redirect()->route('programs.sectoral-goals.index')
                         ->with('success', 'Sectoral Goal created successfully');
@@ -153,8 +63,7 @@ class ProgramController extends Controller
     public function editSectoralGoal(SectoralGoal $goal)
     {
         return Inertia::render('Programs/SectoralGoals/Edit', [
-            'goal' => $goal->load(['tiers']),
-            'tiers' => Tier::all()
+            'goal' => $goal,
         ]);
     }
 
@@ -164,11 +73,9 @@ class ProgramController extends Controller
             'code' => 'required|string|max:255|unique:sectoral_goals,code,' . $goal->id,
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'tier_ids' => 'nullable|array',
         ]);
 
         $goal->update($validated);
-        $goal->tiers()->sync($request->tier_ids ?? []);
 
         return redirect()->route('programs.sectoral-goals.index')
                         ->with('success', 'Sectoral Goal updated successfully');
@@ -184,7 +91,7 @@ class ProgramController extends Controller
     // ==================== NLGAS Pillars ====================
     public function nlgasPillars(Request $request)
     {
-        $query = NlgasPillar::query()->with(['tiers', 'programs']);
+        $query = NlgasPillar::query()->with(['programs']);
 
         if ($request->has('search')) {
             $search = $request->search;
@@ -207,9 +114,7 @@ class ProgramController extends Controller
 
     public function createNlgasPillar()
     {
-        return Inertia::render('Programs/NlgasPillars/Create', [
-            'tiers' => Tier::all()
-        ]);
+        return Inertia::render('Programs/NlgasPillars/Create');
     }
 
     public function storeNlgasPillar(Request $request)
@@ -218,14 +123,9 @@ class ProgramController extends Controller
             'code' => 'required|string|max:255|unique:nlgas_pillars',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'tier_ids' => 'nullable|array',
         ]);
 
-        $pillar = NlgasPillar::create($validated);
-
-        if ($request->has('tier_ids')) {
-            $pillar->tiers()->attach($request->tier_ids);
-        }
+        NlgasPillar::create($validated);
 
         return redirect()->route('programs.nlgas-pillars.index')
                         ->with('success', 'NLGAS Pillar created successfully');
@@ -234,8 +134,7 @@ class ProgramController extends Controller
     public function editNlgasPillar(NlgasPillar $pillar)
     {
         return Inertia::render('Programs/NlgasPillars/Edit', [
-            'pillar' => $pillar->load(['tiers']),
-            'tiers' => Tier::all()
+            'pillar' => $pillar,
         ]);
     }
 
@@ -245,11 +144,9 @@ class ProgramController extends Controller
             'code' => 'required|string|max:255|unique:nlgas_pillars,code,' . $pillar->id,
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'tier_ids' => 'nullable|array',
         ]);
 
         $pillar->update($validated);
-        $pillar->tiers()->sync($request->tier_ids ?? []);
 
         return redirect()->route('programs.nlgas-pillars.index')
                         ->with('success', 'NLGAS Pillar updated successfully');
@@ -611,80 +508,6 @@ class ProgramController extends Controller
 
         return redirect()->route('programs.indicator-tiers.index')
                         ->with('success', 'Indicator tier deleted successfully');
-    }
-
-    // ==================== Tiers ====================
-    public function tiers(Request $request)
-    {
-        $query = Tier::query()
-            ->withCount(['sectoralGoals', 'presidentialPriorities']);
-
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('tier', 'like', "%{$search}%")
-                  ->orWhere('level', 'like', "%{$search}%")
-                  ->orWhere('attribution', 'like', "%{$search}%");
-            });
-        }
-
-        $tiers = $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
-                      ->paginate($request->per_page ?? 10)->withQueryString();
-
-        return Inertia::render('Programs/Tiers/Index', [
-            'tiers' => $tiers,
-            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order']),
-            'totalCount' => Tier::count()
-        ]);
-    }
-
-    public function createTier()
-    {
-        return Inertia::render('Programs/Tiers/Create');
-    }
-
-    public function storeTier(Request $request)
-    {
-        $validated = $request->validate([
-            'tier' => 'required|string|max:255|unique:tiers',
-            'level' => 'required|string|max:255',
-            'measurement_frequency' => 'required|string|max:255',
-            'attribution' => 'required|string|max:255',
-        ]);
-
-        Tier::create($validated);
-
-        return redirect()->route('programs.tiers.index')
-                        ->with('success', 'Tier created successfully');
-    }
-
-    public function editTier(Tier $tier)
-    {
-        return Inertia::render('Programs/Tiers/Edit', [
-            'tier' => $tier
-        ]);
-    }
-
-    public function updateTier(Request $request, Tier $tier)
-    {
-        $validated = $request->validate([
-            'tier' => 'required|string|max:255|unique:tiers,tier,' . $tier->id,
-            'level' => 'required|string|max:255',
-            'measurement_frequency' => 'required|string|max:255',
-            'attribution' => 'required|string|max:255',
-        ]);
-
-        $tier->update($validated);
-
-        return redirect()->route('programs.tiers.index')
-                        ->with('success', 'Tier updated successfully');
-    }
-
-    public function destroyTier(Tier $tier)
-    {
-        $tier->delete();
-        return redirect()->route('programs.tiers.index')
-                        ->with('success', 'Tier deleted successfully');
     }
 
     // ==================== Cross-Cutting Metrics ====================

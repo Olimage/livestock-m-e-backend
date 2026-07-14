@@ -5,14 +5,12 @@ import BeLayout from '../../../Layouts/BeLayout.vue'
 
 const props = defineProps({
     goal: Object,
-    tiers: Array,
 })
 
 const form = useForm({
     code: props.goal.code,
     title: props.goal.title,
     description: props.goal.description,
-    tier_ids: props.goal.tiers?.map(t => t.id) || [],
 })
 
 const submit = () => {
@@ -51,17 +49,6 @@ const submit = () => {
                                 <textarea v-model="form.description" class="form-control" rows="4" 
                                     placeholder="Detailed description of the goal"></textarea>
                                 <small class="text-danger">{{ form.errors.description }}</small>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Tiers</label>
-                                <select v-model="form.tier_ids" class="form-select" multiple size="5">
-                                    <option v-for="tier in props.tiers" :key="tier.id" :value="tier.id">
-                                        {{ tier.tier }} - {{ tier.level }}
-                                    </option>
-                                </select>
-                                <small class="text-muted">Hold Ctrl/Cmd to select multiple</small><br>
-                                <small class="text-danger">{{ form.errors.tier_ids }}</small>
                             </div>
 
                             <div class="d-flex gap-2 mt-4">

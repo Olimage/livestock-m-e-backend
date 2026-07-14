@@ -38,9 +38,4 @@ class ImpactIndicator extends Model
     {
         return $this->belongsToMany(DisagregationItem::class, 'impact_indicator_disaggregation', 'impact_indicator_id', 'disagregation_item_id');
     }
-
-    public function presidentialPriorities()
-    {
-        return $this->belongsToMany(PresidentialPriority::class, 'impact_indicator_presidential_priority');
-    }
 }

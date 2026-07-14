@@ -7,7 +7,6 @@ import DisagregationSelector from '../../../../Components/DisagregationSelector.
 const props = defineProps({
     departments: Array,
     disagregationCategories: Array,
-    presidentialPriorities: Array,
 })
 
 const form = useForm({
@@ -16,16 +15,10 @@ const form = useForm({
     supporting_department_ids: [],
     measurement_unit: '',
     disagregation_item_ids: [],
-    presidential_priority_ids: [],
 })
 
-const prioritySearch       = ref('')
 const supportingDeptSearch = ref('')
 
-const filteredPriorities = computed(() => {
-    const q = prioritySearch.value.toLowerCase()
-    return q ? props.presidentialPriorities.filter(p => p.code.toLowerCase().includes(q) || p.title.toLowerCase().includes(q)) : props.presidentialPriorities
-})
 const filteredSupportingDepts = computed(() => {
     const q = supportingDeptSearch.value.toLowerCase()
     const selected = form.department_id
@@ -80,31 +73,8 @@ const submit = () => form.post(route('result-chain.impact-indicators.store'))
                             </div>
 
                             <div class="row">
-                                <!-- Presidential Priorities -->
-                                <div class="col-md-4 mb-4">
-                                    <label class="form-label fw-semibold">Presidential Priorities <small class="text-muted fw-normal">(optional)</small></label>
-                                    <div class="input-group input-group-sm mb-2">
-                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                        <input v-model="prioritySearch" type="text" class="form-control" placeholder="Filter..." />
-                                    </div>
-                                    <div class="indicator-list border rounded p-2">
-                                        <div v-if="!filteredPriorities.length" class="text-muted small p-2">No priorities match.</div>
-                                        <div v-for="pp in filteredPriorities" :key="pp.id"
-                                            class="form-check py-1 px-3 indicator-item"
-                                            :class="{ selected: form.presidential_priority_ids.includes(pp.id) }">
-                                            <input class="form-check-input" type="checkbox"
-                                                :id="`pp-${pp.id}`" :value="pp.id" v-model="form.presidential_priority_ids" />
-                                            <label class="form-check-label w-100" :for="`pp-${pp.id}`">
-                                                <span class="badge badge-pp me-2">{{ pp.code }}</span>
-                                                <span class="small">{{ pp.title }}</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="text-muted small mt-1">{{ form.presidential_priority_ids.length }} selected</div>
-                                </div>
-
                                 <!-- Supporting Departments -->
-                                <div class="col-md-4 mb-4">
+                                <div class="col-md-6 mb-4">
                                     <label class="form-label fw-semibold">Supporting Departments <small class="text-muted fw-normal">(optional)</small></label>
                                     <div class="input-group input-group-sm mb-2">
                                         <span class="input-group-text"><i class="bi bi-search"></i></span>
@@ -127,7 +97,7 @@ const submit = () => form.post(route('result-chain.impact-indicators.store'))
                                 </div>
 
                                 <!-- Disaggregations -->
-                                <div class="col-md-4 mb-4">
+                                <div class="col-md-6 mb-4">
                                     <label class="form-label fw-semibold">Disaggregations</label>
                                     <DisagregationSelector
                                         v-model="form.disagregation_item_ids"
@@ -155,7 +125,6 @@ const submit = () => form.post(route('result-chain.impact-indicators.store'))
 .card-header-green { background-color: rgb(11,109,23); }
 .btn-success { background-color: rgb(11,109,23); border-color: rgb(11,109,23); }
 .btn-success:hover { background-color: rgb(9,87,18); border-color: rgb(9,87,18); }
-.badge-pp { background-color: #4a148c; color: #fff; font-size: .75rem; padding: .25em .5em; border-radius: .25rem; }
 .indicator-list { max-height: 260px; overflow-y: auto; }
 .indicator-item { border-radius: 4px; cursor: pointer; }
 .indicator-item:hover { background-color: rgba(11,109,23,.06); }

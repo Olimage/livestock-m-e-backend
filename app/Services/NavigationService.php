@@ -202,11 +202,6 @@ class NavigationService
                         'routeName' => 'result-chain.impact-indicators.index',
                         'icon'      => 'bi bi-bar-chart-line',
                     ],
-                    [
-                        'name'      => 'Presidential Priorities',
-                        'routeName' => 'programs.presidential-priorities.index',
-                        'icon'      => 'bi bi-star',
-                    ],
                 ],
             ],
         ];
@@ -218,27 +213,9 @@ class NavigationService
 
         if ($user->isAdmin() || $user->can('manage-programs')) {
             $programsSubmenu[] = [
-                'name'      => 'Presidential Priorities',
-                'routeName' => 'programs.presidential-priorities.index',
-                'icon'      => 'bi bi-star',
-            ];
-
-            $programsSubmenu[] = [
-                'name'      => 'Sectoral Goals',
-                'routeName' => 'programs.sectoral-goals.index',
-                'icon'      => 'bi bi-bullseye',
-            ];
-
-            $programsSubmenu[] = [
                 'name'      => 'NLGAS Pillars',
                 'routeName' => 'programs.nlgas-pillars.index',
                 'icon'      => 'bi bi-columns',
-            ];
-
-            $programsSubmenu[] = [
-                'name'      => 'Programs',
-                'routeName' => 'programs.programs.index',
-                'icon'      => 'bi bi-folder',
             ];
 
             $programsSubmenu[] = [
@@ -251,12 +228,6 @@ class NavigationService
                 'name'      => 'Indicator Types',
                 'routeName' => 'programs.indicator-tiers.index',
                 'icon'      => 'bi bi-tags',
-            ];
-
-            $programsSubmenu[] = [
-                'name'      => 'Tiers',
-                'routeName' => 'programs.tiers.index',
-                'icon'      => 'bi bi-layers',
             ];
 
             $programsSubmenu[] = [
