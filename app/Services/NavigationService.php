@@ -1,8 +1,8 @@
 <?php
+
 namespace App\Services;
 
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 
 class NavigationService
 {
@@ -10,7 +10,7 @@ class NavigationService
     {
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             return [];
         }
 
@@ -18,12 +18,11 @@ class NavigationService
 
         // Base navigation items available to all authenticated users
         $navItems[] = [
-            'name'      => 'Overview',
+            'name' => 'Overview',
             'routeName' => 'home',
-            'icon'      => 'bi bi-speedometer2',
+            'icon' => 'bi bi-speedometer2',
         ];
 
- 
         // Enumerations (single entry; create actions available on index page)
         // if ($user->isAdmin() || $user->can('manage-enumerations')) {
         //     $navItems[] = [
@@ -35,7 +34,7 @@ class NavigationService
 
         // Build Reports submenu based on permissions
         $reportsSubmenu = [];
-        
+
         // if ($user->isAdmin() || $user->can('view-summary-reports')) {
         //     $reportsSubmenu[] = [
         //         'name'      => 'Summary',
@@ -43,7 +42,7 @@ class NavigationService
         //         'icon'      => 'bi bi-file-text'
         //     ];
         // }
-        
+
         // if ($user->isAdmin() || $user->can('view-detailed-reports')) {
         //     $reportsSubmenu[] = [
         //         'name'      => 'Detailed',
@@ -69,24 +68,21 @@ class NavigationService
         // Programs (with submenus)
         $programsSubmenu = self::programsMenu($user);
 
-        if (!empty($programsSubmenu)) {
+        if (! empty($programsSubmenu)) {
             $navItems[] = [
-                'name'    => 'System',
-                'icon'    => 'bi bi-diagram-3',
+                'name' => 'System',
+                'icon' => 'bi bi-diagram-3',
                 'submenu' => $programsSubmenu,
             ];
         }
 
-
         // Settings (with submenus)
         $settingsSubmenu = self::settingMenu($user);
 
-    
-
-        if (!empty($settingsSubmenu)) {
+        if (! empty($settingsSubmenu)) {
             $navItems[] = [
-                'name'    => 'Settings',
-                'icon'    => 'bi bi-gear',
+                'name' => 'Settings',
+                'icon' => 'bi bi-gear',
                 'submenu' => $settingsSubmenu,
             ];
         }
@@ -94,118 +90,108 @@ class NavigationService
         return $navItems;
     }
 
+    public static function settingMenu($user)
+    {
 
-      public static function settingMenu($user){
-
-        
         $settingsSubmenu = [];
 
-           if ($user->isAdmin() || $user->can('manage-settings')) {
+        if ($user->isAdmin() || $user->can('manage-settings')) {
             $settingsSubmenu[] = [
-                'name'      => 'General',
+                'name' => 'General',
                 'routeName' => 'baseline-saved-data',
-                'icon'      => 'bi bi-sliders',
+                'icon' => 'bi bi-sliders',
             ];
         }
 
         if ($user->isAdmin() || $user->can('manage-users')) {
             $settingsSubmenu[] = [
-                'name'      => 'Users',
+                'name' => 'Users',
                 'routeName' => 'users.index',
-                'icon'      => 'bi bi-people',
+                'icon' => 'bi bi-people',
             ];
         }
 
-
         if ($user->isAdmin() || $user->can('manage-users')) {
             $settingsSubmenu[] = [
-                'name'      => 'Supervisors & Enumerators',
+                'name' => 'Supervisors & Enumerators',
                 'routeName' => 'supervisor-enumerators.index',
-                'icon'      => 'bi bi-arrow-right-circle-fill',
+                'icon' => 'bi bi-arrow-right-circle-fill',
             ];
-   
-
 
         }
 
         if ($user->isAdmin() || $user->can('manage-permissions')) {
             $settingsSubmenu[] = [
-                'name'      => 'Permissions',
+                'name' => 'Permissions',
                 'routeName' => 'baseline-saved-data',
-                'icon'      => 'bi bi-shield-lock',
+                'icon' => 'bi bi-shield-lock',
             ];
         }
 
         return $settingsSubmenu;
 
-
     }
 
     public static function resultChainMenu($user)
     {
-        if (!$user->isAdmin() && !$user->can('manage-programs')) {
+        if (! $user->isAdmin() && ! $user->can('manage-programs')) {
             return [];
         }
 
         // Return a single top-level item with a flat submenu using section headers
         return [
             [
-                'name'    => 'Result Chain',
-                'icon'    => 'bi bi-diagram-2',
+                'name' => 'Result Chain',
+                'icon' => 'bi bi-diagram-2',
                 'submenu' => [
                     [
-                        'name'      => 'Inputs',
+                        'name' => 'Inputs',
                         'routeName' => 'result-chain.inputs.index',
-                        'icon'      => 'bi bi-box-arrow-in-down',
+                        'icon' => 'bi bi-box-arrow-in-down',
                     ],
                     ['section' => 'Activities'],
                     [
-                        'name'      => 'Programs',
+                        'name' => 'Programs',
                         'routeName' => 'programs.programs.index',
-                        'icon'      => 'bi bi-folder',
+                        'icon' => 'bi bi-folder',
                     ],
                     [
-                        'name'      => 'Activities',
+                        'name' => 'Activities',
                         'routeName' => 'result-chain.activities.index',
-                        'icon'      => 'bi bi-lightning',
+                        'icon' => 'bi bi-lightning',
                     ],
                     ['section' => 'Outputs'],
                     [
-                        'name'      => 'Output Indicators',
+                        'name' => 'Output Indicators',
                         'routeName' => 'result-chain.output-indicators.index',
-                        'icon'      => 'bi bi-graph-up-arrow',
+                        'icon' => 'bi bi-graph-up-arrow',
                     ],
                     [
-                        'name'      => 'Bond Output Indicators',
+                        'name' => 'Bond Output Indicators',
                         'routeName' => 'result-chain.bond-output-indicators.index',
-                        'icon'      => 'bi bi-bookmark-check',
+                        'icon' => 'bi bi-bookmark-check',
                     ],
                     [
-                        'name'      => 'Program Output Indicators',
+                        'name' => 'Program Output Indicators',
                         'routeName' => 'result-chain.program-output-indicators.index',
-                        'icon'      => 'bi bi-folder-check',
+                        'icon' => 'bi bi-folder-check',
                     ],
                     ['section' => 'Outcomes'],
                     [
-                        'name'      => 'Outcome Indicators',
+                        'name' => 'Outcome Indicators',
                         'routeName' => 'result-chain.outcome-indicators.index',
-                        'icon'      => 'bi bi-graph-up',
+                        'icon' => 'bi bi-graph-up',
                     ],
                     [
-                        'name'      => 'Sectorial Goals',
+                        'name' => 'Sectorial Goals',
                         'routeName' => 'programs.sectoral-goals.index',
-                        'icon'      => 'bi bi-flag',
+                        'icon' => 'bi bi-flag',
                     ],
                     ['section' => 'Impacts'],
                     [
-                        'name'      => 'Impact Indicators',
+                        'name' => 'Impact Indicators',
                         'routeName' => 'result-chain.impact-indicators.index',
-                        'icon'      => 'bi bi-bar-chart-line',
-                    ],
-                    [
-                        'name'      => 'Presidential Priorities',
-                        'routeName' => 'programs.presidential-priorities.index',
-                        'icon'      => 'bi bi-star',
+                        'icon' => 'bi bi-bar-chart-line',
                     ],
                 ],
             ],
@@ -218,75 +204,39 @@ class NavigationService
 
         if ($user->isAdmin() || $user->can('manage-programs')) {
             $programsSubmenu[] = [
-                'name'      => 'Presidential Priorities',
-                'routeName' => 'programs.presidential-priorities.index',
-                'icon'      => 'bi bi-star',
-            ];
-
-            $programsSubmenu[] = [
-                'name'      => 'Sectoral Goals',
-                'routeName' => 'programs.sectoral-goals.index',
-                'icon'      => 'bi bi-bullseye',
-            ];
-
-            $programsSubmenu[] = [
-                'name'      => 'NLGAS Pillars',
+                'name' => 'NLGAS Pillars',
                 'routeName' => 'programs.nlgas-pillars.index',
-                'icon'      => 'bi bi-columns',
+                'icon' => 'bi bi-columns',
             ];
 
             $programsSubmenu[] = [
-                'name'      => 'Programs',
-                'routeName' => 'programs.programs.index',
-                'icon'      => 'bi bi-folder',
-            ];
-
-            $programsSubmenu[] = [
-                'name'      => 'Indicators',
-                'routeName' => 'programs.indicators.index',
-                'icon'      => 'bi bi-graph-up',
-            ];
-
-            $programsSubmenu[] = [
-                'name'      => 'Indicator Types',
-                'routeName' => 'programs.indicator-tiers.index',
-                'icon'      => 'bi bi-tags',
-            ];
-
-            $programsSubmenu[] = [
-                'name'      => 'Tiers',
-                'routeName' => 'programs.tiers.index',
-                'icon'      => 'bi bi-layers',
-            ];
-
-            $programsSubmenu[] = [
-                'name'      => 'Bond Deliverables',
+                'name' => 'Bond Deliverables',
                 'routeName' => 'programs.bond-deliverables.index',
-                'icon'      => 'bi bi-bookmark-check',
+                'icon' => 'bi bi-bookmark-check',
             ];
 
             $programsSubmenu[] = [
-                'name'      => 'Cross-Cutting Metrics',
+                'name' => 'Cross-Cutting Metrics',
                 'routeName' => 'programs.cross-cutting-metrics.index',
-                'icon'      => 'bi bi-grid-3x3',
+                'icon' => 'bi bi-grid-3x3',
             ];
 
             $programsSubmenu[] = [
-                'name'      => 'Disaggregations',
+                'name' => 'Disaggregations',
                 'routeName' => 'programs.disagregations.index',
-                'icon'      => 'bi bi-funnel',
+                'icon' => 'bi bi-funnel',
             ];
 
             $programsSubmenu[] = [
-                'name'      => 'Departments',
+                'name' => 'Departments',
                 'routeName' => 'programs.departments.index',
-                'icon'      => 'bi bi-building',
+                'icon' => 'bi bi-building',
             ];
 
             $programsSubmenu[] = [
-                'name'      => 'Baselines',
+                'name' => 'Baselines',
                 'routeName' => 'programs.baselines.index',
-                'icon'      => 'bi bi-bar-chart-steps',
+                'icon' => 'bi bi-bar-chart-steps',
             ];
         }
 

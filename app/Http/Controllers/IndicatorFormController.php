@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Indicator;
 use App\Models\IndicatorForm;
-use App\Models\IndicatorTier;
+use App\Support\ResultChainIndicators;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -25,44 +24,36 @@ class IndicatorFormController extends Controller
         ]);
     }
 
+    /**
+     * Return the collectable indicator fields, unioned across the Result Chain
+     * indicator types and keyed by each indicator's globally-unique code.
+     */
     public function getIndicatorFormFields(Request $request)
     {
-        $query = Indicator::query()->with('indicatorTier:id,name,prefix');
+        $type = $request->get('type'); // optional: matches a type_label (e.g. "Impact")
 
-        if ($request->has('type')) {
-            $tier = IndicatorTier::where('name', $request->get('type'))
-                ->orWhere('prefix', strtoupper($request->get('type')))
-                ->first();
-            if ($tier) {
-                $query->where('indicator_tier_id', $tier->id);
-            }
-        }
-
-        $indicators = $query->get(['id', 'slug', 'title', 'measurement_unit', 'code', 'indicator_tier_id'])->map(function ($indicator) {
-            return [
-                'slug'             => $indicator->slug,
-                'title'            => $indicator->title,
-                'measurement_unit' => $indicator->measurement_unit,
-                'code'             => $indicator->code,
-                'type'             => $indicator->indicatorTier?->name,
-                'type_prefix'      => $indicator->indicatorTier?->prefix,
-            ];
-        });
+        $data = collect(ResultChainIndicators::options())
+            ->when($type, fn ($c) => $c->filter(fn ($i) => strcasecmp($i['type_label'], $type) === 0))
+            ->map(fn ($i) => [
+                'title' => $i['title'],
+                'code' => $i['code'],
+                'measurement_unit' => $i['measurement_unit'],
+                'type' => $i['type_label'],
+                'type_prefix' => explode('-', (string) $i['code'])[0],
+            ])
+            ->values();
 
         return response()->json([
             'success' => true,
-            'data' => $indicators,
+            'data' => $data,
         ]);
     }
 
     /**
-     * Store a newly created indicator form submission.
+     * Store indicator value submissions.
      *
-     * Expected payload:
-     * {
-     *   "volume_of_livestock_products_exported_live_animals_meat_dairy_hides_skins": 1,
-     *   "number_of_jobs_created": 5
-     * }
+     * Expected payload keys are Result Chain indicator codes, e.g.:
+     * { "IMP-3": 12, "OUT-1": 5 }
      */
     public function store(Request $request)
     {
@@ -78,41 +69,17 @@ class IndicatorFormController extends Controller
                 ]);
             }
 
-            $slugs = array_keys($formData);
-            $indicators = Indicator::whereIn('slug', $slugs)->get()->keyBy('slug');
-            $foundSlugs = $indicators->keys()->toArray();
+            $byCode = collect(ResultChainIndicators::options())->keyBy('code');
 
-            $invalidSlugs = array_diff($slugs, $foundSlugs);
-            if (!empty($invalidSlugs)) {
+            $codes = array_keys($formData);
+            $invalidCodes = array_diff($codes, $byCode->keys()->all());
+            if (! empty($invalidCodes)) {
                 throw ValidationException::withMessages([
-                    'indicators' => ['Invalid indicator slug(s): ' . implode(', ', $invalidSlugs)],
+                    'indicators' => ['Invalid indicator code(s): '.implode(', ', $invalidCodes)],
                 ]);
             }
 
-            $rules = [];
-            $messages = [];
-            $attributes = [];
-
-            foreach ($slugs as $slug) {
-                $indicator = $indicators->get($slug);
-
-                $rules[$slug] = 'nullable';
-
-
-                /*
-                 * $numericUnits = ['kg', 'g', 'ml', 'l', 'count', 'number', 'percentage', '%'];
-                 * if (in_array(strtolower($indicator->measurement_unit), $numericUnits)) {
-                 *     $rules[$slug] = 'nullable|numeric';
-                 *     $messages[$slug . '.numeric'] = 'The :attribute must be a numeric value.';
-                 * }
-                 */
-
-                $attributes[$slug] = str_replace('_', ' ', $slug);
-            }
-
-            $validated = $request->validate($rules, $messages, $attributes);
-
-            $validatedData = collect($validated)->reject(function ($value) {
+            $validatedData = collect($formData)->reject(function ($value) {
                 return is_null($value) || $value === '';
             })->toArray();
 
@@ -123,29 +90,23 @@ class IndicatorFormController extends Controller
             }
 
             $submittedAt = now();
-            $createdForms = [];
+            $enrichedData = [];
 
-            foreach ($validatedData as $slug => $value) {
+            foreach ($validatedData as $code => $value) {
                 $form = IndicatorForm::create([
                     'user_id' => auth()->id(),
-                    'indicator_slug' => $slug,
+                    'indicator_code' => $code,
                     'value' => $value,
                     'submitted_at' => $submittedAt,
                 ]);
 
-                $createdForms[] = $form;
-            }
-
-            $enrichedData = [];
-            foreach ($createdForms as $form) {
-                $indicator = $indicators->get($form->indicator_slug);
-                $enrichedData[$form->indicator_slug] = [
+                $indicator = $byCode->get($code);
+                $enrichedData[$code] = [
                     'id' => $form->id,
                     'value' => $form->value,
-                    'unit' => $indicator->measurement_unit,
-                    'indicator_code' => $indicator->code,
-                    'indicator_name' => $indicator->title,
-                    'indicator_slug' => $indicator->slug,
+                    'unit' => $indicator['measurement_unit'],
+                    'indicator_code' => $code,
+                    'indicator_name' => $indicator['title'],
                 ];
             }
 
@@ -154,7 +115,7 @@ class IndicatorFormController extends Controller
                 'message' => 'Indicator form submitted successfully.',
                 'data' => [
                     'submitted_at' => $submittedAt,
-                    'count' => count($createdForms),
+                    'count' => count($enrichedData),
                     'values' => $enrichedData,
                 ],
             ], 201);
@@ -174,25 +135,13 @@ class IndicatorFormController extends Controller
     }
 
     /**
-     * Display the specified indicator form.
+     * Display the specified indicator form submission, enriched with the
+     * Result Chain indicator it references.
      */
     public function show(IndicatorForm $indicatorForm)
     {
-        // Enrich the form data with indicator details
-        $indicators = Indicator::whereIn('slug', array_keys($indicatorForm->data))->get();
-
-        $enrichedData = [];
-        foreach ($indicatorForm->data as $slug => $value) {
-            $indicator = $indicators->firstWhere('slug', $slug);
-            if ($indicator) {
-                $enrichedData[$slug] = [
-                    'value' => $value,
-                    'unit' => $indicator->measurement_unit,
-                    'indicator_code' => $indicator->code,
-                    'indicator_name' => $indicator->title,
-                ];
-            }
-        }
+        $indicator = collect(ResultChainIndicators::options())
+            ->firstWhere('code', $indicatorForm->indicator_code);
 
         return response()->json([
             'success' => true,
@@ -202,64 +151,25 @@ class IndicatorFormController extends Controller
                 'submitted_at' => $indicatorForm->submitted_at,
                 'created_at' => $indicatorForm->created_at,
                 'updated_at' => $indicatorForm->updated_at,
-                'values' => $enrichedData,
+                'value' => $indicatorForm->value,
+                'indicator_code' => $indicatorForm->indicator_code,
+                'indicator_name' => $indicator['title'] ?? null,
+                'unit' => $indicator['measurement_unit'] ?? null,
             ],
         ]);
     }
 
     /**
-     * Update the specified indicator form.
+     * Update the value of the specified indicator form submission.
      */
     public function update(Request $request, IndicatorForm $indicatorForm)
     {
-        $submitted = $request->all();
+        $data = $request->validate([
+            'value' => 'required',
+        ]);
 
-        // Remove pagination and standard request parameters
-        $excludedKeys = ['_token', '_method', 'per_page', 'page'];
-        $formData = collect($submitted)->reject(function ($value, $key) use ($excludedKeys) {
-            return in_array($key, $excludedKeys);
-        })->toArray();
-
-        if (empty($formData)) {
-            throw ValidationException::withMessages([
-                'form' => 'At least one indicator value is required.',
-            ]);
-        }
-
-        // Validate all keys are valid indicator slugs
-        $slugs = array_keys($formData);
-        $indicators = Indicator::whereIn('slug', $slugs)->get();
-        $foundSlugs = $indicators->pluck('slug')->toArray();
-
-        $invalidSlugs = array_diff($slugs, $foundSlugs);
-        if (!empty($invalidSlugs)) {
-            throw ValidationException::withMessages([
-                'indicators' => 'Invalid indicator slugs: ' . implode(', ', $invalidSlugs),
-            ]);
-        }
-
-        // Validate values
-        $errors = [];
-        foreach ($formData as $slug => $value) {
-            $indicator = $indicators->firstWhere('slug', $slug);
-
-            if (is_null($value) || $value === '') {
-                unset($formData[$slug]);
-                continue;
-            }
-
-            if (!is_numeric($value)) {
-                $errors[$slug] = "Value must be numeric (Measurement unit: {$indicator->measurement_unit})";
-            }
-        }
-
-        if (!empty($errors)) {
-            throw ValidationException::withMessages($errors);
-        }
-
-        // Update the form
         $indicatorForm->update([
-            'data' => $formData,
+            'value' => $data['value'],
             'submitted_at' => now(),
         ]);
 

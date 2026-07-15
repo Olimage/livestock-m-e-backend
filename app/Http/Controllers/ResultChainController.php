@@ -11,7 +11,6 @@ use App\Models\ImpactIndicator;
 use App\Models\OutcomeIndicator;
 use App\Models\OutputIndicator;
 use App\Models\PillarProgramOutputIndicator;
-use App\Models\PresidentialPriority;
 use App\Models\Program;
 use App\Models\SectoralGoal;
 use Illuminate\Http\Request;
@@ -375,7 +374,7 @@ class ResultChainController extends Controller
     public function impactIndicators(Request $request)
     {
         $query = ImpactIndicator::with('mainDepartment:id,name')
-            ->withCount(['outcomeIndicators', 'presidentialPriorities'])
+            ->withCount(['outcomeIndicators'])
             ->when($request->search, fn($q) => $q->where(function ($q) use ($request) {
                 $q->where('code', 'like', "%{$request->search}%")
                   ->orWhere('title', 'like', "%{$request->search}%");
@@ -396,7 +395,6 @@ class ResultChainController extends Controller
         return Inertia::render('ResultChain/Impacts/ImpactIndicators/Create', [
             'departments'             => Department::orderBy('name')->get(['id', 'name']),
             'disagregationCategories' => DisagregationCategory::with('items')->orderBy('name')->get(),
-            'presidentialPriorities'  => PresidentialPriority::orderBy('code')->get(['id', 'code', 'title']),
         ]);
     }
 
@@ -411,8 +409,6 @@ class ResultChainController extends Controller
             'measurement_unit'               => 'nullable|string|max:100',
             'disagregation_item_ids'         => 'nullable|array',
             'disagregation_item_ids.*'       => 'exists:disagregation_items,id',
-            'presidential_priority_ids'      => 'nullable|array',
-            'presidential_priority_ids.*'    => 'exists:presidential_priorities,id',
         ]);
 
         $indicator = ImpactIndicator::create([
@@ -422,7 +418,6 @@ class ResultChainController extends Controller
             'measurement_unit' => $data['measurement_unit'] ?? null,
         ]);
 
-        $indicator->presidentialPriorities()->sync($data['presidential_priority_ids'] ?? []);
         $indicator->disagregationItems()->sync($data['disagregation_item_ids'] ?? []);
         $indicator->supportingDepartments()->sync($data['supporting_department_ids'] ?? []);
 
@@ -432,16 +427,14 @@ class ResultChainController extends Controller
 
     public function editImpactIndicator(ImpactIndicator $impactIndicator)
     {
-        $impactIndicator->load(['presidentialPriorities:id', 'disagregationItems:id', 'supportingDepartments:id']);
+        $impactIndicator->load(['disagregationItems:id', 'supportingDepartments:id']);
 
         return Inertia::render('ResultChain/Impacts/ImpactIndicators/Edit', [
             'indicator'               => $impactIndicator,
-            'selectedPriorities'      => $impactIndicator->presidentialPriorities->pluck('id')->toArray(),
             'selectedDisagreg'        => $impactIndicator->disagregationItems->pluck('id')->toArray(),
             'selectedSupportingDept'  => $impactIndicator->supportingDepartments->pluck('id')->toArray(),
             'departments'             => Department::orderBy('name')->get(['id', 'name']),
             'disagregationCategories' => DisagregationCategory::with('items')->orderBy('name')->get(),
-            'presidentialPriorities'  => PresidentialPriority::orderBy('code')->get(['id', 'code', 'title']),
         ]);
     }
 
@@ -456,8 +449,6 @@ class ResultChainController extends Controller
             'measurement_unit'               => 'nullable|string|max:100',
             'disagregation_item_ids'         => 'nullable|array',
             'disagregation_item_ids.*'       => 'exists:disagregation_items,id',
-            'presidential_priority_ids'      => 'nullable|array',
-            'presidential_priority_ids.*'    => 'exists:presidential_priorities,id',
         ]);
 
         $impactIndicator->update([
@@ -467,7 +458,6 @@ class ResultChainController extends Controller
             'measurement_unit' => $data['measurement_unit'] ?? null,
         ]);
 
-        $impactIndicator->presidentialPriorities()->sync($data['presidential_priority_ids'] ?? []);
         $impactIndicator->disagregationItems()->sync($data['disagregation_item_ids'] ?? []);
         $impactIndicator->supportingDepartments()->sync($data['supporting_department_ids'] ?? []);
 
@@ -477,7 +467,6 @@ class ResultChainController extends Controller
 
     public function destroyImpactIndicator(ImpactIndicator $impactIndicator)
     {
-        $impactIndicator->presidentialPriorities()->detach();
         $impactIndicator->disagregationItems()->detach();
         $impactIndicator->outcomeIndicators()->detach();
         $impactIndicator->supportingDepartments()->detach();

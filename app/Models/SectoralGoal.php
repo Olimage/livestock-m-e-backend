@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Str;
 
 class SectoralGoal extends Model
@@ -27,10 +26,5 @@ class SectoralGoal extends Model
                 $model->uuid = (string) Str::uuid();
             }
         });
-    }
-
-    public function tiers(): MorphToMany
-    {
-        return $this->morphToMany(Tier::class, 'tierable');
     }
 }

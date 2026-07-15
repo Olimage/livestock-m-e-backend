@@ -2,7 +2,6 @@
 namespace Database\Seeders;
 
 use App\Models\NlgasPillar;
-use App\Models\PresidentialPriority;
 use App\Models\SectoralGoal;
 use App\Models\Department;
 use Illuminate\Database\Seeder;
@@ -13,39 +12,6 @@ class StrategicAlignmentSeeder extends Seeder
     {
         // Helper to fetch department IDs by slug (fallback null if missing)
         $dept = fn(string $slug) => Department::where('slug', $slug)->value('id');
-
-        // Presidential Priorities (idempotent)
-        $pp1 = PresidentialPriority::firstOrCreate([
-            'code' => 'PP1',
-        ],[
-            'title' => 'Boost Agriculture to Achieve Food Security',
-            'description' => 'Strengthen agricultural productivity and ensure national food security with livestock as a major pillar',
-      
-        ]);
-
-        $pp2 = PresidentialPriority::firstOrCreate([
-            'code' => 'PP2'
-        ],[
-            'title' => 'Reform the Economy for Sustained and Inclusive Growth',
-            'description' => 'Expand economic productivity industrialize agriculture and create inclusive jobs and income opportunities',
-
-        ]);
-
-        $pp3 = PresidentialPriority::firstOrCreate([
-            'code' => 'PP3'
-        ],[
-            'title' => 'Strengthen National Security for Peace and Prosperity',
-            'description' => 'Enhance peace security and stability especially addressing resource-related and communal conflicts',
-
-        ]);
-
-        $pp4 = PresidentialPriority::firstOrCreate([
-            'code' => 'PP4'
-        ],[
-            'title' => 'Improve Governance for Effective Service Delivery',
-            'description' => 'Institutionalize transparency accountability and performance-based public management',
-
-        ]);
 
         // Sectoral Goals
         $sg1 = SectoralGoal::firstOrCreate([

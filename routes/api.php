@@ -57,9 +57,6 @@ Route::prefix('programs')->name('programs.')->group(function () {
     Route::prefix('sectoral-goals')->name('sectoral-goals.')->group(function () {
         Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getSectoralGoals'])->name('list');
     });
-    Route::prefix('presidential-priorities')->name('presidential-priorities.')->group(function () {
-        Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getPresidentialPriorities'])->name('list');
-    });
 
 });
 

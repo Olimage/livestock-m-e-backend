@@ -11,18 +11,16 @@ const props = defineProps({
 })
 
 const search = ref(props.filters.search || '')
-const indicatorId = ref(props.filters.indicator_id || '')
 const perPage = ref(props.filters.per_page || 15)
 const sortBy = ref(props.filters.sort_by || 'baseline_year')
 const sortOrder = ref(props.filters.sort_order || 'desc')
 const searchTimeout = ref(null)
 
-watch([search, indicatorId, perPage, sortBy, sortOrder], () => {
+watch([search, perPage, sortBy, sortOrder], () => {
     clearTimeout(searchTimeout.value)
     searchTimeout.value = setTimeout(() => {
         router.get('/programs/baselines', {
             search: search.value,
-            indicator_id: indicatorId.value,
             per_page: perPage.value,
             sort_by: sortBy.value,
             sort_order: sortOrder.value
@@ -94,14 +92,6 @@ const getSortIcon = (column) => {
                             placeholder="Search by indicator code or title..." />
                     </div>
                 </div>
-                <div class="col-md-3 mb-2">
-                    <select v-model="indicatorId" class="form-select">
-                        <option value="">All Indicators</option>
-                        <option v-for="ind in indicators" :key="ind.id" :value="ind.id">
-                            [{{ ind.code }}] {{ ind.title }}
-                        </option>
-                    </select>
-                </div>
                 <div class="col-md-2 mb-2">
                     <select v-model="perPage" class="form-select">
                         <option :value="15">15 per page</option>
@@ -151,8 +141,8 @@ const getSortIcon = (column) => {
                                     </tr>
                                     <tr v-for="row in baselines?.data" :key="row.id">
                                         <td>
-                                            <span class="badge bg-success me-1">{{ row.indicator?.code }}</span>
-                                            <small>{{ row.indicator?.title }}</small>
+                                            <span class="badge bg-success me-1">{{ row.indicatorable?.code }}</span>
+                                            <small>{{ row.indicatorable?.title }}</small>
                                         </td>
                                         <td>{{ row.baseline_year ?? '—' }}</td>
                                         <td>{{ row.target_year ?? '—' }}</td>

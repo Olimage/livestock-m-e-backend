@@ -8,8 +8,8 @@ class BondDeliverable extends Model
 {
     protected $fillable = ['code', 'deliverable'];
 
-    public function indicators()
+    public function bondOutputIndicators()
     {
-        return $this->belongsToMany(Indicator::class, 'bond_deliverable_indicator');
+        return $this->belongsToMany(BondOutputIndicator::class, 'bond_deliverable_bond_output_indicator');
     }
 }

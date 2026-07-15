@@ -69,17 +69,15 @@ const si = (col) => sortBy.value !== col ? 'bi bi-arrow-down-up' : (sortOrder.va
                             <th @click="ts('title')" class="sortable">Title <i :class="si('title')"></i></th>
                             <th>Department</th>
                             <th>Outcome Links</th>
-                            <th>Priority Links</th>
                             <th>Actions</th>
                         </tr></thead>
                         <tbody>
-                            <tr v-if="!indicators?.data?.length"><td colspan="6" class="text-center text-muted py-4">No impact indicators found</td></tr>
+                            <tr v-if="!indicators?.data?.length"><td colspan="5" class="text-center text-muted py-4">No impact indicators found</td></tr>
                             <tr v-for="ind in indicators?.data" :key="ind.id">
                                 <td><span class="badge badge-imp">{{ ind.code }}</span></td>
                                 <td>{{ ind.title }}</td>
                                 <td><small>{{ ind.department?.name ?? '—' }}</small></td>
                                 <td><span class="badge bg-secondary">{{ ind.outcome_indicators_count ?? 0 }}</span></td>
-                                <td><span class="badge bg-secondary">{{ ind.presidential_priorities_count ?? 0 }}</span></td>
                                 <td>
                                     <div class="btn-group">
                                         <Link :href="route('result-chain.impact-indicators.edit', ind.id)" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></Link>
