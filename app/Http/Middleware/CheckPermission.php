@@ -1,10 +1,10 @@
 <?php
+
 namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
 
 class CheckPermission
 {
@@ -17,16 +17,8 @@ class CheckPermission
     {
         $user = Auth::user();
 
-        if (! $user->is_admin) {
-
-            $hasPermission = $user->role?->permissions()
-                ->where('permission', $permission)
-                ->exists();
-
-            if (! $hasPermission) {
-                abort(403, 'Unauthorized.');
-            }
-
+        if (! $user || ! $user->hasPermission($permission)) {
+            abort(403, 'Unauthorized.');
         }
 
         return $next($request);

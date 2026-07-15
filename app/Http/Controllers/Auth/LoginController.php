@@ -1,44 +1,43 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\RefreshToken;
 use App\Models\User;
-use App\Service\AuthService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginController extends Controller
 {
-/// for web auth
+    // / for web auth
 
-public function login(Request $request)
-{
-    $credentials = $request->validate([
-        'email'    => 'required|email',
-        'password' => 'required',
-    ]);
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-    if (Auth::guard('web')->attempt([
-        'email' => $credentials['email'],
-        'password' => $credentials['password'],
-    ], $request->boolean('remember'))) {
+        if (Auth::guard('web')->attempt([
+            'email' => $credentials['email'],
+            'password' => $credentials['password'],
+        ], $request->boolean('remember'))) {
 
-        $request->session()->regenerate();
+            $request->session()->regenerate();
 
-        return redirect()
-            ->intended(route('home'))
-            ->with('success', 'Welcome back, ' . auth()->user()->full_name . '!');
+            return redirect()
+                ->intended(route('home'))
+                ->with('success', 'Welcome back, '.auth()->user()->full_name.'!');
+        }
+
+        return back()->withErrors([
+            'message' => 'Invalid login credentials',
+        ]);
     }
-
-    return back()->withErrors([
-        'message' => 'Invalid login credentials',
-    ]);
-}
 
     /**
      * Handle logout request
@@ -57,7 +56,7 @@ public function login(Request $request)
             ->with('success', 'You have been logged out successfully.');
     }
 
-    /// for api auth
+    // / for api auth
 
     public function signIn(Request $request)
     {
@@ -65,31 +64,29 @@ public function login(Request $request)
         try {
 
             $credentials = $request->validate([
-                'email'    => 'required|email',
+                'email' => 'required|email',
                 'password' => 'required',
             ]);
 
             // Debug: Check if user exists
             $user = User::where('email', $credentials['email'])->first();
-            
-            if (!$user) {
+
+            if (! $user) {
                 return response()->json([
-                    'status'  => false,
-                    'message' => "User not found with the provided email",
-                    'error'   => 'Invalid credentials',
+                    'status' => false,
+                    'message' => 'User not found with the provided email',
+                    'error' => 'Invalid credentials',
                 ], 401);
             }
-
-
 
             $token = auth('api')->attempt($credentials);
 
             if (! $token) {
 
                 return response()->json([
-                    'status'  => false,
-                    'message' => "Invalid credentials - password mismatch",
-                    'error'   => 'Authentication failed',
+                    'status' => false,
+                    'message' => 'Invalid credentials - password mismatch',
+                    'error' => 'Authentication failed',
                 ], 401);
             }
 
@@ -99,25 +96,25 @@ public function login(Request $request)
             $refreshToken = self::generateRefreshToken($user->id);
 
             return response()->json([
-                'status'        => true,
-                'message'       => 'Login successful',
-                'token'         => $token,
+                'status' => true,
+                'message' => 'Login successful',
+                'token' => $token,
                 'refresh_token' => $refreshToken,
-                'token_type'    => 'bearer',
-                'expires_in'    => JWTAuth::factory()->getTTL() * 60,
-                'user'          => [
+                'token_type' => 'bearer',
+                'expires_in' => JWTAuth::factory()->getTTL() * 60,
+                'user' => [
                     'id' => $user->id,
                     'full_name' => $user->full_name,
                     'email' => $user->email,
-                    'role' => $user->role,
+                    'roles' => $user->roles()->pluck('slug'),
                 ],
             ], 200);
 
         } catch (\Throwable $e) {
 
             return response()->json([
-                'error'  => $e->getMessage(),
-                'trace'  => $e->getTrace(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTrace(),
                 'status' => false,
             ], 500);
         }
@@ -140,8 +137,8 @@ public function login(Request $request)
         } else {
 
             $refresh_token_details = RefreshToken::Create(
-                ['user_id'   => $userId,
-                    'token'      => $token,
+                ['user_id' => $userId,
+                    'token' => $token,
                     'expires_at' => $expiresAt,
                 ]
             );
@@ -169,7 +166,7 @@ public function login(Request $request)
         try {
             if (! auth('api')->check()) {
                 return response()->json([
-                    'status'  => false,
+                    'status' => false,
                     'message' => 'User not authenticated',
                 ], 401);
             }
@@ -179,16 +176,15 @@ public function login(Request $request)
             auth('api')->logout();
 
             return response()->json([
-                'status'  => true,
+                'status' => true,
                 'message' => 'Logged out successfully',
             ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
-                'status'  => false,
-                'message' => 'Logout failed: ' . $e->getMessage(),
+                'status' => false,
+                'message' => 'Logout failed: '.$e->getMessage(),
             ], 500);
         }
     }
-
 }

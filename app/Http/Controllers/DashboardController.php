@@ -22,7 +22,7 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->role == 'admin' || $user->role == 'super_admin') {
+        if ($user->is_admin || $user->roles()->whereIn('slug', ['admin', 'super_admin'])->exists()) {
             return $this->loadAdminDashboard();
         }
 
@@ -44,7 +44,7 @@ class DashboardController extends Controller
         $stats = [
             [
                 'label' => 'Total Users',
-                'value' => User::where('role', '!=', 'super_admin')->count(),
+                'value' => User::whereDoesntHave('roles', fn ($q) => $q->where('slug', 'super_admin'))->count(),
                 'icon' => 'bi bi-people-fill',
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
@@ -100,7 +100,7 @@ class DashboardController extends Controller
         $stats = [
             [
                 'label' => 'Total Users',
-                'value' => User::where('role', '!=', 'super_admin')->count(),
+                'value' => User::whereDoesntHave('roles', fn ($q) => $q->where('slug', 'super_admin'))->count(),
                 'icon' => 'bi bi-people-fill',
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',

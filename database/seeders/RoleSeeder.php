@@ -64,10 +64,8 @@ class RoleSeeder extends Seeder
             ],
         ];
 
-        Role::truncate();
-
         foreach ($data as $datum) {
-            Role::create($datum);
+            Role::updateOrCreate(['slug' => $datum['slug']], ['name' => $datum['name']]);
         }
     }
 }

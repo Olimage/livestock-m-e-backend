@@ -4,9 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
-
+use Symfony\Component\HttpFoundation\Response;
 
 class verifyStaff
 {
@@ -18,18 +17,16 @@ class verifyStaff
     public function handle(Request $request, Closure $next): Response
     {
 
-
         $user = Auth::user();
 
-
-        if ( $user->role != 'staff') {
+        if (! $user || ! $user->roles()->where('slug', 'staff')->exists()) {
 
             return response()->json([
-                'status'  => false,
+                'status' => false,
                 'message' => 'unauthorized',
-                'error'   => 'unauthorized',
+                'error' => 'unauthorized',
             ], 403);
-               
+
         }
 
         return $next($request);

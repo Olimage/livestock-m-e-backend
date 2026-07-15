@@ -24,7 +24,7 @@ class NavigationService
         ];
 
         // Enumerations (single entry; create actions available on index page)
-        // if ($user->isAdmin() || $user->can('manage-enumerations')) {
+        // if ($user->isAdmin() || $user->hasPermission('manage-enumerations')) {
         //     $navItems[] = [
         //         'name'      => 'Enumerations',
         //         'routeName' => 'enumerations.index',
@@ -35,7 +35,7 @@ class NavigationService
         // Build Reports submenu based on permissions
         $reportsSubmenu = [];
 
-        // if ($user->isAdmin() || $user->can('view-summary-reports')) {
+        // if ($user->isAdmin() || $user->hasPermission('view-summary-reports')) {
         //     $reportsSubmenu[] = [
         //         'name'      => 'Summary',
         //         'routeName' => 'baseline-saved-data',
@@ -43,7 +43,7 @@ class NavigationService
         //     ];
         // }
 
-        // if ($user->isAdmin() || $user->can('view-detailed-reports')) {
+        // if ($user->isAdmin() || $user->hasPermission('view-detailed-reports')) {
         //     $reportsSubmenu[] = [
         //         'name'      => 'Detailed',
         //         'routeName' => 'baseline-saved-data',
@@ -76,6 +76,11 @@ class NavigationService
             ];
         }
 
+        // Geography (with submenus)
+        foreach (self::geographyMenu($user) as $geoItem) {
+            $navItems[] = $geoItem;
+        }
+
         // Settings (with submenus)
         $settingsSubmenu = self::settingMenu($user);
 
@@ -90,20 +95,42 @@ class NavigationService
         return $navItems;
     }
 
+    public static function geographyMenu($user)
+    {
+        if (! $user->isAdmin() && ! $user->hasPermission('manage-settings')) {
+            return [];
+        }
+
+        return [[
+            'name' => 'Geography',
+            'icon' => 'bi bi-geo-alt',
+            'submenu' => [
+                ['name' => 'Zones', 'routeName' => 'zones.index', 'icon' => 'bi bi-map'],
+                ['name' => 'States', 'routeName' => 'states.index', 'icon' => 'bi bi-pin-map'],
+                ['name' => 'LGAs', 'routeName' => 'lgas.index', 'icon' => 'bi bi-geo'],
+            ],
+        ]];
+    }
+
     public static function settingMenu($user)
     {
 
         $settingsSubmenu = [];
 
-        if ($user->isAdmin() || $user->can('manage-settings')) {
+        if ($user->isAdmin() || $user->hasPermission('manage-settings')) {
             $settingsSubmenu[] = [
                 'name' => 'General',
                 'routeName' => 'baseline-saved-data',
                 'icon' => 'bi bi-sliders',
             ];
+            $settingsSubmenu[] = [
+                'name' => 'Modules',
+                'routeName' => 'modules.index',
+                'icon' => 'bi bi-grid-3x3-gap',
+            ];
         }
 
-        if ($user->isAdmin() || $user->can('manage-users')) {
+        if ($user->isAdmin() || $user->hasPermission('manage-users')) {
             $settingsSubmenu[] = [
                 'name' => 'Users',
                 'routeName' => 'users.index',
@@ -111,7 +138,7 @@ class NavigationService
             ];
         }
 
-        if ($user->isAdmin() || $user->can('manage-users')) {
+        if ($user->isAdmin() || $user->hasPermission('manage-users')) {
             $settingsSubmenu[] = [
                 'name' => 'Supervisors & Enumerators',
                 'routeName' => 'supervisor-enumerators.index',
@@ -120,10 +147,15 @@ class NavigationService
 
         }
 
-        if ($user->isAdmin() || $user->can('manage-permissions')) {
+        if ($user->isAdmin() || $user->hasPermission('manage-permissions')) {
+            $settingsSubmenu[] = [
+                'name' => 'Roles',
+                'routeName' => 'roles.index',
+                'icon' => 'bi bi-person-badge',
+            ];
             $settingsSubmenu[] = [
                 'name' => 'Permissions',
-                'routeName' => 'baseline-saved-data',
+                'routeName' => 'permissions.index',
                 'icon' => 'bi bi-shield-lock',
             ];
         }
@@ -134,7 +166,7 @@ class NavigationService
 
     public static function resultChainMenu($user)
     {
-        if (! $user->isAdmin() && ! $user->can('manage-programs')) {
+        if (! $user->isAdmin() && ! $user->hasPermission('manage-programs')) {
             return [];
         }
 
@@ -202,7 +234,7 @@ class NavigationService
     {
         $programsSubmenu = [];
 
-        if ($user->isAdmin() || $user->can('manage-programs')) {
+        if ($user->isAdmin() || $user->hasPermission('manage-programs')) {
             $programsSubmenu[] = [
                 'name' => 'NLGAS Pillars',
                 'routeName' => 'programs.nlgas-pillars.index',

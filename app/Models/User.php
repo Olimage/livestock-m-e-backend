@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use App\Traits\HasPermissions;
@@ -11,7 +12,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, SoftDeletes, HasPermissions;
+    use HasFactory, HasPermissions, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'full_name',
@@ -19,8 +20,6 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'uuid',
         'is_admin',
-        'role'
-
     ];
 
     /**
@@ -37,7 +36,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     protected $casts = [
-         'is_admin' => 'boolean',
+        'is_admin' => 'boolean',
     ];
 
     /**
@@ -52,8 +51,6 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
-
-    
     protected static function boot()
     {
         parent::boot();
@@ -86,7 +83,8 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Session::class);
     }
 
-    public function department(){
+    public function department()
+    {
 
         return $this->hasMany(Department::class);
     }
@@ -99,22 +97,26 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Department::class, 'user_departments', 'user_id', 'department_id');
     }
 
- public function permissions()
-{
-    return $this->belongsToMany(Permission::class, 'user_permissions', 'user_id', 'permission_id');
-}
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'user_permissions', 'user_id', 'permission_id');
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_role');
+    }
 
     /**
      * Check if user has a specific permission
      */
     public function hasPermission(string $permission): bool
     {
-
         if ($this->is_admin) {
             return true;
         }
 
-        return $this->permissions()->where('permission', $permission)->exists();
+        return in_array($permission, $this->allPermissionKeys(), true);
     }
 
     /**
@@ -125,7 +127,8 @@ class User extends Authenticatable implements JWTSubject
         if ($this->is_admin) {
             return true;
         }
-        return $this->permissions()->whereIn('permission', $permissions)->exists();
+
+        return count(array_intersect($permissions, $this->allPermissionKeys())) > 0;
     }
 
     /**
@@ -133,11 +136,11 @@ class User extends Authenticatable implements JWTSubject
      */
     public function hasAllPermissions(array $permissions): bool
     {
-
         if ($this->is_admin) {
             return true;
         }
-        return $this->permissions()->whereIn('permission', $permissions)->count() === count($permissions);
+
+        return count(array_intersect($permissions, $this->allPermissionKeys())) === count($permissions);
     }
 
     /**
@@ -145,16 +148,33 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getPermissionNames(): array
     {
-
         if ($this->is_admin) {
             // Return all available permissions for admins
             return \App\Models\Permission::pluck('permission')->toArray();
         }
 
-        return $this->permissions()->pluck('permission')->toArray();
+        return $this->allPermissionKeys();
     }
 
-      /**
+    /**
+     * Union of role-granted and directly-granted permission keys.
+     *
+     * @return array<int, string>
+     */
+    private function allPermissionKeys(): array
+    {
+        $roleKeys = $this->roles()
+            ->with('permissions:id,permission')
+            ->get()
+            ->flatMap(fn ($r) => $r->permissions->pluck('permission'))
+            ->all();
+
+        $directKeys = $this->permissions()->pluck('permission')->all();
+
+        return array_values(array_unique(array_merge($roleKeys, $directKeys)));
+    }
+
+    /**
      * Check if user is admin
      */
     public function isAdmin(): bool
@@ -201,5 +221,4 @@ class User extends Authenticatable implements JWTSubject
             ->limit($limit)
             ->get();
     }
-
 }

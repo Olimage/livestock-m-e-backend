@@ -14,7 +14,7 @@ class SupervisorEnumeratorController extends Controller
     public function webIndex()
     {
         // Get supervisors with their enumerators
-        $supervisors = User::where('role', 'supervisor')
+        $supervisors = User::whereHas('roles', fn ($q) => $q->where('slug', 'supervisor'))
             ->with(['enumerators' => function ($query) {
                 $query->select('users.id', 'users.full_name', 'users.email');
             }])
@@ -31,14 +31,14 @@ class SupervisorEnumeratorController extends Controller
                             'full_name' => $enumerator->full_name,
                             'email' => $enumerator->email,
                         ];
-                    })->values()->all()
+                    })->values()->all(),
                 ];
             })
             ->values()
             ->all();
 
         // Get available enumerators (not assigned to any supervisor)
-        $availableEnumerators = User::where('role', 'enumerator')
+        $availableEnumerators = User::whereHas('roles', fn ($q) => $q->where('slug', 'enumerator'))
             ->whereDoesntHave('supervisor')
             ->select('id', 'full_name', 'email')
             ->get()
@@ -60,8 +60,8 @@ class SupervisorEnumeratorController extends Controller
 
     public function webCreate()
     {
-        $supervisors = User::where('role', 'supervisor')->get();
-        $enumerators = User::where('role', 'enumerator')->get();
+        $supervisors = User::whereHas('roles', fn ($q) => $q->where('slug', 'supervisor'))->get();
+        $enumerators = User::whereHas('roles', fn ($q) => $q->where('slug', 'enumerator'))->get();
 
         return Inertia::render('SupervisorEnumerator/Create', [
             'supervisors' => $supervisors,
@@ -104,7 +104,7 @@ class SupervisorEnumeratorController extends Controller
 
             // Verify the supervisor role
             $supervisor = User::findOrFail($data['supervisor_id']);
-            if ($supervisor->role !== 'supervisor') {
+            if (! $supervisor->roles()->where('slug', 'supervisor')->exists()) {
                 throw ValidationException::withMessages([
                     'supervisor_id' => ['Selected user is not a supervisor'],
                 ]);
@@ -113,10 +113,10 @@ class SupervisorEnumeratorController extends Controller
             // Load enumerators and verify roles
             $enumerators = User::whereIn('id', $data['enumerator_ids'])->get();
             $invalid = $enumerators->filter(function ($u) {
-                return $u->role !== 'enumerator';
+                return ! $u->roles()->where('slug', 'enumerator')->exists();
             })->pluck('id')->all();
 
-            if (!empty($invalid)) {
+            if (! empty($invalid)) {
                 throw ValidationException::withMessages([
                     'enumerator_ids' => ['One or more selected users are not enumerators'],
                 ]);
@@ -131,7 +131,7 @@ class SupervisorEnumeratorController extends Controller
                         'enumerator_id' => $enumeratorId,
                     ])->exists();
 
-                    if (!$exists) {
+                    if (! $exists) {
                         $relationship = SupervisorEnumerator::create([
                             'supervisor_id' => $supervisor->id,
                             'enumerator_id' => $enumeratorId,
@@ -167,7 +167,7 @@ class SupervisorEnumeratorController extends Controller
     public function getEnumerators($supervisorId)
     {
         $supervisor = User::findOrFail($supervisorId);
-        if ($supervisor->role !== 'supervisor') {
+        if (! $supervisor->roles()->where('slug', 'supervisor')->exists()) {
             throw ValidationException::withMessages([
                 'supervisor_id' => ['Selected user is not a supervisor'],
             ]);

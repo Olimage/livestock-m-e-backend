@@ -22,12 +22,16 @@ class DatabaseSeeder extends Seeder
         $this->call([
 
             ZonesSeeder::class,
-            UserSeeder::class,
+            RoleSeeder::class,
             ModuleSeeder::class,
             DepartmentSeeder::class,
-            RoleSeeder::class,
+            UserSeeder::class,
 
+            // RBAC: catalog -> role grants -> user roles (needs roles/modules/users above)
             PermissionSeeder::class,
+            RolePermissionSeeder::class,
+            UserRoleSeeder::class,
+
             MockDataSeeder::class,
             StrategicAlignmentSeeder::class,
             ResultChainIndicatorSeeder::class,

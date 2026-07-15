@@ -1,22 +1,20 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BroadcastController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EnumerationController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\User\UserController;
+use App\Models\Department;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\BroadcastController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
-use App\Http\Controllers\User\UserController;
-use App\Models\Department;
-use App\Http\Controllers\EnumerationController;
-use App\Http\Controllers\LocationController;
-
 
 Route::get('/', [DashboardController::class, 'index'])->name('home')->middleware('auth.web');
 Route::post('/login', [LoginController::class, 'login'])->name('app.login')->middleware('guest.web');
 Route::get('/logout', [LoginController::class, 'logout'])->name('app.logout')->middleware('auth.web');
-
 
 Route::get('login', function () {
     return Inertia::render('Login', [
@@ -25,52 +23,101 @@ Route::get('login', function () {
     ]);
 })->name('baseline-login')->middleware('guest.web');
 
+Route::get('/new', function () {
+    return Inertia::render('Enumeration/NewEnumeration', [
+        'routeName' => Route::currentRouteName(),
+    ]);
+})->name('baseline-new')->middleware('auth.web');
 
+Route::get('/saved-data', function () {})->name('baseline-saved-data')->middleware('auth.web');
 
-   
-
-    Route::get('/new', function () {
-        return Inertia::render('Enumeration/NewEnumeration', [
-            'routeName' => Route::currentRouteName(),
-        ]);
-    })->name('baseline-new')->middleware('auth.web');
-
-    Route::get('/saved-data', function () {
-    })->name('baseline-saved-data')->middleware('auth.web');
-
-    
 Route::middleware(['auth.web'])->group(function () {
-    
+
     // Location API endpoints for cascading selectors
     Route::prefix('location')->name('location.')->group(function () {
         Route::get('/zones', [LocationController::class, 'zones'])->name('zones');
         Route::get('/states', [LocationController::class, 'states'])->name('states');
         Route::get('/lgas', [LocationController::class, 'lgas'])->name('lgas');
     });
-    
+
     // Return immediate children of a department (used by cascading selectors)
     Route::get('/departments/{id}/children', function ($id) {
         $children = Department::where('parent_id', $id)->orderBy('name')->get();
+
         return response()->json($children);
     })->name('departments.children');
-    
+
     // Lightweight broadcast/test endpoints (auth required)
     Route::get('/broadcast/live', [BroadcastController::class, 'sendLiveData'])->name('broadcast.live');
     Route::get('/broadcast/notify/{user}', [BroadcastController::class, 'notifyUser'])->name('broadcast.notify');
-    
+
     // Profile Routes
     Route::get('/profile', [UserController::class, 'profile'])->name('profile.show');
     Route::get('/profile/password', [UserController::class, 'editPassword'])->name('profile.password.edit');
     Route::put('/profile/password', [UserController::class, 'updatePassword'])->name('profile.password.update');
-    
+
     Route::prefix('settings')->group(function () {
-        Route::get('/users', [UserController::class, 'index'])->name('users.index');
-        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-        Route::post('/users', [UserController::class, 'store'])->name('users.store');
-        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-        
+        Route::middleware('permission:manage-users')->group(function () {
+            Route::get('/users', [UserController::class, 'index'])->name('users.index');
+            Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+            Route::post('/users', [UserController::class, 'store'])->name('users.store');
+            Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+            Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+            Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        });
+
+        Route::middleware('permission:manage-permissions')->group(function () {
+            // Roles
+            Route::get('/roles', [\App\Http\Controllers\RoleController::class, 'index'])->name('roles.index');
+            Route::get('/roles/create', [\App\Http\Controllers\RoleController::class, 'create'])->name('roles.create');
+            Route::post('/roles', [\App\Http\Controllers\RoleController::class, 'store'])->name('roles.store');
+            Route::get('/roles/{role}/edit', [\App\Http\Controllers\RoleController::class, 'edit'])->name('roles.edit');
+            Route::put('/roles/{role}', [\App\Http\Controllers\RoleController::class, 'update'])->name('roles.update');
+            Route::delete('/roles/{role}', [\App\Http\Controllers\RoleController::class, 'destroy'])->name('roles.destroy');
+
+            // Permissions
+            Route::get('/permissions', [\App\Http\Controllers\PermissionController::class, 'index'])->name('permissions.index');
+            Route::get('/permissions/create', [\App\Http\Controllers\PermissionController::class, 'create'])->name('permissions.create');
+            Route::post('/permissions', [\App\Http\Controllers\PermissionController::class, 'store'])->name('permissions.store');
+            Route::get('/permissions/{permission}/edit', [\App\Http\Controllers\PermissionController::class, 'edit'])->name('permissions.edit');
+            Route::put('/permissions/{permission}', [\App\Http\Controllers\PermissionController::class, 'update'])->name('permissions.update');
+            Route::delete('/permissions/{permission}', [\App\Http\Controllers\PermissionController::class, 'destroy'])->name('permissions.destroy');
+        });
+
+        Route::middleware('permission:manage-settings')->group(function () {
+            // Modules
+            Route::get('/modules', [\App\Http\Controllers\ModuleController::class, 'index'])->name('modules.index');
+            Route::get('/modules/create', [\App\Http\Controllers\ModuleController::class, 'create'])->name('modules.create');
+            Route::post('/modules', [\App\Http\Controllers\ModuleController::class, 'store'])->name('modules.store');
+            Route::get('/modules/{module}/edit', [\App\Http\Controllers\ModuleController::class, 'edit'])->name('modules.edit');
+            Route::put('/modules/{module}', [\App\Http\Controllers\ModuleController::class, 'update'])->name('modules.update');
+            Route::delete('/modules/{module}', [\App\Http\Controllers\ModuleController::class, 'destroy'])->name('modules.destroy');
+
+            // Geography: Zones
+            Route::get('/zones', [\App\Http\Controllers\ZoneController::class, 'index'])->name('zones.index');
+            Route::get('/zones/create', [\App\Http\Controllers\ZoneController::class, 'create'])->name('zones.create');
+            Route::post('/zones', [\App\Http\Controllers\ZoneController::class, 'store'])->name('zones.store');
+            Route::get('/zones/{zone}/edit', [\App\Http\Controllers\ZoneController::class, 'edit'])->name('zones.edit');
+            Route::put('/zones/{zone}', [\App\Http\Controllers\ZoneController::class, 'update'])->name('zones.update');
+            Route::delete('/zones/{zone}', [\App\Http\Controllers\ZoneController::class, 'destroy'])->name('zones.destroy');
+
+            // Geography: States
+            Route::get('/states', [\App\Http\Controllers\StateController::class, 'index'])->name('states.index');
+            Route::get('/states/create', [\App\Http\Controllers\StateController::class, 'create'])->name('states.create');
+            Route::post('/states', [\App\Http\Controllers\StateController::class, 'store'])->name('states.store');
+            Route::get('/states/{state}/edit', [\App\Http\Controllers\StateController::class, 'edit'])->name('states.edit');
+            Route::put('/states/{state}', [\App\Http\Controllers\StateController::class, 'update'])->name('states.update');
+            Route::delete('/states/{state}', [\App\Http\Controllers\StateController::class, 'destroy'])->name('states.destroy');
+
+            // Geography: LGAs
+            Route::get('/lgas', [\App\Http\Controllers\LgaController::class, 'index'])->name('lgas.index');
+            Route::get('/lgas/create', [\App\Http\Controllers\LgaController::class, 'create'])->name('lgas.create');
+            Route::post('/lgas', [\App\Http\Controllers\LgaController::class, 'store'])->name('lgas.store');
+            Route::get('/lgas/{lga}/edit', [\App\Http\Controllers\LgaController::class, 'edit'])->name('lgas.edit');
+            Route::put('/lgas/{lga}', [\App\Http\Controllers\LgaController::class, 'update'])->name('lgas.update');
+            Route::delete('/lgas/{lga}', [\App\Http\Controllers\LgaController::class, 'destroy'])->name('lgas.destroy');
+        });
+
         // Supervisor-Enumerator Management
         require __DIR__.'/v1/web-supervisor-enumerator.php';
     });
@@ -215,17 +262,12 @@ Route::middleware(['auth.web'])->group(function () {
     });
 });
 
-
-
-
-
-
-
 Route::get('/clear-cache', function () {
     Artisan::call('config:clear');
     Artisan::call('cache:clear');
     Artisan::call('route:clear');
     Artisan::call('view:clear');
+
     return 'Cache cleared!';
 });
 
@@ -235,14 +277,14 @@ Route::get('/run-seed', function () {
 
     return response()->json([
         'message' => 'Database seeding executed successfully!',
-        'output'  => $output,
+        'output' => $output,
     ]);
 });
 
 Route::get('/run-worker', function () {
     try {
         Artisan::call('queue:work', [
-                               // '--once' => true, // Only process one job
+            // '--once' => true, // Only process one job
             '--quiet' => true, // Optional: suppress verbose output
         ]);
 
@@ -254,7 +296,7 @@ Route::get('/run-worker', function () {
         ]);
     } catch (\Exception $e) {
         return response()->json([
-            'status'  => 'error',
+            'status' => 'error',
             'message' => $e->getMessage(),
         ], 500);
     }
@@ -265,11 +307,12 @@ Route::middleware(['auth.web'])->group(function () {
     // Test notification
     Route::get('/test-notification', function () {
         $user = auth()->user();
-        if (!$user) {
+        if (! $user) {
             return response()->json(['error' => 'Not authenticated'], 401);
         }
-        
+
         event(new \App\Events\UserNotification($user->id, 'Test notification from web route'));
+
         return response()->json(['status' => 'sent']);
     });
 
@@ -278,8 +321,9 @@ Route::middleware(['auth.web'])->group(function () {
         event(new \App\Events\DashboardStatsUpdated([
             'recordsSaved' => rand(10000, 20000),
             'totalUsers' => rand(100, 500),
-            'dataPendingSync' => rand(1000, 5000)
+            'dataPendingSync' => rand(1000, 5000),
         ]));
+
         return response()->json(['status' => 'sent']);
     });
 });

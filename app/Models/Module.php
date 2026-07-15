@@ -10,7 +10,7 @@ class Module extends Model
     protected $fillable = [
         'name',
         'slug',
-        'description'
+        'description',
     ];
 
     protected static function boot()
@@ -26,6 +26,6 @@ class Module extends Model
 
     public function permissions()
     {
-        return $this->morphMany(Permission::class, 'callable');
+        return $this->hasMany(Permission::class);
     }
 }
