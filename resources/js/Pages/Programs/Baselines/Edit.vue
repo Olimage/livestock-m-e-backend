@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import BeLayout from '../../../Layouts/BeLayout.vue'
 
@@ -7,8 +8,15 @@ const props = defineProps({
     indicators: Array
 })
 
+const selected = ref(
+    props.baseline.indicatorable_type && props.baseline.indicatorable_id
+        ? `${props.baseline.indicatorable_type}::${props.baseline.indicatorable_id}`
+        : ''
+)
+
 const form = useForm({
-    indicator_id: props.baseline.indicator_id,
+    indicatorable_type: props.baseline.indicatorable_type,
+    indicatorable_id: props.baseline.indicatorable_id,
     baseline_year: props.baseline.baseline_year,
     target_year: props.baseline.target_year,
     baseline: props.baseline.baseline,
@@ -17,6 +25,9 @@ const form = useForm({
 })
 
 const submit = () => {
+    const [type, id] = selected.value.split('::')
+    form.indicatorable_type = type
+    form.indicatorable_id = id ? Number(id) : null
     form.put(`/programs/baselines/${props.baseline.id}`)
 }
 </script>
@@ -31,8 +42,8 @@ const submit = () => {
                 <h6 class="mb-0">
                     <i class="bi bi-bar-chart-steps me-2"></i>
                     Baseline Configuration
-                    <span v-if="baseline.indicator" class="ms-2 small opacity-75">
-                        — [{{ baseline.indicator.code }}] {{ baseline.indicator.title }}
+                    <span v-if="baseline.indicatorable" class="ms-2 small opacity-75">
+                        — [{{ baseline.indicatorable.code }}] {{ baseline.indicatorable.title }}
                     </span>
                 </h6>
             </div>
@@ -40,14 +51,15 @@ const submit = () => {
                 <form @submit.prevent="submit">
                     <div class="mb-3">
                         <label class="form-label">Indicator *</label>
-                        <select v-model="form.indicator_id" class="form-select"
-                            :class="{ 'is-invalid': form.errors.indicator_id }" required>
+                        <select v-model="selected" class="form-select"
+                            :class="{ 'is-invalid': form.errors.indicatorable_id }" required>
                             <option value="" disabled>— select an indicator —</option>
-                            <option v-for="ind in props.indicators" :key="ind.id" :value="ind.id">
-                                [{{ ind.code }}] {{ ind.title }}
+                            <option v-for="ind in props.indicators" :key="`${ind.type}-${ind.id}`"
+                                :value="`${ind.type}::${ind.id}`">
+                                [{{ ind.type_label }}] {{ ind.code }} — {{ ind.title }}
                             </option>
                         </select>
-                        <div class="invalid-feedback">{{ form.errors.indicator_id }}</div>
+                        <div class="invalid-feedback">{{ form.errors.indicatorable_id }}</div>
                     </div>
 
                     <div class="row">

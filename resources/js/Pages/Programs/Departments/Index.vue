@@ -172,7 +172,8 @@ const getSortIcon = (column) => {
                                         <span v-else class="text-muted small">—</span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-success">{{ dept.indicators_count }} indicators</span>
+                                        <Link :href="route('programs.departments.show', dept.id)"
+                                            class="badge bg-success text-decoration-none">View indicators</Link>
                                     </td>
                                     <td><small>{{ new Date(dept.created_at).toLocaleDateString() }}</small></td>
                                     <td>
@@ -189,8 +190,7 @@ const getSortIcon = (column) => {
                                             </Link>
                                             <button @click="deleteDepartment(dept.id)"
                                                 class="btn btn-sm btn-outline-danger"
-                                                :disabled="dept.indicators_count > 0"
-                                                :title="dept.indicators_count > 0 ? 'Cannot delete — has indicators' : 'Delete'">
+                                                title="Delete">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>

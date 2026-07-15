@@ -11,120 +11,103 @@ class Department extends Model
         'slug',
         'is_technical',
         'is_agency',
-        'parent_id'
+        'parent_id',
     ];
 
     protected $casts = [
         'is_technical' => 'boolean',
-        'is_agency'    => 'boolean',
+        'is_agency' => 'boolean',
     ];
 
-    public function users(){
+    public function users()
+    {
 
-        return $this->hasManyThrough( User::class, UserDepartment::class);
+        return $this->hasManyThrough(User::class, UserDepartment::class);
     }
 
     public function permissions()
-{
-    return $this->morphMany(Permission::class, 'callable');
-}
+    {
+        return $this->morphMany(Permission::class, 'callable');
+    }
 
-/**
- * Get all sub-departments of this department
- *
- * @return \Illuminate\Database\Eloquent\Relations\HasMany
- */
-public function children()
-{
-    return $this->hasMany(Department::class, 'parent_id');
-}
+    /**
+     * Get all sub-departments of this department
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function children()
+    {
+        return $this->hasMany(Department::class, 'parent_id');
+    }
 
-/**
- * Get all descendants (sub-departments and their sub-departments)
- *
- * @return \Illuminate\Database\Eloquent\Relations\HasMany
- */
-public function descendants()
-{
-    return $this->children()->with('descendants');
-}
+    /**
+     * Get all descendants (sub-departments and their sub-departments)
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function descendants()
+    {
+        return $this->children()->with('descendants');
+    }
 
-/**
- * Get the parent department
- *
- * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
- */
-public function parent()
-{
-    return $this->belongsTo(Department::class, 'parent_id');
-}
+    /**
+     * Get the parent department
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parent()
+    {
+        return $this->belongsTo(Department::class, 'parent_id');
+    }
 
-/**
- * Get all ancestors (parent and its parent)
- *
- * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
- */
-public function ancestors()
-{
-    return $this->parent()->with('ancestors');
-}
+    /**
+     * Get all ancestors (parent and its parent)
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function ancestors()
+    {
+        return $this->parent()->with('ancestors');
+    }
 
-/**
- * Check if department is a root department (has no parent)
- *
- * @return bool
- */
-public function isRoot()
-{
-    return is_null($this->parent_id);
-}
+    /**
+     * Check if department is a root department (has no parent)
+     *
+     * @return bool
+     */
+    public function isRoot()
+    {
+        return is_null($this->parent_id);
+    }
 
-/**
- * Check if department has children
- *
- * @return bool
- */
-public function hasChildren()
-{
-    return $this->children()->count() > 0;
-}
+    /**
+     * Check if department has children
+     *
+     * @return bool
+     */
+    public function hasChildren()
+    {
+        return $this->children()->count() > 0;
+    }
 
-// Strategic alignment relationships
-public function sectoralGoals()
-{
-    return $this->hasMany(SectoralGoal::class);
-}
+    // Strategic alignment relationships
+    public function sectoralGoals()
+    {
+        return $this->hasMany(SectoralGoal::class);
+    }
 
-public function nlgasPillars()
-{
-    return $this->hasMany(NlgasPillar::class);
-}
+    public function nlgasPillars()
+    {
+        return $this->hasMany(NlgasPillar::class);
+    }
 
-public function programs()
-{
-    return $this->hasMany(Program::class);
-}
+    public function programs()
+    {
+        return $this->hasMany(Program::class);
+    }
 
-public function indicators()
-{
-    return $this->belongsToMany(Indicator::class, 'department_indicator')->withPivot('role');
-}
-
-public function mainIndicators()
-{
-    return $this->belongsToMany(Indicator::class, 'department_indicator')
-                ->wherePivot('role', 'main');
-}
-
-public function supportingIndicators()
-{
-    return $this->belongsToMany(Indicator::class, 'department_indicator')
-                ->wherePivot('role', 'supporting');
-}
-
-public function crossCuttingMetrics()
-{
-    return $this->hasMany(CrossCuttingMetric::class);
-}
-
+    public function crossCuttingMetrics()
+    {
+        return $this->hasMany(CrossCuttingMetric::class);
+    }
 }

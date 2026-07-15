@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
+use App\Support\ResultChainIndicators;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Department;
-use App\Models\Indicator;
 
 class DepartmentController extends Controller
 {
-    
     public function getDepartments(Request $request)
     {
         try {
@@ -25,13 +24,13 @@ class DepartmentController extends Controller
 
             return response()->json([
                 'status' => true,
-                'data' => $departments
+                'data' => $departments,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => 'Failed to retrieve departments',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -40,7 +39,7 @@ class DepartmentController extends Controller
 
     public function index(Request $request)
     {
-        $query = Department::withCount('indicators');
+        $query = Department::query();
 
         if ($request->search) {
             $query->where('name', 'like', "%{$request->search}%");
@@ -66,8 +65,8 @@ class DepartmentController extends Controller
 
         return Inertia::render('Programs/Departments/Index', [
             'departments' => $departments,
-            'filters'     => $request->only(['search', 'per_page', 'sort_by', 'sort_order', 'type', 'agency']),
-            'totalCount'  => Department::count(),
+            'filters' => $request->only(['search', 'per_page', 'sort_by', 'sort_order', 'type', 'agency']),
+            'totalCount' => Department::count(),
         ]);
     }
 
@@ -81,10 +80,10 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'         => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'is_technical' => 'boolean',
-            'is_agency'    => 'boolean',
-            'parent_id'    => 'nullable|exists:departments,id',
+            'is_agency' => 'boolean',
+            'parent_id' => 'nullable|exists:departments,id',
         ]);
 
         $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
@@ -98,7 +97,7 @@ class DepartmentController extends Controller
     public function edit(Department $department)
     {
         return Inertia::render('Programs/Departments/Edit', [
-            'department'    => $department,
+            'department' => $department,
             'parentOptions' => Department::where('id', '!=', $department->id)
                 ->orderBy('name')
                 ->get(['id', 'name']),
@@ -108,10 +107,10 @@ class DepartmentController extends Controller
     public function update(Request $request, Department $department)
     {
         $data = $request->validate([
-            'name'         => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'is_technical' => 'boolean',
-            'is_agency'    => 'boolean',
-            'parent_id'    => 'nullable|exists:departments,id',
+            'is_agency' => 'boolean',
+            'parent_id' => 'nullable|exists:departments,id',
         ]);
 
         $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
@@ -128,10 +127,6 @@ class DepartmentController extends Controller
             return back()->with('error', 'Cannot delete — department has sub-departments.');
         }
 
-        if ($department->indicators()->exists()) {
-            return back()->with('error', 'Cannot delete — department has assigned indicators.');
-        }
-
         $department->delete();
 
         return redirect()->route('programs.departments.index')
@@ -140,47 +135,37 @@ class DepartmentController extends Controller
 
     public function show(Request $request, Department $department)
     {
-        $department->load(['indicators:id,code,title,indicator_tier_id', 'indicators.indicatorTier:id,name,prefix', 'parent:id,name', 'children:id,name,parent_id']);
-
-        $indicatorSearch = $request->indicator_search ?? '';
-
-        $availableIndicators = Indicator::with('indicatorTier:id,name,prefix')
-            ->select('id', 'code', 'title', 'indicator_tier_id')
-            ->when($indicatorSearch, fn($q) =>
-                $q->where(fn($sub) =>
-                    $sub->whereRaw('LOWER(code) LIKE ?', ['%' . strtolower($indicatorSearch) . '%'])
-                        ->orWhereRaw('LOWER(title) LIKE ?', ['%' . strtolower($indicatorSearch) . '%'])
-                )
-            )
-            ->whereNotIn('id', $department->indicators->pluck('id'))
-            ->orderBy('code')
-            ->get();
+        $department->load(['parent:id,name', 'children:id,name,parent_id']);
 
         return Inertia::render('Programs/Departments/Show', [
-            'department'           => $department,
-            'availableIndicators'  => $availableIndicators,
-            'indicatorSearch'      => $indicatorSearch,
+            'department' => $department,
+            'indicators' => $this->resultChainIndicatorsFor($department),
         ]);
     }
 
-    public function assignIndicator(Request $request, Department $department)
+    /**
+     * Result Chain indicators (any type) whose main department is this one.
+     *
+     * @return array<int, array<string, string>>
+     */
+    public function resultChainIndicatorsFor(Department $department): array
     {
-        $request->validate([
-            'indicator_id' => 'required|exists:indicators,id',
-        ]);
+        $out = [];
 
-        $department->indicators()->syncWithoutDetaching([$request->indicator_id]);
+        foreach (ResultChainIndicators::TYPES as $class => $label) {
+            if (! in_array('department_id', (new $class)->getFillable(), true)) {
+                continue;
+            }
 
-        return redirect()->route('programs.departments.show', $department->id)
-                        ->with('success', 'Indicator assigned successfully');
-    }
+            $rows = $class::where('department_id', $department->id)
+                ->orderBy('code')->get(['id', 'code', 'title']);
 
-    public function removeIndicator(Department $department, Indicator $indicator)
-    {
-        $department->indicators()->detach($indicator->id);
+            foreach ($rows as $r) {
+                $out[] = ['type_label' => $label, 'code' => $r->code, 'title' => $r->title];
+            }
+        }
 
-        return redirect()->route('programs.departments.show', $department->id)
-                        ->with('success', 'Indicator removed successfully');
+        return $out;
     }
 
     /**

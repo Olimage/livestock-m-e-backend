@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import BeLayout from '../../../Layouts/BeLayout.vue'
 
@@ -6,8 +7,11 @@ const props = defineProps({
     indicators: Array
 })
 
+const selected = ref('')
+
 const form = useForm({
-    indicator_id: '',
+    indicatorable_type: '',
+    indicatorable_id: null,
     baseline_year: null,
     target_year: null,
     baseline: null,
@@ -16,6 +20,9 @@ const form = useForm({
 })
 
 const submit = () => {
+    const [type, id] = selected.value.split('::')
+    form.indicatorable_type = type
+    form.indicatorable_id = id ? Number(id) : null
     form.post('/programs/baselines')
 }
 </script>
@@ -33,14 +40,15 @@ const submit = () => {
                 <form @submit.prevent="submit">
                     <div class="mb-3">
                         <label class="form-label">Indicator *</label>
-                        <select v-model="form.indicator_id" class="form-select"
-                            :class="{ 'is-invalid': form.errors.indicator_id }" required>
+                        <select v-model="selected" class="form-select"
+                            :class="{ 'is-invalid': form.errors.indicatorable_id }" required>
                             <option value="" disabled>— select an indicator —</option>
-                            <option v-for="ind in props.indicators" :key="ind.id" :value="ind.id">
-                                [{{ ind.code }}] {{ ind.title }}
+                            <option v-for="ind in props.indicators" :key="`${ind.type}-${ind.id}`"
+                                :value="`${ind.type}::${ind.id}`">
+                                [{{ ind.type_label }}] {{ ind.code }} — {{ ind.title }}
                             </option>
                         </select>
-                        <div class="invalid-feedback">{{ form.errors.indicator_id }}</div>
+                        <div class="invalid-feedback">{{ form.errors.indicatorable_id }}</div>
                     </div>
 
                     <div class="row">

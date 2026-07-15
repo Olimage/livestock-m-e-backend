@@ -139,7 +139,7 @@ const deleteDeliverable = (id) => {
                                         <td>{{ bd.deliverable }}</td>
                                         <td>
                                             <span class="badge bg-secondary">
-                                                {{ bd.indicators_count }} indicator{{ bd.indicators_count !== 1 ? 's' : '' }}
+                                                {{ bd.bond_output_indicators_count }} indicator{{ bd.bond_output_indicators_count !== 1 ? 's' : '' }}
                                             </span>
                                         </td>
                                         <td><small>{{ new Date(bd.created_at).toLocaleDateString() }}</small></td>

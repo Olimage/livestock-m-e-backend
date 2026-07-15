@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Department;
 use App\Models\EnumerationRecord;
-use App\Models\Indicator;
 use App\Models\MokData;
 use App\Models\NlgasPillar;
 use App\Models\SectoralGoal;
 use App\Models\User;
+use App\Support\ResultChainIndicators;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -51,16 +49,16 @@ class DashboardController extends Controller
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
                 'iconColor' => 'text-emerald-600',
-                'badge' => 'Active'
+                'badge' => 'Active',
             ],
             [
                 'label' => 'Total Indicators',
-                'value' => Indicator::count(),
+                'value' => collect(ResultChainIndicators::TYPES)->keys()->sum(fn ($class) => $class::count()),
                 'icon' => 'bi bi-bar-chart-fill',
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
                 'iconColor' => 'text-emerald-600',
-                'badge' => 'Active'
+                'badge' => 'Active',
             ],
 
             [
@@ -70,7 +68,7 @@ class DashboardController extends Controller
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
                 'iconColor' => 'text-emerald-600',
-                'badge' => 'Active'
+                'badge' => 'Active',
             ],
             [
                 'label' => 'NLGAS Pillars',
@@ -79,12 +77,12 @@ class DashboardController extends Controller
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
                 'iconColor' => 'text-emerald-600',
-                'badge' => 'Active'
-            ]
+                'badge' => 'Active',
+            ],
         ];
 
         return Inertia::render('Dashboard/AdminDashboard', [
-            'stats' => $stats
+            'stats' => $stats,
         ]);
     }
 
@@ -107,16 +105,16 @@ class DashboardController extends Controller
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
                 'iconColor' => 'text-emerald-600',
-                'badge' => 'Active'
+                'badge' => 'Active',
             ],
             [
                 'label' => 'Total Indicators',
-                'value' => Indicator::count(),
+                'value' => collect(ResultChainIndicators::TYPES)->keys()->sum(fn ($class) => $class::count()),
                 'icon' => 'bi bi-bar-chart-fill',
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
                 'iconColor' => 'text-emerald-600',
-                'badge' => 'Active'
+                'badge' => 'Active',
             ],
 
             [
@@ -126,7 +124,7 @@ class DashboardController extends Controller
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
                 'iconColor' => 'text-emerald-600',
-                'badge' => 'Active'
+                'badge' => 'Active',
             ],
             [
                 'label' => 'NLGAS Pillars',
@@ -135,8 +133,8 @@ class DashboardController extends Controller
                 'gradient' => 'from-emerald-500 to-teal-600',
                 'bgColor' => 'bg-emerald-50',
                 'iconColor' => 'text-emerald-600',
-                'badge' => 'Active'
-            ]
+                'badge' => 'Active',
+            ],
         ];
 
         return response()->json($stats);

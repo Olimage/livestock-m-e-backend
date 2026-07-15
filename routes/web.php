@@ -101,22 +101,6 @@ Route::middleware(['auth.web'])->group(function () {
         Route::put('/programs/{program}', [\App\Http\Controllers\ProgramController::class, 'updateProgram'])->name('programs.update');
         Route::delete('/programs/{program}', [\App\Http\Controllers\ProgramController::class, 'destroyProgram'])->name('programs.destroy');
 
-        // Indicators
-        Route::get('/indicators', [\App\Http\Controllers\ProgramController::class, 'indicators'])->name('indicators.index');
-        Route::get('/indicators/create', [\App\Http\Controllers\ProgramController::class, 'createIndicator'])->name('indicators.create');
-        Route::post('/indicators', [\App\Http\Controllers\ProgramController::class, 'storeIndicator'])->name('indicators.store');
-        Route::get('/indicators/{indicator}/edit', [\App\Http\Controllers\ProgramController::class, 'editIndicator'])->name('indicators.edit');
-        Route::put('/indicators/{indicator}', [\App\Http\Controllers\ProgramController::class, 'updateIndicator'])->name('indicators.update');
-        Route::delete('/indicators/{indicator}', [\App\Http\Controllers\ProgramController::class, 'destroyIndicator'])->name('indicators.destroy');
-
-        // Indicator Tiers
-        Route::get('/indicator-tiers', [\App\Http\Controllers\ProgramController::class, 'indicatorTiers'])->name('indicator-tiers.index');
-        Route::get('/indicator-tiers/create', [\App\Http\Controllers\ProgramController::class, 'createIndicatorTier'])->name('indicator-tiers.create');
-        Route::post('/indicator-tiers', [\App\Http\Controllers\ProgramController::class, 'storeIndicatorTier'])->name('indicator-tiers.store');
-        Route::get('/indicator-tiers/{indicatorTier}/edit', [\App\Http\Controllers\ProgramController::class, 'editIndicatorTier'])->name('indicator-tiers.edit');
-        Route::put('/indicator-tiers/{indicatorTier}', [\App\Http\Controllers\ProgramController::class, 'updateIndicatorTier'])->name('indicator-tiers.update');
-        Route::delete('/indicator-tiers/{indicatorTier}', [\App\Http\Controllers\ProgramController::class, 'destroyIndicatorTier'])->name('indicator-tiers.destroy');
-
         // Departments
         Route::get('/departments', [\App\Http\Controllers\DepartmentController::class, 'index'])->name('departments.index');
         Route::get('/departments/create', [\App\Http\Controllers\DepartmentController::class, 'create'])->name('departments.create');
@@ -125,8 +109,6 @@ Route::middleware(['auth.web'])->group(function () {
         Route::put('/departments/{department}', [\App\Http\Controllers\DepartmentController::class, 'update'])->name('departments.update');
         Route::delete('/departments/{department}', [\App\Http\Controllers\DepartmentController::class, 'destroy'])->name('departments.destroy');
         Route::get('/departments/{department}', [\App\Http\Controllers\DepartmentController::class, 'show'])->name('departments.show');
-        Route::post('/departments/{department}/indicators', [\App\Http\Controllers\DepartmentController::class, 'assignIndicator'])->name('departments.indicators.assign');
-        Route::delete('/departments/{department}/indicators/{indicator}', [\App\Http\Controllers\DepartmentController::class, 'removeIndicator'])->name('departments.indicators.remove');
 
         // Indicator Baseline Years
         Route::get('/baselines', [\App\Http\Controllers\ProgramController::class, 'baselines'])->name('baselines.index');

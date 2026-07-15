@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class IndicatorBaselineYear extends Model
 {
     protected $fillable = [
-        'indicator_id',
+        'indicatorable_id',
+        'indicatorable_type',
         'baseline_year',
         'target_year',
         'baseline',
@@ -17,14 +18,14 @@ class IndicatorBaselineYear extends Model
 
     protected $casts = [
         'baseline_year' => 'integer',
-        'target_year'   => 'integer',
-        'baseline'      => 'decimal:2',
-        'target'        => 'decimal:2',
-        'actual'        => 'decimal:2',
+        'target_year' => 'integer',
+        'baseline' => 'decimal:2',
+        'target' => 'decimal:2',
+        'actual' => 'decimal:2',
     ];
 
-    public function indicator()
+    public function indicatorable()
     {
-        return $this->belongsTo(Indicator::class);
+        return $this->morphTo();
     }
 }

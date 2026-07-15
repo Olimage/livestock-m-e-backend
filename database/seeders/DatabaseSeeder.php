@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -18,7 +19,6 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        
         $this->call([
 
             ZonesSeeder::class,
@@ -26,12 +26,11 @@ class DatabaseSeeder extends Seeder
             ModuleSeeder::class,
             DepartmentSeeder::class,
             RoleSeeder::class,
-    
+
             PermissionSeeder::class,
             MockDataSeeder::class,
-            IndicatorTierSeeder::class,
             StrategicAlignmentSeeder::class,
-            IndicatorSeeder::class,
+            ResultChainIndicatorSeeder::class,
             DisagregationSeeder::class,
             ProgramSeeder::class,
             CrossCuttingMetricSeeder::class,

@@ -15,12 +15,17 @@ class BondOutputIndicator extends Model
     protected static function booted(): void
     {
         static::created(function (self $model) {
-            $model->updateQuietly(['code' => 'BOI-' . $model->id]);
+            $model->updateQuietly(['code' => 'BOI-'.$model->id]);
         });
     }
 
     public function outcomeIndicators()
     {
         return $this->belongsToMany(OutcomeIndicator::class, 'bond_output_indicator_outcome_indicator');
+    }
+
+    public function bondDeliverables()
+    {
+        return $this->belongsToMany(BondDeliverable::class, 'bond_deliverable_bond_output_indicator');
     }
 }
