@@ -23,6 +23,12 @@ class PermissionSeeder extends Seeder
         'manage-enumerations' => ['Manage Enumerations', null],
         'view-summary-reports' => ['View Summary Reports', null],
         'view-detailed-reports' => ['View Detailed Reports', null],
+        'report-indicator-data' => ['Report Indicator Data', 'indicator-registry'],
+        'review-indicator-reports' => ['Review Indicator Reports', 'indicator-registry'],
+        'approve-indicator-reports' => ['Approve Indicator Reports', 'indicator-registry'],
+        'view-all-indicator-reports' => ['View All Indicator Reports', 'indicator-registry'],
+        'manage-approval-workflows' => ['Manage Approval Workflows', null],
+        'manage-reporting-periods' => ['Manage Reporting Periods', null],
     ];
 
     public function run(): void

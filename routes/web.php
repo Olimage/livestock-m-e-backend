@@ -122,6 +122,9 @@ Route::middleware(['auth.web'])->group(function () {
         require __DIR__.'/v1/web-supervisor-enumerator.php';
     });
 
+    // Indicator Reporting & Approval screens
+    require __DIR__.'/v1/web-indicator-reporting.php';
+
     // Program Management Routes
     Route::prefix('programs')->name('programs.')->group(function () {
         // Sectoral Goals

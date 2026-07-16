@@ -18,7 +18,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('enumeration_records', function (Blueprint $table) {
-            $table->dropColumn(['sync_attempts','last_sync_at','sync_error']);
+            $table->dropColumn(['sync_attempts', 'last_sync_at', 'sync_error']);
         });
     }
 };

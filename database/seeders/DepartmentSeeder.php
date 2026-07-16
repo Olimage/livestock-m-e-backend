@@ -23,14 +23,14 @@ class DepartmentSeeder extends Seeder
             'name' => 'Units',
             'slug' => 'units',
             'is_technical' => false,
-            'parent_id' => $ministry->id
+            'parent_id' => $ministry->id,
         ]);
 
         $specialDuties = Department::create([
             'name' => 'Special Duties',
             'slug' => 'special_duties',
             'is_technical' => false,
-            'parent_id' => $ministry->id
+            'parent_id' => $ministry->id,
 
         ]);
 
@@ -38,7 +38,7 @@ class DepartmentSeeder extends Seeder
             'name' => 'Common Services Departments',
             'slug' => 'common_services_departments',
             'is_technical' => false,
-            'parent_id' => $ministry->id
+            'parent_id' => $ministry->id,
 
         ]);
 
@@ -46,7 +46,7 @@ class DepartmentSeeder extends Seeder
             'name' => 'Technical Departments',
             'slug' => 'technical_departments',
             'is_technical' => true,
-            'parent_id' => $ministry->id
+            'parent_id' => $ministry->id,
 
         ]);
 
@@ -83,7 +83,7 @@ class DepartmentSeeder extends Seeder
                 'children' => [
                     ['name' => 'Appointment, Promotion & Discipline', 'slug' => 'appointment_promotion_discipline'],
                     ['name' => 'Staff Welfare & Training', 'slug' => 'staff_welfare_training'],
-                ]
+                ],
             ],
             [
                 'name' => 'Finance and Accounts',
@@ -93,7 +93,7 @@ class DepartmentSeeder extends Seeder
                     ['name' => 'Expenditure', 'slug' => 'expenditure'],
                     ['name' => 'Budget', 'slug' => 'budget'],
                     ['name' => 'Fiscal & Final Reporting', 'slug' => 'fiscal_final_reporting'],
-                ]
+                ],
             ],
             [
                 'name' => 'Planning, Research and Statistics',
@@ -103,7 +103,7 @@ class DepartmentSeeder extends Seeder
                     ['name' => 'Planning', 'slug' => 'planning'],
                     ['name' => 'Research and Statistics', 'slug' => 'research_statistics'],
                     ['name' => 'Monitoring & Evaluation', 'slug' => 'monitoring_evaluation'],
-                ]
+                ],
             ],
             [
                 'name' => 'General Services',
@@ -113,7 +113,7 @@ class DepartmentSeeder extends Seeder
                     ['name' => 'General Services', 'slug' => 'general_services_sub'],
                     ['name' => 'Recurrent', 'slug' => 'recurrent'],
                     ['name' => 'ICT', 'slug' => 'ict'],
-                ]
+                ],
             ],
             [
                 'name' => 'Procurement',
@@ -122,7 +122,7 @@ class DepartmentSeeder extends Seeder
                 'children' => [
                     ['name' => 'Capital', 'slug' => 'capital'],
                     ['name' => 'Recurrent', 'slug' => 'procurement_recurrent'],
-                ]
+                ],
             ],
             [
                 'name' => 'Reform Coordination',
@@ -132,7 +132,7 @@ class DepartmentSeeder extends Seeder
                     ['name' => 'Reform Coordination', 'slug' => 'reform_coordination_sub'],
                     ['name' => 'SERVICOM', 'slug' => 'servicom'],
                     ['name' => 'Service Innovation', 'slug' => 'service_innovation'],
-                ]
+                ],
             ],
         ];
 
@@ -141,13 +141,13 @@ class DepartmentSeeder extends Seeder
                 'name' => $dept['name'],
                 'slug' => $dept['slug'],
                 'is_technical' => $dept['is_technical'],
-                'parent_id' => $commonServices->id
+                'parent_id' => $commonServices->id,
             ]);
 
             foreach ($dept['children'] as $child) {
                 Department::create(array_merge($child, [
                     'is_technical' => false,
-                    'parent_id' => $parent->id
+                    'parent_id' => $parent->id,
                 ]));
             }
         }
@@ -163,7 +163,7 @@ class DepartmentSeeder extends Seeder
                     ['name' => 'Sheep and Goat Production', 'slug' => 'sheep_goat_production'],
                     ['name' => 'Pig Production', 'slug' => 'pig_production'],
                     ['name' => 'Poultry & Micro Livestock', 'slug' => 'poultry_micro_livestock'],
-                ]
+                ],
             ],
             [
                 'name' => 'Animal Health & Reproductive Services',
@@ -174,7 +174,7 @@ class DepartmentSeeder extends Seeder
                     ['name' => 'Vet Clinical Services & Sanitary', 'slug' => 'vet_clinical_services_sanitary'],
                     ['name' => 'Reproductive Health Mgt, Artificial Insemination & Embryo Transfer', 'slug' => 'reproductive_health_mgt'],
                     ['name' => 'Aquatic Health', 'slug' => 'aquatic_health'],
-                ]
+                ],
             ],
             [
                 'name' => 'Ranch & Pastoral Resources Development',
@@ -184,7 +184,7 @@ class DepartmentSeeder extends Seeder
                     ['name' => 'Ranch Development', 'slug' => 'ranch_development'],
                     ['name' => 'Feed & Fodder', 'slug' => 'feed_fodder'],
                     ['name' => 'Strategic Food Reserve', 'slug' => 'strategic_food_reserve'],
-                ]
+                ],
             ],
             [
                 'name' => 'Pest Control Services',
@@ -193,7 +193,7 @@ class DepartmentSeeder extends Seeder
                     ['name' => 'Pest and Vector Control', 'slug' => 'pest_vector_control'],
                     ['name' => 'Integrated Pest Management', 'slug' => 'integrated_pest_management'],
                     ['name' => 'Pesticides Quality Assurance and Lab Services', 'slug' => 'pesticides_quality'],
-                ]
+                ],
             ],
             [
                 'name' => 'Quality Assurance & Certification',
@@ -202,7 +202,7 @@ class DepartmentSeeder extends Seeder
                     ['name' => 'Certification', 'slug' => 'certification'],
                     ['name' => 'Veterinary Regulation & Inspectorate', 'slug' => 'veterinary_regulation'],
                     ['name' => 'Veterinary Drug & Feed Safety', 'slug' => 'veterinary_drug_feed_safety'],
-                ]
+                ],
             ],
             [
                 'name' => 'Veterinary Public Health & Epidemiology',
@@ -212,7 +212,7 @@ class DepartmentSeeder extends Seeder
                     ['name' => 'Veterinary Epidemiology', 'slug' => 'veterinary_epidemiology'],
                     ['name' => 'Slaughterhouse & Food Safety Hygiene', 'slug' => 'slaughterhouse_food_safety'],
                     ['name' => 'Animal Identification & Traceability', 'slug' => 'animal_identification'],
-                ]
+                ],
             ],
             [
                 'name' => 'Livestock Extension & Business Development',
@@ -222,7 +222,7 @@ class DepartmentSeeder extends Seeder
                     ['name' => 'Business Development & Entrepreneurship', 'slug' => 'business_development'],
                     ['name' => 'Gender & Youth Empowerment', 'slug' => 'gender_youth_empowerment'],
                     ['name' => 'Livestock Cooperative Development', 'slug' => 'livestock_cooperative'],
-                ]
+                ],
             ],
             [
                 'name' => 'Transboundary Animal Disease',
@@ -234,7 +234,7 @@ class DepartmentSeeder extends Seeder
                     ['name' => 'Wildlife Disease Control & Animal Disease Risk Analysis', 'slug' => 'wildlife_disease_control'],
                     ['name' => 'Disease Management & Emergency Preparedness & Response', 'slug' => 'disease_management'],
                     ['name' => 'Bee Health', 'slug' => 'bee_health'],
-                ]
+                ],
             ],
         ];
 
@@ -243,13 +243,13 @@ class DepartmentSeeder extends Seeder
                 'name' => $dept['name'],
                 'slug' => $dept['slug'],
                 'is_technical' => true,
-                'parent_id' => $technical->id
+                'parent_id' => $technical->id,
             ]);
 
             foreach ($dept['children'] as $child) {
                 Department::create(array_merge($child, [
                     'is_technical' => true,
-                    'parent_id' => $parent->id
+                    'parent_id' => $parent->id,
                 ]));
             }
         }

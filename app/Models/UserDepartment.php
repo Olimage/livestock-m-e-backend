@@ -6,17 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserDepartment extends Model
 {
- protected $fillable = [
-    'user_id',
-    'department_id'
- ];
+    protected $fillable = [
+        'user_id',
+        'department_id',
+    ];
 
- public function user(){
+    public function user()
+    {
 
-    return $this->belongsTo(User::class);
- }
+        return $this->belongsTo(User::class);
+    }
 
- public function department(){
-    return $this->belongsTo(Department::class);
- }
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }

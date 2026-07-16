@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 
 $app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__ . '/../routes/web.php',
-        api: __DIR__ . '/../routes/api.php',
-        commands: __DIR__ . '/../routes/console.php',
-        channels: __DIR__ . '/../routes/channels.php',
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
+        channels: __DIR__.'/../routes/channels.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
@@ -28,45 +28,45 @@ $app = Application::configure(basePath: dirname(__DIR__))
 
         $middleware->api(prepend: [
             Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
+            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Session\Middleware\StartSession::class,
             \App\Http\Middleware\LogUserActivity::class,
         ]);
 
         $middleware->alias([
-            'cors'             => \App\Http\Middleware\Cors::class,
-            'auth'             => \App\Http\Middleware\Authenticate::class,
-            'auth.basic'       => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-            'auth.session'     => \Illuminate\Session\Middleware\AuthenticateSession::class,
-            'cache.headers'    => \Illuminate\Http\Middleware\SetCacheHeaders::class,
-            'can'              => \Illuminate\Auth\Middleware\Authorize::class,
-            'guest'            => \App\Http\Middleware\RedirectIfAuthenticated::class,
+            'cors' => \App\Http\Middleware\Cors::class,
+            'auth' => \App\Http\Middleware\Authenticate::class,
+            'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+            'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
+            'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+            'can' => \Illuminate\Auth\Middleware\Authorize::class,
+            'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
-            'precognitive'     => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
-            'throttle'         => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-            'verified'         => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-            'jwt.verify'       => \App\Http\Middleware\VerifyJWTToken::class,
-            'is.staff'         => \App\Http\Middleware\verifyStaff::class,
-            'email.verify'     => \App\Http\Middleware\verifyEmail::class,
-            'phone.verify'     => \App\Http\Middleware\verifyPhone::class,
-            'verify.pin'       => \App\Http\Middleware\VerifyPin::class,
-            'json-response'    => \App\Http\Middleware\EnsureJsonResponseMiddleware::class,
-            'auth.web'      => \App\Http\Middleware\EnsureAuthenticated::class,
-            'guest.web'     => \App\Http\Middleware\EnsureGuest::class,
-             'permission' => \App\Http\Middleware\CheckPermission::class,
+            'precognitive' => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
+            'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+            'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+            'jwt.verify' => \App\Http\Middleware\VerifyJWTToken::class,
+            'is.staff' => \App\Http\Middleware\verifyStaff::class,
+            'email.verify' => \App\Http\Middleware\verifyEmail::class,
+            'phone.verify' => \App\Http\Middleware\verifyPhone::class,
+            'verify.pin' => \App\Http\Middleware\VerifyPin::class,
+            'json-response' => \App\Http\Middleware\EnsureJsonResponseMiddleware::class,
+            'auth.web' => \App\Http\Middleware\EnsureAuthenticated::class,
+            'guest.web' => \App\Http\Middleware\EnsureGuest::class,
+            'permission' => \App\Http\Middleware\CheckPermission::class,
             'api.session.auth' => \App\Http\Middleware\ApiSessionAuth::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->context(fn() => [
+        $exceptions->context(fn () => [
             'user' => auth()->user() ? auth()->user()->only('id', 'uuid') : null,
-            'url'  => request()->method() . ' ' . url()->full(),
+            'url' => request()->method().' '.url()->full(),
         ]);
 
         $exceptions->dontTruncateRequestExceptions();
 
         // JSON only for non-Inertia requests; Inertia requests use redirect-based handling
-        $exceptions->shouldRenderJsonWhen(fn(Request $request, Throwable $e) => !$request->header('X-Inertia'));
+        $exceptions->shouldRenderJsonWhen(fn (Request $request, Throwable $e) => ! $request->header('X-Inertia'));
 
         $exceptions->render(function (Throwable $exception, Request $request) {
             // Let ValidationException pass through for Inertia requests so the
@@ -81,7 +81,15 @@ $app = Application::configure(basePath: dirname(__DIR__))
                 return redirect()->back()->with('error', $exception->getMessage());
             }
 
-            // Non-Inertia requests: return JSON
+            // Non-Inertia requests: return JSON.
+            // Validation errors must surface as 422 with their field errors, not a generic 500.
+            if ($exception instanceof \Illuminate\Validation\ValidationException) {
+                return response()->json([
+                    'message' => $exception->getMessage(),
+                    'errors' => $exception->errors(),
+                ], 422);
+            }
+
             $statusCode = $exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException
                 ? $exception->getStatusCode()
                 : \Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR;

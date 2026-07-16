@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class PasswordResetToken extends Model
 {
@@ -25,7 +25,6 @@ class PasswordResetToken extends Model
     protected $hidden = [
         'user_id',
     ];
-    
 
     // Relationships
     public function user()

@@ -81,6 +81,11 @@ class NavigationService
             $navItems[] = $geoItem;
         }
 
+        // Indicator Reporting & Approval
+        foreach (self::reportingMenu($user) as $item) {
+            $navItems[] = $item;
+        }
+
         // Settings (with submenus)
         $settingsSubmenu = self::settingMenu($user);
 
@@ -228,6 +233,44 @@ class NavigationService
                 ],
             ],
         ];
+    }
+
+    public static function reportingMenu($user)
+    {
+        $submenu = [];
+
+        if ($user->isAdmin() || $user->hasAnyPermission([
+            'report-indicator-data', 'review-indicator-reports',
+            'approve-indicator-reports', 'view-all-indicator-reports',
+        ])) {
+            $submenu[] = ['name' => 'Reports', 'routeName' => 'indicator-reporting.reports.index', 'icon' => 'bi bi-clipboard-data'];
+        }
+
+        if ($user->isAdmin() || $user->hasAnyPermission(['review-indicator-reports', 'approve-indicator-reports'])) {
+            $submenu[] = ['name' => 'Review Queue', 'routeName' => 'indicator-reporting.review.queue', 'icon' => 'bi bi-inbox'];
+        }
+
+        if ($user->isAdmin() || $user->hasPermission('manage-approval-workflows')) {
+            $submenu[] = ['name' => 'Workflows', 'routeName' => 'indicator-reporting.workflows.index', 'icon' => 'bi bi-diagram-3-fill'];
+        }
+
+        if ($user->isAdmin() || $user->hasPermission('manage-reporting-periods')) {
+            $submenu[] = ['name' => 'Reporting Periods', 'routeName' => 'indicator-reporting.periods.index', 'icon' => 'bi bi-calendar-range'];
+        }
+
+        if ($user->isAdmin() || $user->hasPermission('manage-settings')) {
+            $submenu[] = ['name' => 'Reporting Settings', 'routeName' => 'indicator-reporting.settings.index', 'icon' => 'bi bi-sliders'];
+        }
+
+        if (empty($submenu)) {
+            return [];
+        }
+
+        return [[
+            'name' => 'Indicator Reporting',
+            'icon' => 'bi bi-clipboard-check',
+            'submenu' => $submenu,
+        ]];
     }
 
     public static function programsMenu($user)

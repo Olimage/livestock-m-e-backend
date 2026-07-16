@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\DisagregationCategory;
 use App\Models\DisagregationItem;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class DisagregationSeeder extends Seeder
 {
@@ -207,15 +206,15 @@ class DisagregationSeeder extends Seeder
             foreach ($items as $itemName) {
                 DisagregationItem::firstOrCreate([
                     'disagregation_category_id' => $category->id,
-                    'name'                      => $itemName,
+                    'name' => $itemName,
                 ]);
             }
         }
 
         $categoryCount = DisagregationCategory::count();
-        $itemCount     = DisagregationItem::count();
+        $itemCount = DisagregationItem::count();
 
-        $this->command->info("Disaggregation seeding complete.");
+        $this->command->info('Disaggregation seeding complete.');
         $this->command->info("Categories: {$categoryCount} | Items: {$itemCount}");
     }
 }

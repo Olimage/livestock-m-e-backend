@@ -15,7 +15,7 @@ class ImpactIndicator extends Model
     protected static function booted(): void
     {
         static::created(function (self $model) {
-            $model->updateQuietly(['code' => 'IMP-' . $model->id]);
+            $model->updateQuietly(['code' => 'IMP-'.$model->id]);
         });
     }
 

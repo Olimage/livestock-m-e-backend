@@ -8,12 +8,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasColumn('indicator_baseline_years', 'indicator_id')) {
+        if (! Schema::hasColumn('indicator_baseline_years', 'indicator_id')) {
             Schema::table('indicator_baseline_years', function (Blueprint $table) {
                 $table->foreignId('indicator_id')
-                      ->after('id')
-                      ->constrained('indicators')
-                      ->onDelete('cascade');
+                    ->after('id')
+                    ->constrained('indicators')
+                    ->onDelete('cascade');
             });
         }
     }

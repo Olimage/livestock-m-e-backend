@@ -22,7 +22,7 @@ class EnumerationRecord extends Model
         'submitted_at',
         'zone_id',
         'state_id',
-        'lga_id'
+        'lga_id',
     ];
 
     protected $casts = [
@@ -30,17 +30,19 @@ class EnumerationRecord extends Model
         'submitted_at' => 'datetime',
         'last_sync_at' => 'datetime',
         'latitude' => 'decimal:7',
-        'longitude' => 'decimal:7'
+        'longitude' => 'decimal:7',
     ];
 
     public const FORM_TYPES = [
         'household',
         'market',
-        'commercial_farm'
+        'commercial_farm',
     ];
 
     public const SYNC_PENDING = 'pending';
+
     public const SYNC_SYNCED = 'synced';
+
     public const SYNC_FAILED = 'failed';
 
     public function enumerator(): BelongsTo
@@ -76,15 +78,18 @@ class EnumerationRecord extends Model
         ])->save();
     }
 
-    public function zone(): BelongsTo{
+    public function zone(): BelongsTo
+    {
         return $this->belongsTo(Zone::class);
     }
 
-    public function state(): BelongsTo{
+    public function state(): BelongsTo
+    {
         return $this->belongsTo(State::class);
     }
 
-    public function lga(): BelongsTo{
+    public function lga(): BelongsTo
+    {
         return $this->belongsTo(Lga::class);
     }
 }

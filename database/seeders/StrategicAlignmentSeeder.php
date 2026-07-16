@@ -1,9 +1,10 @@
 <?php
+
 namespace Database\Seeders;
 
+use App\Models\Department;
 use App\Models\NlgasPillar;
 use App\Models\SectoralGoal;
-use App\Models\Department;
 use Illuminate\Database\Seeder;
 
 class StrategicAlignmentSeeder extends Seeder
@@ -11,12 +12,12 @@ class StrategicAlignmentSeeder extends Seeder
     public function run()
     {
         // Helper to fetch department IDs by slug (fallback null if missing)
-        $dept = fn(string $slug) => Department::where('slug', $slug)->value('id');
+        $dept = fn (string $slug) => Department::where('slug', $slug)->value('id');
 
         // Sectoral Goals
         $sg1 = SectoralGoal::firstOrCreate([
             'code' => 'SG1',
-        ],[
+        ], [
             'title' => 'Increased Livestock Production and Productivity',
             'description' => 'Herds/flocks expanded and per-animal yields raised to meet domestic food security and export targets',
 
@@ -24,58 +25,57 @@ class StrategicAlignmentSeeder extends Seeder
 
         $sg2 = SectoralGoal::firstOrCreate([
             'code' => 'SG2',
-        ],[
+        ], [
             'title' => 'Enhanced Animal Health and Reduced Disease Burden',
             'description' => 'Disease prevalence and zoonotic spillover reduced through vaccination surveillance and biosecurity systems',
 
         ]);
         $sg3 = SectoralGoal::firstOrCreate([
             'code' => 'SG3',
-        ],[
+        ], [
             'title' => 'Improved Access to Livestock Inputs and Services',
             'description' => 'Improved Access to Livestock Inputs and Services',
 
         ]);
         $sg4 = SectoralGoal::firstOrCreate([
             'code' => 'SG4',
-        ],[
+        ], [
             'title' => 'Strengthened Market Access and Export Competitiveness',
             'description' => 'Strengthened Market Access and Export Competitiveness',
 
         ]);
         $sg5 = SectoralGoal::firstOrCreate([
             'code' => 'SG5',
-        ],[
+        ], [
             'title' => 'Enhanced Financial Inclusion and Private Investment',
             'description' => 'Enhanced Financial Inclusion and Private Investment',
 
         ]);
         $sg6 = SectoralGoal::firstOrCreate([
             'code' => 'SG6',
-        ],[
+        ], [
             'title' => 'Reduced Farmer-Herder Conflicts and Social Cohesion',
             'description' => 'Reduced Farmer-Herder Conflicts and Social Cohesion',
 
         ]);
         $sg7 = SectoralGoal::firstOrCreate([
             'code' => 'SG7',
-        ],[
+        ], [
             'title' => 'Inclusive Youth and Women Participation',
             'description' => 'Inclusive Youth and Women Participation',
 
         ]);
         $sg8 = SectoralGoal::firstOrCreate([
             'code' => 'SG8',
-        ],[
+        ], [
             'title' => 'Strengthened Data Systems and Evidence-Based Planning',
             'description' => 'Strengthened Data Systems and Evidence-Based Planning',
 
         ]);
 
-
         // NLGAS Pillars (idempotent + department mapping)
         $p1 = NlgasPillar::firstOrCreate([
-            'code' => 'P1'
+            'code' => 'P1',
         ], [
             'title' => 'Livestock Value Chain Development & Market Access',
             'description' => 'Production & Value Addition',
@@ -83,14 +83,14 @@ class StrategicAlignmentSeeder extends Seeder
         ]);
 
         $p2 = NlgasPillar::firstOrCreate([
-            'code' => 'P2'
+            'code' => 'P2',
         ], [
             'title' => 'Animal Health & Zoonoses Control',
             'description' => 'Disease Prevention & Control',
 
         ]);
         $p3 = NlgasPillar::firstOrCreate([
-            'code' => 'P3'
+            'code' => 'P3',
         ], [
             'title' => 'Feed & Fodder Development',
             'description' => 'Nutrition Security',
@@ -98,14 +98,14 @@ class StrategicAlignmentSeeder extends Seeder
         ]);
 
         $p4 = NlgasPillar::firstOrCreate([
-            'code' => 'P4'
+            'code' => 'P4',
         ], [
             'title' => 'Water Resources Management',
             'description' => 'Water Access & Conflict Prevention',
 
         ]);
         $p5 = NlgasPillar::firstOrCreate([
-            'code' => 'P5'
+            'code' => 'P5',
         ], [
             'title' => 'Finance & Insurance',
             'description' => 'Financial Access & Investment',
@@ -113,14 +113,14 @@ class StrategicAlignmentSeeder extends Seeder
         ]);
 
         $p6 = NlgasPillar::firstOrCreate([
-            'code' => 'P6'
+            'code' => 'P6',
         ], [
             'title' => 'Peacebuilding, Security & Social Cohesion',
             'description' => 'Conflict Management',
 
         ]);
         $p7 = NlgasPillar::firstOrCreate([
-            'code' => 'P7'
+            'code' => 'P7',
         ], [
             'title' => 'Infrastructure Development & Waste Management',
             'description' => 'Physical Infrastructure',
@@ -128,14 +128,14 @@ class StrategicAlignmentSeeder extends Seeder
         ]);
 
         $p8 = NlgasPillar::firstOrCreate([
-            'code' => 'P8'
+            'code' => 'P8',
         ], [
             'title' => 'Livestock Extension Services',
             'description' => 'Knowledge Transfer',
 
         ]);
         $p9 = NlgasPillar::firstOrCreate([
-            'code' => 'P9'
+            'code' => 'P9',
         ], [
             'title' => 'Youth & Women Empowerment',
             'description' => 'Inclusive Participation',
@@ -143,13 +143,12 @@ class StrategicAlignmentSeeder extends Seeder
         ]);
 
         $p10 = NlgasPillar::firstOrCreate([
-            'code' => 'P10'
+            'code' => 'P10',
         ], [
             'title' => 'Livestock Statistics & Information Systems',
             'description' => 'Data Management & Traceability',
 
         ]);
-
 
     }
 }

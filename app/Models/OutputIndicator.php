@@ -15,7 +15,7 @@ class OutputIndicator extends Model
     protected static function booted(): void
     {
         static::created(function (self $model) {
-            $model->updateQuietly(['code' => 'OPT-' . $model->id]);
+            $model->updateQuietly(['code' => 'OPT-'.$model->id]);
         });
     }
 

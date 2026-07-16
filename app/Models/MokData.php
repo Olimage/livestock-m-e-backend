@@ -8,6 +8,6 @@ class MokData extends Model
 {
     protected $fillable = [
         'name',
-        'value'
+        'value',
     ];
 }

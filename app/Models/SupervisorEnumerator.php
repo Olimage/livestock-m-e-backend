@@ -6,10 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class SupervisorEnumerator extends Model
 {
-
     protected $fillable = [
         'supervisor_id',
-        'enumerator_id'
+        'enumerator_id',
     ];
 
     public function supervisor()

@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 $namespace = 'App\Http\Controllers';
@@ -10,16 +9,16 @@ Route::group([
     'namespace' => $namespace,
     'middleware' => ['json-response', 'cors'],
 ], function () {
-    require __DIR__ . '/v1/auth.php';
-    require __DIR__ . '/v1/user.php';
+    require __DIR__.'/v1/auth.php';
+    require __DIR__.'/v1/user.php';
+    require __DIR__.'/v1/supervisor-enumerator.php';
+    require __DIR__.'/v1/indicator-reporting.php';
 
     Route::prefix('locations')->name('api.locations.')->group(function () {
         Route::get('/zones', [App\Http\Controllers\LocationController::class, 'ApiGetZones'])->name('zones');
         Route::get('/states', [App\Http\Controllers\LocationController::class, 'ApiGetStates'])->name('states');
         Route::get('/lgas', [App\Http\Controllers\LocationController::class, 'ApiGetLgas'])->name('lgas');
     });
-
-
 
     // Protected enumeration submissions (JWT auth)
     Route::group([
@@ -33,48 +32,43 @@ Route::group([
 
     Route::prefix('forms')->name('forms.')->middleware('jwt.verify')->group(function () {
 
-    Route::prefix('indicator')->controller('IndicatorFormController')->name('indicator.')->group(function () {
+        Route::prefix('indicator')->controller('IndicatorFormController')->name('indicator.')->group(function () {
 
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');
             Route::get('/fields', 'getIndicatorFormFields')->name('fields');
 
-    });
-    });
-
-
-
-    /// prgrams
-
-Route::prefix('programs')->name('programs.')->group(function () {
-    Route::prefix('indicators')->name('indicators.')->group(function () {
-        Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getIndicators'])->name('list');
+        });
     });
 
-    Route::prefix('modules')->name('modules.')->group(function () {
-        Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getModules'])->name('list');
+    // / prgrams
+
+    Route::prefix('programs')->name('programs.')->group(function () {
+        Route::prefix('indicators')->name('indicators.')->group(function () {
+            Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getIndicators'])->name('list');
+        });
+
+        Route::prefix('modules')->name('modules.')->group(function () {
+            Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getModules'])->name('list');
+        });
+        Route::prefix('sectoral-goals')->name('sectoral-goals.')->group(function () {
+            Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getSectoralGoals'])->name('list');
+        });
+
     });
-    Route::prefix('sectoral-goals')->name('sectoral-goals.')->group(function () {
-        Route::get('/', [App\Http\Controllers\ProgramsController::class, 'getSectoralGoals'])->name('list');
+
+    Route::prefix('departments')->name('departments.')->group(function () {
+        Route::get('/', [App\Http\Controllers\DepartmentController::class, 'getDepartments'])->name('list');
     });
 
-});
-
-
-Route::prefix('departments')->name('departments.')->group(function () {
-    Route::get('/', [App\Http\Controllers\DepartmentController::class, 'getDepartments'])->name('list');
-});
-
-// Activity logs routes
-Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
-    Route::get('/', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('index');
-    Route::get('/my-activity', [App\Http\Controllers\ActivityLogController::class, 'myActivity'])->name('my-activity');
-    Route::get('/statistics', [App\Http\Controllers\ActivityLogController::class, 'statistics'])->name('statistics');
-    Route::get('/{id}', [App\Http\Controllers\ActivityLogController::class, 'show'])->name('show');
-    Route::delete('/cleanup', [App\Http\Controllers\ActivityLogController::class, 'cleanup'])->name('cleanup');
-});
-
-
+    // Activity logs routes
+    Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
+        Route::get('/', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('index');
+        Route::get('/my-activity', [App\Http\Controllers\ActivityLogController::class, 'myActivity'])->name('my-activity');
+        Route::get('/statistics', [App\Http\Controllers\ActivityLogController::class, 'statistics'])->name('statistics');
+        Route::get('/{id}', [App\Http\Controllers\ActivityLogController::class, 'show'])->name('show');
+        Route::delete('/cleanup', [App\Http\Controllers\ActivityLogController::class, 'cleanup'])->name('cleanup');
+    });
 
 });
 
@@ -82,7 +76,7 @@ Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
 Route::middleware([
     \Illuminate\Cookie\Middleware\EncryptCookies::class,
     \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-    'api.session.auth'
+    'api.session.auth',
 ])->group(function () {
     Route::get('/dashboard/stats', [App\Http\Controllers\DashboardController::class, 'getStats'])->name('api.dashboard.stats');
 });
@@ -92,6 +86,3 @@ Route::prefix('app-setup')->group(function () {
     Route::get('/sectors', [App\Http\Controllers\AppSetupController::class, 'getSectors'])->name('api.app-setup.sectors');
 
 });
-
-
-

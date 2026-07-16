@@ -39,6 +39,11 @@ class DatabaseSeeder extends Seeder
             ProgramSeeder::class,
             CrossCuttingMetricSeeder::class,
             BondDeliverableSeeder::class,
+
+            // Indicator reporting & approval workflow (needs roles + departments above)
+            ReportingPeriodSeeder::class,
+            IndicatorReportingSettingsSeeder::class,
+            ApprovalWorkflowSeeder::class,
         ]);
     }
 }

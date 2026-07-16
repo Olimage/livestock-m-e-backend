@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Models\Zone;
@@ -6,7 +7,6 @@ use Illuminate\Database\Seeder;
 
 class ZonesSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      */
@@ -15,8 +15,8 @@ class ZonesSeeder extends Seeder
 
         $zoneData = [
             [
-                'name'   => 'North Central',
-                'code'   => 'NC',
+                'name' => 'North Central',
+                'code' => 'NC',
                 'states' => [
                     [
                         'name' => 'Benue',
@@ -49,8 +49,8 @@ class ZonesSeeder extends Seeder
                 ],
             ],
             [
-                'name'   => 'North East',
-                'code'   => 'NE',
+                'name' => 'North East',
+                'code' => 'NE',
                 'states' => [
                     [
                         'name' => 'Adamawa',
@@ -79,8 +79,8 @@ class ZonesSeeder extends Seeder
                 ],
             ],
             [
-                'name'   => 'North West',
-                'code'   => 'NW',
+                'name' => 'North West',
+                'code' => 'NW',
                 'states' => [
                     [
                         'name' => 'Jigawa',
@@ -113,8 +113,8 @@ class ZonesSeeder extends Seeder
                 ],
             ],
             [
-                'name'   => 'South East',
-                'code'   => 'SE',
+                'name' => 'South East',
+                'code' => 'SE',
                 'states' => [
                     [
                         'name' => 'Abia',
@@ -139,8 +139,8 @@ class ZonesSeeder extends Seeder
                 ],
             ],
             [
-                'name'   => 'South South',
-                'code'   => 'SS',
+                'name' => 'South South',
+                'code' => 'SS',
                 'states' => [
                     [
                         'name' => 'Akwa-Ibom',
@@ -169,8 +169,8 @@ class ZonesSeeder extends Seeder
                 ],
             ],
             [
-                'name'   => 'South West',
-                'code'   => 'SW',
+                'name' => 'South West',
+                'code' => 'SW',
                 'states' => [
                     [
                         'name' => 'Ekiti',

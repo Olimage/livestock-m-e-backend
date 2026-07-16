@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\MokData;
+use Illuminate\Database\Seeder;
 
 class MockDataSeeder extends Seeder
 {
@@ -20,12 +19,12 @@ class MockDataSeeder extends Seeder
         $stats = [
             [
                 'name' => 'stat_recordsSaved',
-                'value' => 15234
+                'value' => 15234,
             ],
             [
                 'name' => 'stat_dataPendingSync',
-                'value' => 487
-            ]
+                'value' => 487,
+            ],
         ];
 
         foreach ($stats as $stat) {

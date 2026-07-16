@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Program;
 use App\Models\NlgasPillar;
+use App\Models\Program;
+use Illuminate\Database\Seeder;
 
 class ProgramSeeder extends Seeder
 {
@@ -14,7 +14,7 @@ class ProgramSeeder extends Seeder
     public function run(): void
     {
         // Helper function to get pillar ID by code
-        $pillar = fn(string $code) => NlgasPillar::where('code', $code)->first()?->id;
+        $pillar = fn (string $code) => NlgasPillar::where('code', $code)->first()?->id;
 
         // Pillar 1 Programs: Economic Growth & Diversification
         Program::firstOrCreate(['code' => 'P1.1'], [

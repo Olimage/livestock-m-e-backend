@@ -14,22 +14,22 @@ class EnumerationRecordController extends Controller
         $user = auth()->user();
 
         $validated = $request->validate([
-            'enumerator_name' => ['nullable','string','max:255'],
-            'form_type' => ['required','string', Rule::in(EnumerationRecord::FORM_TYPES)],
-            'latitude' => ['nullable','numeric','between:-90,90'],
-            'longitude' => ['nullable','numeric','between:-180,180'],
-            'device_id' => ['nullable','string','max:255'],
-            'form_data' => ['required','array'],
-            'submitted_at' => ['nullable','date'],
+            'enumerator_name' => ['nullable', 'string', 'max:255'],
+            'form_type' => ['required', 'string', Rule::in(EnumerationRecord::FORM_TYPES)],
+            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'device_id' => ['nullable', 'string', 'max:255'],
+            'form_data' => ['required', 'array'],
+            'submitted_at' => ['nullable', 'date'],
             'zone_id' => 'required|exists:zones,id',
             'state_id' => 'required|exists:states,id',
             'lga_id' => 'required|exists:lgas,id',
         ]);
 
-        $record = new EnumerationRecord();
+        $record = new EnumerationRecord;
         $record->fill([
             'user_id' => $user?->id,
-            'enumerator_name' =>  $user?->full_name ,
+            'enumerator_name' => $user?->full_name,
             'form_type' => $validated['form_type'],
             'latitude' => $validated['latitude'] ?? null,
             'longitude' => $validated['longitude'] ?? null,

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('value');
             $table->timestamp('submitted_at')->nullable();
             $table->timestamps();
-            
+
             $table->index('user_id');
             $table->index('submitted_at');
         });

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('title');
-            $table->string('slug')->unique();   
+            $table->string('slug')->unique();
             $table->text('description')->nullable();
 
             $table->enum('indicator_type', ['outcome', 'output', 'impact'])->default('output');

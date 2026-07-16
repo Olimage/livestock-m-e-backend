@@ -20,7 +20,7 @@ class Zone extends Model
         });
     }
 
-    function states()
+    public function states()
     {
         return $this->hasMany(State::class);
     }

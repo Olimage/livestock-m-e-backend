@@ -15,7 +15,7 @@ class PillarProgramOutputIndicator extends Model
     protected static function booted(): void
     {
         static::created(function (self $model) {
-            $model->updateQuietly(['code' => 'PPOI-' . $model->id]);
+            $model->updateQuietly(['code' => 'PPOI-'.$model->id]);
         });
     }
 

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('enumerator_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
 
-             $table->unique(['supervisor_id', 'enumerator_id']);
+            $table->unique(['supervisor_id', 'enumerator_id']);
         });
     }
 

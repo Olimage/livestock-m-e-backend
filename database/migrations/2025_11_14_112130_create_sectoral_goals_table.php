@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('sectoral_goals', function (Blueprint $table) {
             $table->id();
-                        $table->string('code')->unique();
+            $table->string('code')->unique();
             $table->string('title');
             $table->text('description');
             $table->timestamps();

@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Session extends Model
 {
@@ -16,10 +16,10 @@ class Session extends Model
         'payload',
         'last_activity',
     ];
+
     protected $hidden = [
         'user_id',
     ];
-
 
     // Casts
     protected $casts = [

@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('indicators', function (Blueprint $table) {
-            $table->dropColumn([ 'target_value', 'target_year']);
+            $table->dropColumn(['target_value', 'target_year']);
         });
     }
 

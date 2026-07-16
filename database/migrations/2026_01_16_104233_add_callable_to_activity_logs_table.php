@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('callable_type')->nullable()->after('user_id');
             $table->unsignedBigInteger('callable_id')->nullable()->after('callable_type');
             $table->string('db_action')->nullable()->after('callable_id'); // created, updated, deleted, etc.
-            
+
             $table->index(['callable_type', 'callable_id']);
         });
     }

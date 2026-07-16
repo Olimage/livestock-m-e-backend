@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Role;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class RoleSeeder extends Seeder
@@ -16,51 +15,55 @@ class RoleSeeder extends Seeder
         $data = [
             [
                 'name' => 'Super Admin',
-                'slug' => 'super_admin'
+                'slug' => 'super_admin',
             ],
             [
                 'name' => 'Admin',
-                'slug' => 'admin'
+                'slug' => 'admin',
             ],
             [
                 'name' => 'Head of Department',
-                'slug' => 'hod'
+                'slug' => 'hod',
             ],
             [
                 'name' => 'Minister',
-                'slug' => 'minister'
+                'slug' => 'minister',
             ],
             [
                 'name' => 'Permanent Secretary',
-                'slug' => 'permanent_secretary'
+                'slug' => 'permanent_secretary',
             ],
             [
                 'name' => 'Field Agent',
-                'slug' => 'field_agent'
+                'slug' => 'field_agent',
             ],
             [
                 'name' => 'State Coordinator',
-                'slug' => 'state_coordinator'
+                'slug' => 'state_coordinator',
             ],
             [
                 'name' => 'User',
-                'slug' => 'user'
+                'slug' => 'user',
             ],
             [
                 'name' => 'Enumerator',
-                'slug' => 'enumerator'
+                'slug' => 'enumerator',
             ],
             [
                 'name' => 'Supervisor',
-                'slug' => 'supervisor'
+                'slug' => 'supervisor',
             ],
             [
                 'name' => 'Livestock Extension Officer',
-                'slug' => 'livestock_extension_officer'
+                'slug' => 'livestock_extension_officer',
             ],
             [
                 'name' => 'Director',
-                'slug' => 'director'
+                'slug' => 'director',
+            ],
+            [
+                'name' => 'PRS',
+                'slug' => 'prs',
             ],
         ];
 

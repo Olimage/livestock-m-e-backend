@@ -9,7 +9,6 @@ class RefreshToken extends Model
 {
     use HasFactory;
 
-
     protected $guarded = [];
 
     protected $casts = [
@@ -19,5 +18,4 @@ class RefreshToken extends Model
     protected $hidden = [
         'user_id',
     ];
-    
 }

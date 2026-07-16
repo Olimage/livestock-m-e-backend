@@ -16,7 +16,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('indicators', function (Blueprint $table) {
-          
+
             $table->string('data_source')->nullable()->after('measurement_unit');
         });
     }
