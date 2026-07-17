@@ -107,6 +107,8 @@ class LoginController extends Controller
                     'full_name' => $user->full_name,
                     'email' => $user->email,
                     'roles' => $user->roles()->pluck('slug'),
+                    'is_admin' => (bool) $user->is_admin,
+                    'permissions' => $user->getPermissionNames(),
                 ],
             ], 200);
 
@@ -159,6 +161,34 @@ class LoginController extends Controller
         }
 
         return null;
+    }
+
+    /**
+     * Return the authenticated user's profile + permission keys.
+     * Lets the frontend refresh permissions on reload without re-login.
+     */
+    public function me()
+    {
+        $user = auth('api')->user();
+
+        if (! $user) {
+            return response()->json(['status' => false, 'message' => 'Unauthenticated'], 401);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Success',
+            'data' => [
+                'user' => [
+                    'id' => $user->id,
+                    'full_name' => $user->full_name,
+                    'email' => $user->email,
+                    'roles' => $user->roles()->pluck('slug'),
+                    'is_admin' => (bool) $user->is_admin,
+                ],
+                'permissions' => $user->getPermissionNames(),
+            ],
+        ]);
     }
 
     public function signOut()

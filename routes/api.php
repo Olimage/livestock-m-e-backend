@@ -61,6 +61,37 @@ Route::group([
         Route::get('/', [App\Http\Controllers\DepartmentController::class, 'getDepartments'])->name('list');
     });
 
+    // Dashboard analytics endpoints (JWT) — see docs/superpowers/specs/2026-07-16-mems-dashboard-api-contract.md
+    Route::middleware('jwt.verify')->group(function () {
+        Route::get('/bond-deliverables', [App\Http\Controllers\Api\BondDeliverableApiController::class, 'index'])
+            ->name('api.bond-deliverables.index');
+
+        Route::get('/sector-outcomes', [App\Http\Controllers\Api\SectorOutcomeApiController::class, 'index'])
+            ->name('api.sector-outcomes.index');
+        Route::get('/sector-outcomes/{id}/trends', [App\Http\Controllers\Api\SectorOutcomeApiController::class, 'trends'])
+            ->whereNumber('id')->name('api.sector-outcomes.trends');
+
+        Route::get('/strategic-programs', [App\Http\Controllers\Api\StrategicProgramApiController::class, 'index'])
+            ->name('api.strategic-programs.index');
+
+        Route::get('/dashboard/overview', [App\Http\Controllers\Api\DashboardApiController::class, 'overview'])
+            ->name('api.dashboard.overview');
+        Route::get('/dashboard/alerts', [App\Http\Controllers\Api\DashboardApiController::class, 'alerts'])
+            ->name('api.dashboard.alerts');
+        Route::get('/dashboard/status-breakdown', [App\Http\Controllers\Api\DashboardApiController::class, 'statusBreakdown'])
+            ->name('api.dashboard.status-breakdown');
+
+        Route::get('/data-health/metrics', [App\Http\Controllers\Api\DataHealthApiController::class, 'metrics'])
+            ->name('api.data-health.metrics');
+        Route::get('/data-health/validators', [App\Http\Controllers\Api\DataHealthApiController::class, 'validators'])
+            ->name('api.data-health.validators');
+        Route::get('/data-health/activity-log', [App\Http\Controllers\Api\DataHealthApiController::class, 'activityLog'])
+            ->name('api.data-health.activity-log');
+
+        Route::get('/reporting-obligations', [App\Http\Controllers\Api\ReportingObligationApiController::class, 'index'])
+            ->name('api.reporting-obligations.index');
+    });
+
     // Activity logs routes
     Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
         Route::get('/', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('index');
@@ -81,8 +112,7 @@ Route::middleware([
     Route::get('/dashboard/stats', [App\Http\Controllers\DashboardController::class, 'getStats'])->name('api.dashboard.stats');
 });
 
-Route::prefix('app-setup')->group(function () {
-    Route::get('/departments', [App\Http\Controllers\AppSetupController::class, 'getDepartments'])->name('api.app-setup.departments');
-    Route::get('/sectors', [App\Http\Controllers\AppSetupController::class, 'getSectors'])->name('api.app-setup.sectors');
-
-});
+// NOTE: the former `app-setup` routes referenced App\Http\Controllers\AppSetupController,
+// a class that does not exist — they always 500'd and broke `php artisan route:list`.
+// Removed as dead code (no callers anywhere in mems or the frontends). If app-setup
+// endpoints are needed later, add the controller first, then the routes.

@@ -15,11 +15,19 @@ class Program extends Model
         'nlgas_pillar_id',
         'code',
         'title',
+        'owner',
+        'planned_amount',
+        'actual_amount',
+        'coverage',
+        'coverage_states',
     ];
 
     protected $casts = [
         'baseline_year' => 'integer',
         'target_year' => 'integer',
+        'planned_amount' => 'decimal:2',
+        'actual_amount' => 'decimal:2',
+        'coverage_states' => 'array',
     ];
 
     /**

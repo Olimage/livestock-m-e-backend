@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             ResultChainIndicatorSeeder::class,
             DisagregationSeeder::class,
             ProgramSeeder::class,
+            ProgramDetailsSeeder::class,
             CrossCuttingMetricSeeder::class,
             BondDeliverableSeeder::class,
 
@@ -44,6 +45,11 @@ class DatabaseSeeder extends Seeder
             ReportingPeriodSeeder::class,
             IndicatorReportingSettingsSeeder::class,
             ApprovalWorkflowSeeder::class,
+            DashboardSampleSeeder::class,
+            ReportingWorkflowStatesSeeder::class,
+            // Catalog MUST precede role assignments (assignments look up permission ids).
+            DashboardPermissionsSeeder::class,
+            DashboardRoleAssignmentsSeeder::class,
         ]);
     }
 }
