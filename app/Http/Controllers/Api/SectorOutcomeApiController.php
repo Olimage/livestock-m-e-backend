@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ImpactIndicator;
+use App\Models\IndicatorBaselineYear;
 use App\Models\OutcomeIndicator;
 use App\Models\OutputIndicator;
 use App\Models\SectoralGoal;
@@ -67,6 +69,35 @@ class SectorOutcomeApiController extends Controller
             return response()->json(['status' => true, 'message' => 'Success', 'data' => $data]);
         } catch (\Throwable $e) {
             return $this->fail('Failed to retrieve sector outcome trends', $e);
+        }
+    }
+
+    /**
+     * GET /api/v1/sector-outcomes/impact — impact indicators for the sector
+     * dashboard's Impact section (with baselines).
+     */
+    public function impact()
+    {
+        try {
+            $baselines = IndicatorBaselineYear::where('indicatorable_type', ImpactIndicator::class)
+                ->get()
+                ->keyBy('indicatorable_id');
+
+            $data = ImpactIndicator::orderBy('code')->get()->map(function (ImpactIndicator $indicator) use ($baselines) {
+                $block = IndicatorPerformance::present($indicator, ImpactIndicator::class);
+                $baseline = $baselines->get($indicator->id);
+
+                return array_merge($block, [
+                    'currentValue' => $block['actual'],
+                    'baseline' => $baseline?->baseline !== null ? (float) $baseline->baseline : null,
+                    'baselineYear' => $baseline?->baseline_year,
+                    'target' => $baseline?->target !== null ? (float) $baseline->target : $block['target'],
+                ]);
+            });
+
+            return response()->json(['status' => true, 'message' => 'Success', 'data' => $data]);
+        } catch (\Throwable $e) {
+            return $this->fail('Failed to retrieve impact indicators', $e);
         }
     }
 

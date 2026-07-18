@@ -69,6 +69,38 @@ class ReportingObligationApiController extends Controller
         }
     }
 
+    /**
+     * GET /api/v1/suppressed-indicators — returned/rejected reports, shaped for
+     * the Suppressed tab (indicators withheld from the published dataset).
+     */
+    public function suppressed()
+    {
+        try {
+            $reports = IndicatorReport::with(['indicator', 'department', 'period'])
+                ->where('status', ReportStatus::Returned)
+                ->orderByDesc('updated_at')
+                ->get();
+
+            $data = $reports->map(fn (IndicatorReport $r) => [
+                'id' => $r->id,
+                'indicator' => $r->indicator?->title ?? $r->indicator_code ?? "Indicator {$r->indicator_id}",
+                'owner' => $r->department?->name ?? '—',
+                'period' => $r->period?->name ?? '—',
+                'reason' => $r->narrative ?: 'Returned for revision during validation.',
+                'suppressedDate' => $r->updated_at?->toDateString(),
+                'lastAction' => 'Rejected',
+            ]);
+
+            return response()->json(['status' => true, 'message' => 'Success', 'data' => $data]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to retrieve suppressed indicators',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     private function statusLabel(ReportStatus $status): string
     {
         return match ($status) {

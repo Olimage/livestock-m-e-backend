@@ -46,6 +46,7 @@ class DatabaseSeeder extends Seeder
             IndicatorReportingSettingsSeeder::class,
             ApprovalWorkflowSeeder::class,
             DashboardSampleSeeder::class,
+            IndicatorBaselineSeeder::class,
             ReportingWorkflowStatesSeeder::class,
             // Catalog MUST precede role assignments (assignments look up permission ids).
             DashboardPermissionsSeeder::class,

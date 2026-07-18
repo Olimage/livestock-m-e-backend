@@ -68,6 +68,8 @@ Route::group([
 
         Route::get('/sector-outcomes', [App\Http\Controllers\Api\SectorOutcomeApiController::class, 'index'])
             ->name('api.sector-outcomes.index');
+        Route::get('/sector-outcomes/impact', [App\Http\Controllers\Api\SectorOutcomeApiController::class, 'impact'])
+            ->name('api.sector-outcomes.impact');
         Route::get('/sector-outcomes/{id}/trends', [App\Http\Controllers\Api\SectorOutcomeApiController::class, 'trends'])
             ->whereNumber('id')->name('api.sector-outcomes.trends');
 
@@ -90,6 +92,20 @@ Route::group([
 
         Route::get('/reporting-obligations', [App\Http\Controllers\Api\ReportingObligationApiController::class, 'index'])
             ->name('api.reporting-obligations.index');
+        Route::get('/suppressed-indicators', [App\Http\Controllers\Api\ReportingObligationApiController::class, 'suppressed'])
+            ->name('api.suppressed-indicators.index');
+
+        Route::get('/result-chain', [App\Http\Controllers\Api\ResultChainApiController::class, 'index'])
+            ->name('api.result-chain.index');
+
+        Route::get('/sector-trends', [App\Http\Controllers\Api\SectorTrendApiController::class, 'index'])
+            ->name('api.sector-trends.index');
+
+        Route::get('/sector-map', [App\Http\Controllers\Api\SectorMapApiController::class, 'index'])
+            ->name('api.sector-map.index');
+
+        Route::get('/validation-pipeline', [App\Http\Controllers\Api\ValidationPipelineApiController::class, 'index'])
+            ->name('api.validation-pipeline.index');
     });
 
     // Activity logs routes
