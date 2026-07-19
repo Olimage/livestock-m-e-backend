@@ -104,7 +104,7 @@ class DashboardSampleSeeder extends Seeder
                         continue;
                     }
 
-                    [$target, $actual] = $this->targetActual($index);
+                    [$target, $actual] = $this->targetActual($index, $class);
 
                     $report = IndicatorReport::create([
                         'indicator_type' => $class,
@@ -226,9 +226,12 @@ class DashboardSampleSeeder extends Seeder
     /**
      * @return array{0: float, 1: float} [target, actual]
      */
-    private function targetActual(int $periodIndex): array
+    private function targetActual(int $periodIndex, string $class): array
     {
-        $target = (float) rand(100, 1000);
+        // Impact indicators are percentage-scaled (0-100) so the dashboard's
+        // Impact cards read cleanly against their baselines; other indicator
+        // types use a larger count scale.
+        $target = $class === ImpactIndicator::class ? (float) rand(65, 90) : (float) rand(100, 1000);
         // Spread across below/on/above target for a realistic status mix.
         $factor = [0.62, 0.85, 1.12, 0.95, 1.30][array_rand([0, 1, 2, 3, 4])];
         $actual = round($target * $factor, 2);
