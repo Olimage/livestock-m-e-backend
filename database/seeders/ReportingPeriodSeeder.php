@@ -9,12 +9,16 @@ class ReportingPeriodSeeder extends Seeder
 {
     public function run(): void
     {
-        $year = (int) date('Y');
-        foreach ([1, 2, 3, 4] as $q) {
-            ReportingPeriod::updateOrCreate(
-                ['type' => 'quarter', 'year' => $year, 'period_number' => $q],
-                ['name' => "Q{$q} {$year}", 'is_open' => true],
-            );
+        // Cover previous, current and next year so reporting can be done for
+        // prior periods. Past years are closed; current + next stay open.
+        $currentYear = (int) date('Y');
+        foreach (range($currentYear - 2, $currentYear + 1) as $year) {
+            foreach ([1, 2, 3, 4] as $q) {
+                ReportingPeriod::updateOrCreate(
+                    ['type' => 'quarter', 'year' => $year, 'period_number' => $q],
+                    ['name' => "Q{$q} {$year}", 'is_open' => $year >= $currentYear],
+                );
+            }
         }
     }
 }

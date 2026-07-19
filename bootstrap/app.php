@@ -76,9 +76,18 @@ $app = Application::configure(basePath: dirname(__DIR__))
                 return null;
             }
 
-            // For other Inertia errors, redirect back with a flash error for toast display
+            // For other Inertia errors, redirect back with a human-readable flash
+            // error for toast display. Raw DB/internal errors are never shown to users.
             if ($request->header('X-Inertia')) {
-                return redirect()->back()->with('error', $exception->getMessage());
+                if ($exception instanceof \Illuminate\Database\QueryException) {
+                    $message = 'That action could not be completed — the record may already exist or be linked to other data.';
+                } elseif ($exception instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface) {
+                    $message = $exception->getMessage() ?: 'You are not allowed to perform that action.';
+                } else {
+                    $message = 'Something went wrong. Please try again.';
+                }
+
+                return redirect()->back()->with('error', $message);
             }
 
             // Non-Inertia requests: return JSON.
