@@ -1,0 +1,1761 @@
+{
+	"info": {
+		"_postman_id": "b7f0c4a1-3d2e-4a9b-8c1f-fmldmems0001",
+		"name": "FMLD MEMS API (v1)",
+		"description": "Complete API collection for the **mems** project — the FMLD Monitoring & Evaluation (M&E) backend (Laravel 11 · JWT auth). Base host is served at `fmld.olimageserver.com`.\n\nAll versioned routes are prefixed with `/api/v1`. Auth is JWT via `tymon/jwt-auth` (middleware `jwt.verify`, or the `auth:api` guard). The one session-authenticated route (`/api/dashboard/stats`) lives outside the v1 group.\n\n## Getting started\n1. Select the **FMLD MEMS** environment.\n2. Run **Auth › Sign In** — a test script stores `token` and `refresh_token` automatically.\n3. Every other request inherits Bearer `{{token}}` from the collection.\n\nSample responses are attached to each request under the **Examples** tab.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{ "key": "token", "value": "{{token}}", "type": "string" }
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": { "type": "text/javascript", "exec": [""] }
+		}
+	],
+	"variable": [
+		{ "key": "base_url", "value": "https://fmld.olimageserver.com" }
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"description": "Authentication — JWT sign-in / profile / sign-out.",
+			"item": [
+				{
+					"name": "Sign In",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res && res.token) {",
+									"    pm.collectionVariables.set('token', res.token);",
+									"    pm.environment.set('token', res.token);",
+									"}",
+									"if (res && res.refresh_token) {",
+									"    pm.collectionVariables.set('refresh_token', res.refresh_token);",
+									"    pm.environment.set('refresh_token', res.refresh_token);",
+									"}",
+									"pm.test('login successful', () => pm.expect(pm.response.code).to.eql(200));"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/sign-in",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "sign-in"]
+						},
+						"description": "Authenticate with email + password. Returns a JWT `token`, a `refresh_token`, and the user's roles/permissions."
+					},
+					"response": [
+						{
+							"name": "200 — Login successful",
+							"originalRequest": {
+								"method": "POST",
+								"header": [{ "key": "Content-Type", "value": "application/json" }],
+								"body": { "mode": "raw", "raw": "{\n    \"email\": \"admin@fmld.gov.ng\",\n    \"password\": \"secret123\"\n}" },
+								"url": { "raw": "{{base_url}}/api/v1/auth/sign-in", "host": ["{{base_url}}"], "path": ["api", "v1", "auth", "sign-in"] }
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Login successful\",\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2ZtbGQ...\",\n    \"refresh_token\": \"9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 3600,\n    \"user\": {\n        \"id\": 1,\n        \"full_name\": \"System Administrator\",\n        \"email\": \"admin@fmld.gov.ng\",\n        \"roles\": [\"super_admin\"],\n        \"is_admin\": true,\n        \"permissions\": [\"manage-users\", \"report-indicator-data\", \"approve-indicator-reports\"]\n    }\n}"
+						},
+						{
+							"name": "401 — Invalid credentials",
+							"originalRequest": {
+								"method": "POST",
+								"header": [{ "key": "Content-Type", "value": "application/json" }],
+								"body": { "mode": "raw", "raw": "{\n    \"email\": \"admin@fmld.gov.ng\",\n    \"password\": \"wrong\"\n}" },
+								"url": { "raw": "{{base_url}}/api/v1/auth/sign-in", "host": ["{{base_url}}"], "path": ["api", "v1", "auth", "sign-in"] }
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": false,\n    \"message\": \"Invalid credentials - password mismatch\",\n    \"error\": \"Authentication failed\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Me (current user)",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/me",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "me"]
+						},
+						"description": "Return the authenticated user's profile + permission keys. Lets the frontend refresh permissions on reload without re-login. Requires `jwt.verify`."
+					},
+					"response": [
+						{
+							"name": "200 — Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": { "raw": "{{base_url}}/api/v1/auth/me", "host": ["{{base_url}}"], "path": ["api", "v1", "auth", "me"] }
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": {\n        \"user\": {\n            \"id\": 1,\n            \"full_name\": \"System Administrator\",\n            \"email\": \"admin@fmld.gov.ng\",\n            \"roles\": [\"super_admin\"],\n            \"is_admin\": true\n        },\n        \"permissions\": [\"manage-users\", \"report-indicator-data\", \"approve-indicator-reports\"]\n    }\n}"
+						},
+						{
+							"name": "401 — Unauthenticated",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": { "raw": "{{base_url}}/api/v1/auth/me", "host": ["{{base_url}}"], "path": ["api", "v1", "auth", "me"] }
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": false,\n    \"message\": \"Unauthenticated\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Sign Out",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/sign-out",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "sign-out"]
+						},
+						"description": "Invalidate the current JWT. Requires `jwt.verify` and `email.verify`."
+					},
+					"response": [
+						{
+							"name": "200 — Logged out",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": { "raw": "{{base_url}}/api/v1/auth/sign-out", "host": ["{{base_url}}"], "path": ["api", "v1", "auth", "sign-out"] }
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Logged out successfully\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "User",
+			"description": "Authenticated user profile (JWT).",
+			"item": [
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/user/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "user", "profile"]
+						},
+						"description": "Fetch the authenticated user's full record. Requires `jwt.verify`."
+					},
+					"response": [
+						{
+							"name": "200 — Profile fetched",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": { "raw": "{{base_url}}/api/v1/user/profile", "host": ["{{base_url}}"], "path": ["api", "v1", "user", "profile"] }
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"profile fetched successfully\",\n    \"data\": {\n        \"id\": 1,\n        \"full_name\": \"System Administrator\",\n        \"email\": \"admin@fmld.gov.ng\",\n        \"is_admin\": true,\n        \"email_verified_at\": \"2026-01-10T09:00:00.000000Z\",\n        \"created_at\": \"2026-01-10T09:00:00.000000Z\",\n        \"updated_at\": \"2026-07-19T08:00:00.000000Z\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Locations",
+			"description": "Geography reference data — Zone → State → LGA. Public (no auth).",
+			"item": [
+				{
+					"name": "Zones",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/locations/zones",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "locations", "zones"]
+						},
+						"description": "List all geopolitical zones."
+					},
+					"response": [
+						{
+							"name": "200 — Zones fetched",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": { "raw": "{{base_url}}/api/v1/locations/zones", "host": ["{{base_url}}"], "path": ["api", "v1", "locations", "zones"] }
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Zones fetched successfully\",\n    \"data\": [\n        { \"id\": 1, \"name\": \"North Central\", \"code\": \"NC\" },\n        { \"id\": 2, \"name\": \"North East\", \"code\": \"NE\" },\n        { \"id\": 3, \"name\": \"South West\", \"code\": \"SW\" }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "States",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/locations/states?zone_id={{zone_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "locations", "states"],
+							"query": [{ "key": "zone_id", "value": "{{zone_id}}", "description": "Required. Filter states by zone." }]
+						},
+						"description": "List states within a zone. `zone_id` is required."
+					},
+					"response": [
+						{
+							"name": "200 — States fetched",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": { "raw": "{{base_url}}/api/v1/locations/states?zone_id=1", "host": ["{{base_url}}"], "path": ["api", "v1", "locations", "states"], "query": [{ "key": "zone_id", "value": "1" }] }
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"States fetched successfully\",\n    \"data\": [\n        { \"id\": 12, \"name\": \"Benue\", \"zone_id\": 1 },\n        { \"id\": 13, \"name\": \"Kogi\", \"zone_id\": 1 },\n        { \"id\": 14, \"name\": \"Plateau\", \"zone_id\": 1 }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "LGAs",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/locations/lgas?state_id={{state_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "locations", "lgas"],
+							"query": [{ "key": "state_id", "value": "{{state_id}}", "description": "Required. Filter LGAs by state." }]
+						},
+						"description": "List LGAs within a state. `state_id` is required."
+					},
+					"response": [
+						{
+							"name": "200 — LGAs fetched",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": { "raw": "{{base_url}}/api/v1/locations/lgas?state_id=12", "host": ["{{base_url}}"], "path": ["api", "v1", "locations", "lgas"], "query": [{ "key": "state_id", "value": "12" }] }
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Lgas fetched successfully\",\n    \"data\": [\n        { \"id\": 201, \"name\": \"Makurdi\", \"state_id\": 12 },\n        { \"id\": 202, \"name\": \"Gboko\", \"state_id\": 12 }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Programs",
+			"description": "Result-chain reference data — indicators, modules, sectoral goals. Public (no auth).",
+			"item": [
+				{
+					"name": "Indicators",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/programs/indicators",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "programs", "indicators"]
+						},
+						"description": "All result-chain indicators (impact / outcome / output / bond), unioned and keyed by code."
+					},
+					"response": [
+						{
+							"name": "200 — Indicators",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": { "raw": "{{base_url}}/api/v1/programs/indicators", "host": ["{{base_url}}"], "path": ["api", "v1", "programs", "indicators"] }
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"data\": [\n        { \"code\": \"IMP-1\", \"title\": \"Livestock sector contribution to GDP\", \"measurement_unit\": \"%\", \"type_label\": \"Impact\" },\n        { \"code\": \"OCI-3\", \"title\": \"Vaccination coverage rate\", \"measurement_unit\": \"%\", \"type_label\": \"Outcome\" },\n        { \"code\": \"OPT-7\", \"title\": \"Number of animals vaccinated\", \"measurement_unit\": \"count\", \"type_label\": \"Output\" }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Modules",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/programs/modules",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "programs", "modules"]
+						},
+						"description": "List programme modules."
+					},
+					"response": [
+						{
+							"name": "200 — Modules",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": { "raw": "{{base_url}}/api/v1/programs/modules", "host": ["{{base_url}}"], "path": ["api", "v1", "programs", "modules"] }
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"data\": [\n        { \"name\": \"Animal Health\", \"code\": \"AH\", \"description\": \"Vaccination, mortality & disease surveillance\" },\n        { \"name\": \"Production & Productivity\", \"code\": \"PP\", \"description\": \"Livestock production metrics\" }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Sectoral Goals",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/programs/sectoral-goals",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "programs", "sectoral-goals"]
+						},
+						"description": "List sectoral goals."
+					},
+					"response": [
+						{
+							"name": "200 — Sectoral goals",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": { "raw": "{{base_url}}/api/v1/programs/sectoral-goals", "host": ["{{base_url}}"], "path": ["api", "v1", "programs", "sectoral-goals"] }
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"data\": [\n        { \"code\": \"SG1\", \"title\": \"Improved animal health\", \"description\": \"Reduce livestock disease burden\" },\n        { \"code\": \"SG2\", \"title\": \"Increased production & productivity\", \"description\": \"Grow national livestock output\" }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Departments",
+			"description": "Department hierarchy. Public (no auth).",
+			"item": [
+				{
+					"name": "List Departments",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/departments",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "departments"]
+						},
+						"description": "Top-level departments with all nested descendants."
+					},
+					"response": [
+						{
+							"name": "200 — Departments",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": { "raw": "{{base_url}}/api/v1/departments", "host": ["{{base_url}}"], "path": ["api", "v1", "departments"] }
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"data\": [\n        {\n            \"name\": \"Department of Veterinary Services\",\n            \"slug\": \"veterinary-services\",\n            \"is_technical\": true,\n            \"is_agency\": false,\n            \"parent_id\": null,\n            \"descendants\": [\n                { \"name\": \"Animal Health Division\", \"slug\": \"animal-health\", \"is_technical\": true, \"is_agency\": false, \"parent_id\": 1, \"descendants\": [] }\n            ]\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Indicator Forms",
+			"description": "Indicator value form submissions (JWT).",
+			"item": [
+				{
+					"name": "List Indicator Forms",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/forms/indicator?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "forms", "indicator"],
+							"query": [{ "key": "per_page", "value": "15" }]
+						},
+						"description": "Paginated list of indicator form submissions."
+					},
+					"response": [
+						{
+							"name": "200 — Paginated forms",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": { "raw": "{{base_url}}/api/v1/forms/indicator?per_page=15", "host": ["{{base_url}}"], "path": ["api", "v1", "forms", "indicator"], "query": [{ "key": "per_page", "value": "15" }] }
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"current_page\": 1,\n        \"data\": [\n            { \"id\": 42, \"user_id\": 1, \"indicator_code\": \"OPT-7\", \"value\": \"1500\", \"submitted_at\": \"2026-07-18T10:15:00.000000Z\", \"user\": { \"id\": 1, \"full_name\": \"System Administrator\" } }\n        ],\n        \"per_page\": 15,\n        \"total\": 1,\n        \"last_page\": 1\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Indicator Form Fields",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/forms/indicator/fields?type=Impact",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "forms", "indicator", "fields"],
+							"query": [{ "key": "type", "value": "Impact", "description": "Optional. Filter by indicator type label (Impact / Outcome / Output).", "disabled": true }]
+						},
+						"description": "Collectable indicator fields, keyed by each indicator's globally-unique code. Optional `type` filter."
+					},
+					"response": [
+						{
+							"name": "200 — Fields",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": { "raw": "{{base_url}}/api/v1/forms/indicator/fields", "host": ["{{base_url}}"], "path": ["api", "v1", "forms", "indicator", "fields"] }
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"success\": true,\n    \"data\": [\n        { \"title\": \"Livestock sector contribution to GDP\", \"code\": \"IMP-1\", \"measurement_unit\": \"%\", \"type\": \"Impact\", \"type_prefix\": \"IMP\" },\n        { \"title\": \"Number of animals vaccinated\", \"code\": \"OPT-7\", \"measurement_unit\": \"count\", \"type\": \"Output\", \"type_prefix\": \"OPT\" }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Submit Indicator Form",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IMP-3\": 12,\n    \"OUT-1\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/forms/indicator",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "forms", "indicator"]
+						},
+						"description": "Store indicator value submissions. Payload keys are result-chain indicator codes with numeric values."
+					},
+					"response": [
+						{
+							"name": "201 — Submitted",
+							"originalRequest": {
+								"method": "POST",
+								"header": [{ "key": "Content-Type", "value": "application/json" }],
+								"body": { "mode": "raw", "raw": "{\n    \"IMP-3\": 12,\n    \"OUT-1\": 5\n}" },
+								"url": { "raw": "{{base_url}}/api/v1/forms/indicator", "host": ["{{base_url}}"], "path": ["api", "v1", "forms", "indicator"] }
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Indicator form submitted successfully.\",\n    \"data\": {\n        \"submitted_at\": \"2026-07-19T08:30:00.000000Z\",\n        \"count\": 2,\n        \"values\": {\n            \"IMP-3\": { \"id\": 51, \"value\": \"12\", \"unit\": \"%\", \"indicator_code\": \"IMP-3\", \"indicator_name\": \"Livestock mortality rate\" },\n            \"OUT-1\": { \"id\": 52, \"value\": \"5\", \"unit\": \"count\", \"indicator_code\": \"OUT-1\", \"indicator_name\": \"Cold-chain facilities operational\" }\n        }\n    }\n}"
+						},
+						{
+							"name": "422 — Validation failed",
+							"originalRequest": {
+								"method": "POST",
+								"header": [{ "key": "Content-Type", "value": "application/json" }],
+								"body": { "mode": "raw", "raw": "{\n    \"BAD-CODE\": 12\n}" },
+								"url": { "raw": "{{base_url}}/api/v1/forms/indicator", "host": ["{{base_url}}"], "path": ["api", "v1", "forms", "indicator"] }
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Validation failed.\",\n    \"errors\": {\n        \"indicators\": [\"Invalid indicator code(s): BAD-CODE\"]\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Enumeration",
+			"description": "Field enumeration record intake (JWT).",
+			"item": [
+				{
+					"name": "Store Enumeration Record",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"form_type\": \"livestock_census\",\n    \"latitude\": 7.7322,\n    \"longitude\": 8.5391,\n    \"device_id\": \"android-abc-123\",\n    \"form_data\": {\n        \"herd_size\": 45,\n        \"species\": \"cattle\"\n    },\n    \"submitted_at\": \"2026-07-19T07:00:00Z\",\n    \"zone_id\": 1,\n    \"state_id\": 12,\n    \"lga_id\": 201\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/enumeration-records",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "enumeration-records"]
+						},
+						"description": "Submit a field enumeration record. `form_type` must be a valid EnumerationRecord::FORM_TYPES value; `zone_id`/`state_id`/`lga_id` must exist. Requires `jwt.verify`."
+					},
+					"response": [
+						{
+							"name": "201 — Received",
+							"originalRequest": {
+								"method": "POST",
+								"header": [{ "key": "Content-Type", "value": "application/json" }],
+								"body": { "mode": "raw", "raw": "{\n    \"form_type\": \"livestock_census\",\n    \"form_data\": { \"herd_size\": 45 },\n    \"zone_id\": 1,\n    \"state_id\": 12,\n    \"lga_id\": 201\n}" },
+								"url": { "raw": "{{base_url}}/api/v1/enumeration-records", "host": ["{{base_url}}"], "path": ["api", "v1", "enumeration-records"] }
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Enumeration record received\",\n    \"data\": {\n        \"id\": 8801,\n        \"form_type\": \"livestock_census\",\n        \"sync_status\": \"synced\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Indicator Reporting",
+			"description": "The indicator reporting & approval workflow (JWT). Reports move through review stages via the approval workflow.",
+			"item": [
+				{
+					"name": "Workflows",
+					"description": "Admin: approval-workflow configuration (apiResource + department assignment).",
+					"item": [
+						{
+							"name": "List Workflows",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"url": { "raw": "{{base_url}}/api/v1/workflows", "host": ["{{base_url}}"], "path": ["api", "v1", "workflows"] },
+								"description": "List approval workflows with stages and departments. Requires `manage-approval-workflows`."
+							},
+							"response": [
+								{
+									"name": "200 — Workflows",
+									"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/workflows", "host": ["{{base_url}}"], "path": ["api", "v1", "workflows"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Standard M&E Review\",\n            \"description\": \"Two-stage departmental review\",\n            \"is_active\": true,\n            \"resubmit_behavior\": \"from_start\",\n            \"stages\": [\n                { \"id\": 1, \"name\": \"Departmental Review\", \"assignment_type\": \"role\", \"approval_mode\": \"any\" },\n                { \"id\": 2, \"name\": \"Director Approval\", \"assignment_type\": \"users\", \"approval_mode\": \"all\" }\n            ],\n            \"departments\": [{ \"id\": 3, \"name\": \"Animal Health Division\" }]\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Create Workflow",
+							"request": {
+								"method": "POST",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+								"body": { "mode": "raw", "raw": "{\n    \"name\": \"Standard M&E Review\",\n    \"description\": \"Two-stage departmental review\",\n    \"is_active\": true,\n    \"resubmit_behavior\": \"from_start\",\n    \"initiator_role_id\": 5,\n    \"stages\": [\n        { \"name\": \"Departmental Review\", \"assignment_type\": \"role\", \"role_id\": 6, \"approval_mode\": \"any\" },\n        { \"name\": \"Director Approval\", \"assignment_type\": \"users\", \"approval_mode\": \"all\", \"user_ids\": [2, 3] }\n    ],\n    \"department_ids\": [3]\n}" },
+								"url": { "raw": "{{base_url}}/api/v1/workflows", "host": ["{{base_url}}"], "path": ["api", "v1", "workflows"] },
+								"description": "Create an approval workflow with stages. Requires `manage-approval-workflows`."
+							},
+							"response": [
+								{
+									"name": "201 — Created",
+									"originalRequest": { "method": "POST", "header": [], "body": { "mode": "raw", "raw": "{\n    \"name\": \"Standard M&E Review\",\n    \"stages\": [{ \"name\": \"Departmental Review\" }]\n}" }, "url": { "raw": "{{base_url}}/api/v1/workflows", "host": ["{{base_url}}"], "path": ["api", "v1", "workflows"] } },
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Workflow created.\",\n    \"data\": { \"id\": 1, \"name\": \"Standard M&E Review\", \"is_active\": true }\n}"
+								}
+							]
+						},
+						{
+							"name": "Show Workflow",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"url": { "raw": "{{base_url}}/api/v1/workflows/{{workflow_id}}", "host": ["{{base_url}}"], "path": ["api", "v1", "workflows", "{{workflow_id}}"] },
+								"description": "Show a workflow with its stages, stage users, and departments."
+							},
+							"response": [
+								{
+									"name": "200 — Workflow",
+									"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/workflows/1", "host": ["{{base_url}}"], "path": ["api", "v1", "workflows", "1"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"Standard M&E Review\",\n        \"stages\": [{ \"id\": 1, \"name\": \"Departmental Review\", \"users\": [] }],\n        \"departments\": [{ \"id\": 3, \"name\": \"Animal Health Division\" }]\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Update Workflow",
+							"request": {
+								"method": "PUT",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+								"body": { "mode": "raw", "raw": "{\n    \"name\": \"Standard M&E Review (v2)\",\n    \"is_active\": true\n}" },
+								"url": { "raw": "{{base_url}}/api/v1/workflows/{{workflow_id}}", "host": ["{{base_url}}"], "path": ["api", "v1", "workflows", "{{workflow_id}}"] },
+								"description": "Update a workflow."
+							},
+							"response": [
+								{
+									"name": "200 — Updated",
+									"originalRequest": { "method": "PUT", "header": [], "body": { "mode": "raw", "raw": "{\n    \"name\": \"Standard M&E Review (v2)\"\n}" }, "url": { "raw": "{{base_url}}/api/v1/workflows/1", "host": ["{{base_url}}"], "path": ["api", "v1", "workflows", "1"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Workflow updated.\",\n    \"data\": { \"id\": 1, \"name\": \"Standard M&E Review (v2)\" }\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete Workflow",
+							"request": {
+								"method": "DELETE",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"url": { "raw": "{{base_url}}/api/v1/workflows/{{workflow_id}}", "host": ["{{base_url}}"], "path": ["api", "v1", "workflows", "{{workflow_id}}"] },
+								"description": "Delete a workflow."
+							},
+							"response": [
+								{
+									"name": "200 — Deleted",
+									"originalRequest": { "method": "DELETE", "header": [], "url": { "raw": "{{base_url}}/api/v1/workflows/1", "host": ["{{base_url}}"], "path": ["api", "v1", "workflows", "1"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Workflow deleted.\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Assign Departments to Workflow",
+							"request": {
+								"method": "POST",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+								"body": { "mode": "raw", "raw": "{\n    \"department_ids\": [3, 4]\n}" },
+								"url": { "raw": "{{base_url}}/api/v1/workflows/{{workflow_id}}/departments", "host": ["{{base_url}}"], "path": ["api", "v1", "workflows", "{{workflow_id}}", "departments"] },
+								"description": "Assign departments to a workflow."
+							},
+							"response": [
+								{
+									"name": "200 — Assigned",
+									"originalRequest": { "method": "POST", "header": [], "body": { "mode": "raw", "raw": "{\n    \"department_ids\": [3, 4]\n}" }, "url": { "raw": "{{base_url}}/api/v1/workflows/1/departments", "host": ["{{base_url}}"], "path": ["api", "v1", "workflows", "1", "departments"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Departments assigned.\",\n    \"data\": { \"id\": 1, \"name\": \"Standard M&E Review\", \"departments\": [{ \"id\": 3 }, { \"id\": 4 }] }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Indicator Reports",
+					"description": "Create, submit, approve/decline indicator reports.",
+					"item": [
+						{
+							"name": "List Indicator Reports",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"url": {
+									"raw": "{{base_url}}/api/v1/indicator-reports?status=draft&per_page=15",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "indicator-reports"],
+									"query": [
+										{ "key": "status", "value": "draft", "description": "Optional: draft | pending | returned | approved", "disabled": true },
+										{ "key": "per_page", "value": "15", "disabled": true }
+									]
+								},
+								"description": "Paginated indicator reports. Non-admins without `view-all-indicator-reports` see only their own."
+							},
+							"response": [
+								{
+									"name": "200 — Reports",
+									"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/indicator-reports", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"current_page\": 1,\n        \"data\": [\n            {\n                \"id\": 101,\n                \"indicator_type\": \"App\\\\Models\\\\OutputIndicator\",\n                \"indicator_id\": 7,\n                \"indicator_code\": \"OPT-7\",\n                \"department_id\": 3,\n                \"reporting_period_id\": 4,\n                \"target_value\": 2000,\n                \"actual_value\": 1500,\n                \"status\": \"draft\",\n                \"created_by\": 1,\n                \"period\": { \"id\": 4, \"name\": \"Q3 2026\" },\n                \"department\": { \"id\": 3, \"name\": \"Animal Health Division\" },\n                \"current_stage\": null\n            }\n        ],\n        \"per_page\": 15,\n        \"total\": 1\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Create Indicator Report",
+							"request": {
+								"method": "POST",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+								"body": { "mode": "raw", "raw": "{\n    \"indicator_type\": \"App\\\\Models\\\\OutputIndicator\",\n    \"indicator_id\": 7,\n    \"department_id\": 3,\n    \"reporting_period_id\": 4,\n    \"target_value\": 2000,\n    \"actual_value\": 1500,\n    \"narrative\": \"Vaccination campaign progressing on schedule.\",\n    \"values\": [\n        { \"disagregation_item_id\": 11, \"value\": 800 },\n        { \"disagregation_item_id\": 12, \"value\": 700 }\n    ]\n}" },
+								"url": { "raw": "{{base_url}}/api/v1/indicator-reports", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports"] },
+								"description": "Create a draft report. `indicator_type` is the fully-qualified model class. Requires `report-indicator-data`."
+							},
+							"response": [
+								{
+									"name": "201 — Draft created",
+									"originalRequest": { "method": "POST", "header": [], "body": { "mode": "raw", "raw": "{\n    \"indicator_type\": \"App\\\\Models\\\\OutputIndicator\",\n    \"indicator_id\": 7,\n    \"department_id\": 3,\n    \"reporting_period_id\": 4,\n    \"actual_value\": 1500\n}" }, "url": { "raw": "{{base_url}}/api/v1/indicator-reports", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports"] } },
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Draft created.\",\n    \"data\": {\n        \"id\": 101,\n        \"indicator_type\": \"App\\\\Models\\\\OutputIndicator\",\n        \"indicator_id\": 7,\n        \"department_id\": 3,\n        \"reporting_period_id\": 4,\n        \"target_value\": 2000,\n        \"actual_value\": 1500,\n        \"status\": \"draft\",\n        \"created_by\": 1\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Show Indicator Report",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"url": { "raw": "{{base_url}}/api/v1/indicator-reports/{{report_id}}", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "{{report_id}}"] },
+								"description": "Show a report with values, proofs, approvals, current stage, period and department."
+							},
+							"response": [
+								{
+									"name": "200 — Report",
+									"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/indicator-reports/101", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "101"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 101,\n        \"indicator_code\": \"OPT-7\",\n        \"status\": \"pending\",\n        \"target_value\": 2000,\n        \"actual_value\": 1500,\n        \"narrative\": \"Vaccination campaign progressing on schedule.\",\n        \"values\": [{ \"id\": 1, \"disagregation_item_id\": 11, \"value\": 800 }],\n        \"proofs\": [{ \"id\": 5, \"file_path\": \"proofs/opt7-evidence.pdf\" }],\n        \"approvals\": [],\n        \"current_stage\": { \"id\": 1, \"name\": \"Departmental Review\" },\n        \"period\": { \"id\": 4, \"name\": \"Q3 2026\" },\n        \"department\": { \"id\": 3, \"name\": \"Animal Health Division\" }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Update Indicator Report",
+							"request": {
+								"method": "PUT",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+								"body": { "mode": "raw", "raw": "{\n    \"actual_value\": 1650,\n    \"narrative\": \"Updated after week-4 field returns.\",\n    \"values\": [\n        { \"disagregation_item_id\": 11, \"value\": 900 }\n    ]\n}" },
+								"url": { "raw": "{{base_url}}/api/v1/indicator-reports/{{report_id}}", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "{{report_id}}"] },
+								"description": "Update a draft/returned report (owner or admin only)."
+							},
+							"response": [
+								{
+									"name": "200 — Updated",
+									"originalRequest": { "method": "PUT", "header": [], "body": { "mode": "raw", "raw": "{\n    \"actual_value\": 1650\n}" }, "url": { "raw": "{{base_url}}/api/v1/indicator-reports/101", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "101"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Report updated.\",\n    \"data\": { \"id\": 101, \"actual_value\": 1650, \"status\": \"draft\" }\n}"
+								}
+							]
+						},
+						{
+							"name": "Submit Indicator Report",
+							"request": {
+								"method": "POST",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"url": { "raw": "{{base_url}}/api/v1/indicator-reports/{{report_id}}/submit", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "{{report_id}}", "submit"] },
+								"description": "Submit a draft/returned report into the approval workflow."
+							},
+							"response": [
+								{
+									"name": "200 — Submitted",
+									"originalRequest": { "method": "POST", "header": [], "url": { "raw": "{{base_url}}/api/v1/indicator-reports/101/submit", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "101", "submit"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Report submitted.\",\n    \"data\": { \"id\": 101, \"status\": \"pending\", \"submitted_at\": \"2026-07-19T08:45:00.000000Z\" }\n}"
+								}
+							]
+						},
+						{
+							"name": "Upload Proof",
+							"request": {
+								"method": "POST",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{ "key": "file", "type": "file", "src": [], "description": "Evidence file (max 10 MB)." }
+									]
+								},
+								"url": { "raw": "{{base_url}}/api/v1/indicator-reports/{{report_id}}/proofs", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "{{report_id}}", "proofs"] },
+								"description": "Attach a proof file to a draft/returned report. Max 10 MB."
+							},
+							"response": [
+								{
+									"name": "201 — Proof uploaded",
+									"originalRequest": { "method": "POST", "header": [], "body": { "mode": "formdata", "formdata": [{ "key": "file", "type": "file", "src": [] }] }, "url": { "raw": "{{base_url}}/api/v1/indicator-reports/101/proofs", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "101", "proofs"] } },
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Proof uploaded.\",\n    \"data\": { \"id\": 5, \"report_id\": 101, \"file_path\": \"proofs/opt7-evidence.pdf\", \"original_name\": \"opt7-evidence.pdf\" }\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete Proof",
+							"request": {
+								"method": "DELETE",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"url": { "raw": "{{base_url}}/api/v1/indicator-reports/{{report_id}}/proofs/{{proof_id}}", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "{{report_id}}", "proofs", "{{proof_id}}"] },
+								"description": "Remove a proof from a draft/returned report."
+							},
+							"response": [
+								{
+									"name": "200 — Removed",
+									"originalRequest": { "method": "DELETE", "header": [], "url": { "raw": "{{base_url}}/api/v1/indicator-reports/101/proofs/5", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "101", "proofs", "5"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Proof removed.\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Approve Report",
+							"request": {
+								"method": "POST",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"url": { "raw": "{{base_url}}/api/v1/indicator-reports/{{report_id}}/approve", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "{{report_id}}", "approve"] },
+								"description": "Approve the current stage of a report. Requires `review-indicator-reports` or `approve-indicator-reports`."
+							},
+							"response": [
+								{
+									"name": "200 — Approved",
+									"originalRequest": { "method": "POST", "header": [], "url": { "raw": "{{base_url}}/api/v1/indicator-reports/101/approve", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "101", "approve"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Report approved.\",\n    \"data\": { \"id\": 101, \"status\": \"approved\", \"published_at\": \"2026-07-19T09:00:00.000000Z\" }\n}"
+								}
+							]
+						},
+						{
+							"name": "Decline Report",
+							"request": {
+								"method": "POST",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+								"body": { "mode": "raw", "raw": "{\n    \"reason\": \"Evidence file does not match the reported figure.\"\n}" },
+								"url": { "raw": "{{base_url}}/api/v1/indicator-reports/{{report_id}}/decline", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "{{report_id}}", "decline"] },
+								"description": "Return a report to the reporter. `reason` is required (min 3 chars)."
+							},
+							"response": [
+								{
+									"name": "200 — Returned",
+									"originalRequest": { "method": "POST", "header": [], "body": { "mode": "raw", "raw": "{\n    \"reason\": \"Evidence file does not match the reported figure.\"\n}" }, "url": { "raw": "{{base_url}}/api/v1/indicator-reports/101/decline", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "101", "decline"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Report returned to reporter.\",\n    \"data\": { \"id\": 101, \"status\": \"returned\" }\n}"
+								}
+							]
+						},
+						{
+							"name": "Report Approval Trail",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"url": { "raw": "{{base_url}}/api/v1/indicator-reports/{{report_id}}/trail", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "{{report_id}}", "trail"] },
+								"description": "Full approval/audit trail for one report."
+							},
+							"response": [
+								{
+									"name": "200 — Trail",
+									"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/indicator-reports/101/trail", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-reports", "101", "trail"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"data\": [\n        { \"id\": 1, \"report_id\": 101, \"action\": \"submitted\", \"actor\": \"System Administrator\", \"created_at\": \"2026-07-19T08:45:00.000000Z\" },\n        { \"id\": 2, \"report_id\": 101, \"action\": \"approved\", \"stage\": \"Departmental Review\", \"actor\": \"Jane Reviewer\", \"created_at\": \"2026-07-19T09:00:00.000000Z\" }\n    ]\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Approval Trails (all)",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/approval-trails?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "approval-trails"],
+							"query": [
+								{ "key": "report_id", "value": "101", "disabled": true },
+								{ "key": "action", "value": "approved", "disabled": true },
+								{ "key": "per_page", "value": "15", "disabled": true }
+							]
+						},
+						"description": "Cross-report approval trail. Requires `view-all-indicator-reports`."
+					},
+					"response": [
+						{
+							"name": "200 — Trails",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/approval-trails", "host": ["{{base_url}}"], "path": ["api", "v1", "approval-trails"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"current_page\": 1,\n        \"data\": [\n            { \"id\": 2, \"report_id\": 101, \"action\": \"approved\", \"actor\": \"Jane Reviewer\", \"created_at\": \"2026-07-19T09:00:00.000000Z\" }\n        ],\n        \"per_page\": 15,\n        \"total\": 1\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Reporting Periods",
+					"description": "Reporting periods (list / manage).",
+					"item": [
+						{
+							"name": "List Reporting Periods",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"url": {
+									"raw": "{{base_url}}/api/v1/reporting-periods?open_only=1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "reporting-periods"],
+									"query": [{ "key": "open_only", "value": "1", "description": "Optional: only open periods.", "disabled": true }]
+								},
+								"description": "List reporting periods, newest first."
+							},
+							"response": [
+								{
+									"name": "200 — Periods",
+									"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/reporting-periods", "host": ["{{base_url}}"], "path": ["api", "v1", "reporting-periods"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"data\": [\n        { \"id\": 4, \"name\": \"Q3 2026\", \"type\": \"quarter\", \"year\": 2026, \"period_number\": 3, \"start_date\": \"2026-07-01\", \"end_date\": \"2026-09-30\", \"is_open\": true },\n        { \"id\": 3, \"name\": \"Q2 2026\", \"type\": \"quarter\", \"year\": 2026, \"period_number\": 2, \"is_open\": false }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Create Reporting Period",
+							"request": {
+								"method": "POST",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+								"body": { "mode": "raw", "raw": "{\n    \"name\": \"Q4 2026\",\n    \"type\": \"quarter\",\n    \"year\": 2026,\n    \"period_number\": 4,\n    \"start_date\": \"2026-10-01\",\n    \"end_date\": \"2026-12-31\",\n    \"is_open\": true\n}" },
+								"url": { "raw": "{{base_url}}/api/v1/reporting-periods", "host": ["{{base_url}}"], "path": ["api", "v1", "reporting-periods"] },
+								"description": "Create a reporting period. Requires `manage-reporting-periods`."
+							},
+							"response": [
+								{
+									"name": "201 — Created",
+									"originalRequest": { "method": "POST", "header": [], "body": { "mode": "raw", "raw": "{\n    \"name\": \"Q4 2026\",\n    \"type\": \"quarter\",\n    \"year\": 2026\n}" }, "url": { "raw": "{{base_url}}/api/v1/reporting-periods", "host": ["{{base_url}}"], "path": ["api", "v1", "reporting-periods"] } },
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Period created.\",\n    \"data\": { \"id\": 5, \"name\": \"Q4 2026\", \"type\": \"quarter\", \"year\": 2026, \"period_number\": 4, \"is_open\": true }\n}"
+								}
+							]
+						},
+						{
+							"name": "Update Reporting Period",
+							"request": {
+								"method": "PUT",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+								"body": { "mode": "raw", "raw": "{\n    \"is_open\": false\n}" },
+								"url": { "raw": "{{base_url}}/api/v1/reporting-periods/{{reporting_period_id}}", "host": ["{{base_url}}"], "path": ["api", "v1", "reporting-periods", "{{reporting_period_id}}"] },
+								"description": "Update a reporting period (e.g. close it)."
+							},
+							"response": [
+								{
+									"name": "200 — Updated",
+									"originalRequest": { "method": "PUT", "header": [], "body": { "mode": "raw", "raw": "{\n    \"is_open\": false\n}" }, "url": { "raw": "{{base_url}}/api/v1/reporting-periods/4", "host": ["{{base_url}}"], "path": ["api", "v1", "reporting-periods", "4"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Period updated.\",\n    \"data\": { \"id\": 4, \"name\": \"Q3 2026\", \"is_open\": false }\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete Reporting Period",
+							"request": {
+								"method": "DELETE",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"url": { "raw": "{{base_url}}/api/v1/reporting-periods/{{reporting_period_id}}", "host": ["{{base_url}}"], "path": ["api", "v1", "reporting-periods", "{{reporting_period_id}}"] },
+								"description": "Delete a reporting period."
+							},
+							"response": [
+								{
+									"name": "200 — Deleted",
+									"originalRequest": { "method": "DELETE", "header": [], "url": { "raw": "{{base_url}}/api/v1/reporting-periods/4", "host": ["{{base_url}}"], "path": ["api", "v1", "reporting-periods", "4"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Period deleted.\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Settings",
+					"description": "Public application settings.",
+					"item": [
+						{
+							"name": "Get Settings",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"url": { "raw": "{{base_url}}/api/v1/settings", "host": ["{{base_url}}"], "path": ["api", "v1", "settings"] },
+								"description": "All public settings. Requires `manage-settings`."
+							},
+							"response": [
+								{
+									"name": "200 — Settings",
+									"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/settings", "host": ["{{base_url}}"], "path": ["api", "v1", "settings"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"reporting_reminder_days\": 7,\n        \"require_proof_on_submit\": true,\n        \"default_currency\": \"NGN\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Update Settings",
+							"request": {
+								"method": "PUT",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+								"body": { "mode": "raw", "raw": "{\n    \"settings\": {\n        \"reporting_reminder_days\": 5,\n        \"require_proof_on_submit\": false\n    }\n}" },
+								"url": { "raw": "{{base_url}}/api/v1/settings", "host": ["{{base_url}}"], "path": ["api", "v1", "settings"] },
+								"description": "Update settings (key/value map). Requires `manage-settings`."
+							},
+							"response": [
+								{
+									"name": "200 — Updated",
+									"originalRequest": { "method": "PUT", "header": [], "body": { "mode": "raw", "raw": "{\n    \"settings\": { \"reporting_reminder_days\": 5 }\n}" }, "url": { "raw": "{{base_url}}/api/v1/settings", "host": ["{{base_url}}"], "path": ["api", "v1", "settings"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Settings updated.\",\n    \"data\": { \"reporting_reminder_days\": 5, \"require_proof_on_submit\": false, \"default_currency\": \"NGN\" }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Indicator Data (external)",
+					"description": "Read-only approved indicator data for external integrations.",
+					"item": [
+						{
+							"name": "List Approved Indicator Data",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"url": {
+									"raw": "{{base_url}}/api/v1/indicator-data?indicator_code={{indicator_code}}&year=2026&per_page=50",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "indicator-data"],
+									"query": [
+										{ "key": "indicator_code", "value": "{{indicator_code}}", "disabled": true },
+										{ "key": "department_id", "value": "3", "disabled": true },
+										{ "key": "reporting_period_id", "value": "4", "disabled": true },
+										{ "key": "year", "value": "2026", "disabled": true },
+										{ "key": "per_page", "value": "50", "disabled": true }
+									]
+								},
+								"description": "Paginated approved reports, filterable by indicator code, department, period, or year."
+							},
+							"response": [
+								{
+									"name": "200 — Approved data",
+									"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/indicator-data", "host": ["{{base_url}}"], "path": ["api", "v1", "indicator-data"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"current_page\": 1,\n        \"data\": [\n            {\n                \"id\": 101,\n                \"indicator_code\": \"OPT-7\",\n                \"status\": \"approved\",\n                \"target_value\": 2000,\n                \"actual_value\": 1650,\n                \"published_at\": \"2026-07-19T09:00:00.000000Z\",\n                \"period\": { \"id\": 4, \"name\": \"Q3 2026\", \"type\": \"quarter\", \"year\": 2026, \"period_number\": 3 },\n                \"department\": { \"id\": 3, \"name\": \"Animal Health Division\" },\n                \"values\": [{ \"id\": 1, \"disagregation_item_id\": 11, \"value\": 900 }]\n            }\n        ],\n        \"per_page\": 50,\n        \"total\": 1\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Reports for Indicator (by code)",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }],
+								"url": { "raw": "{{base_url}}/api/v1/indicators/{{indicator_code}}/reports", "host": ["{{base_url}}"], "path": ["api", "v1", "indicators", "{{indicator_code}}", "reports"] },
+								"description": "All approved reports for one indicator code, ordered by reporting period (time series)."
+							},
+							"response": [
+								{
+									"name": "200 — Time series",
+									"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/indicators/OPT-7/reports", "host": ["{{base_url}}"], "path": ["api", "v1", "indicators", "OPT-7", "reports"] } },
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [{ "key": "Content-Type", "value": "application/json" }],
+									"body": "{\n    \"success\": true,\n    \"data\": [\n        { \"id\": 88, \"indicator_code\": \"OPT-7\", \"actual_value\": 1200, \"target_value\": 1800, \"period\": { \"id\": 3, \"name\": \"Q2 2026\", \"year\": 2026, \"period_number\": 2 } },\n        { \"id\": 101, \"indicator_code\": \"OPT-7\", \"actual_value\": 1650, \"target_value\": 2000, \"period\": { \"id\": 4, \"name\": \"Q3 2026\", \"year\": 2026, \"period_number\": 3 } }\n    ]\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Supervisor-Enumerators",
+			"description": "Supervisor ↔ enumerator assignments (guard `auth:api`).",
+			"item": [
+				{
+					"name": "List Relationships",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/supervisor-enumerators", "host": ["{{base_url}}"], "path": ["api", "v1", "supervisor-enumerators"] },
+						"description": "All supervisor–enumerator relationships."
+					},
+					"response": [
+						{
+							"name": "200 — Relationships",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/supervisor-enumerators", "host": ["{{base_url}}"], "path": ["api", "v1", "supervisor-enumerators"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "[\n    {\n        \"id\": 1,\n        \"supervisor\": { \"id\": 10, \"name\": \"Grace Supervisor\", \"email\": \"grace@fmld.gov.ng\" },\n        \"enumerator\": { \"id\": 22, \"name\": \"John Enumerator\", \"email\": \"john@fmld.gov.ng\" },\n        \"created_at\": \"2026-07-01T10:00:00.000000Z\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Assign Enumerators",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+						"body": { "mode": "raw", "raw": "{\n    \"supervisor_id\": 10,\n    \"enumerator_ids\": [22, 23]\n}" },
+						"url": { "raw": "{{base_url}}/api/v1/supervisor-enumerators/assign", "host": ["{{base_url}}"], "path": ["api", "v1", "supervisor-enumerators", "assign"] },
+						"description": "Assign one or more enumerators to a supervisor. NOTE: this action returns a redirect-back (session flash) rather than JSON — it is primarily driven by the Inertia web UI."
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Assignment",
+					"request": {
+						"method": "DELETE",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/supervisor-enumerators/{{supervisor_id}}/{{enumerator_id}}", "host": ["{{base_url}}"], "path": ["api", "v1", "supervisor-enumerators", "{{supervisor_id}}", "{{enumerator_id}}"] },
+						"description": "Unassign an enumerator from a supervisor. Returns redirect-back (session flash)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Supervisor's Enumerators",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/supervisor-enumerators/{{supervisor_id}}/enumerators", "host": ["{{base_url}}"], "path": ["api", "v1", "supervisor-enumerators", "{{supervisor_id}}", "enumerators"] },
+						"description": "List the enumerators assigned to one supervisor."
+					},
+					"response": [
+						{
+							"name": "200 — Enumerators",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/supervisor-enumerators/10/enumerators", "host": ["{{base_url}}"], "path": ["api", "v1", "supervisor-enumerators", "10", "enumerators"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "[\n    { \"id\": 22, \"name\": \"John Enumerator\", \"email\": \"john@fmld.gov.ng\", \"assigned_at\": \"2026-07-01T10:00:00.000000Z\" }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Dashboard Analytics",
+			"description": "Executive dashboard rollups & analytics (JWT). See `docs/superpowers/specs/2026-07-16-mems-dashboard-api-contract.md`.",
+			"item": [
+				{
+					"name": "Bond Deliverables",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/bond-deliverables", "host": ["{{base_url}}"], "path": ["api", "v1", "bond-deliverables"] },
+						"description": "Bond deliverables with per-deliverable status rollups and indicator performance."
+					},
+					"response": [
+						{
+							"name": "200 — Bond deliverables",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/bond-deliverables", "host": ["{{base_url}}"], "path": ["api", "v1", "bond-deliverables"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"title\": \"Cold-chain infrastructure delivered\",\n            \"code\": \"BOND-1\",\n            \"stats\": { \"total\": 3, \"onTrack\": 2, \"atRisk\": 1, \"offTrack\": 0 },\n            \"indicators\": [\n                { \"code\": \"BOI-1\", \"title\": \"Cold rooms installed\", \"actual\": 8, \"target\": 10, \"status\": \"above\" }\n            ]\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Sector Outcomes — List",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/sector-outcomes", "host": ["{{base_url}}"], "path": ["api", "v1", "sector-outcomes"] },
+						"description": "List of sector goals (id, slug, code, title)."
+					},
+					"response": [
+						{
+							"name": "200 — Sector goals",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/sector-outcomes", "host": ["{{base_url}}"], "path": ["api", "v1", "sector-outcomes"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": [\n        { \"id\": 1, \"slug\": \"improved-animal-health\", \"code\": \"SG1\", \"title\": \"Improved animal health\" },\n        { \"id\": 2, \"slug\": \"increased-production-productivity\", \"code\": \"SG2\", \"title\": \"Increased production & productivity\" }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Sector Outcomes — Impact",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/sector-outcomes/impact", "host": ["{{base_url}}"], "path": ["api", "v1", "sector-outcomes", "impact"] },
+						"description": "Impact indicators with baselines for the sector dashboard's Impact section."
+					},
+					"response": [
+						{
+							"name": "200 — Impact indicators",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/sector-outcomes/impact", "host": ["{{base_url}}"], "path": ["api", "v1", "sector-outcomes", "impact"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": [\n        {\n            \"code\": \"IMP-1\",\n            \"title\": \"Livestock sector contribution to GDP\",\n            \"actual\": 6.2,\n            \"target\": 8.0,\n            \"status\": \"below\",\n            \"currentValue\": 6.2,\n            \"baseline\": 5.0,\n            \"baselineYear\": 2023,\n            \"measurementUnit\": \"%\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Sector Outcomes — Trends",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/sector-outcomes/{{sector_goal_id}}/trends", "host": ["{{base_url}}"], "path": ["api", "v1", "sector-outcomes", "{{sector_goal_id}}", "trends"] },
+						"description": "One goal's outcome + output indicators (id must be numeric)."
+					},
+					"response": [
+						{
+							"name": "200 — Trends",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/sector-outcomes/1/trends", "host": ["{{base_url}}"], "path": ["api", "v1", "sector-outcomes", "1", "trends"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": {\n        \"id\": 1,\n        \"title\": \"Improved animal health\",\n        \"description\": \"Reduce livestock disease burden\",\n        \"outcomeIndicators\": [\n            { \"code\": \"OCI-3\", \"title\": \"Vaccination coverage rate\", \"actual\": 72, \"target\": 90, \"status\": \"below\" }\n        ],\n        \"outputIndicators\": [\n            { \"code\": \"OPT-7\", \"title\": \"Animals vaccinated\", \"actual\": 1650, \"target\": 2000, \"status\": \"on\" }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Strategic Programs",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/strategic-programs", "host": ["{{base_url}}"], "path": ["api", "v1", "strategic-programs"] },
+						"description": "NLGAS pillars and their programs, with owner, finances, coverage and finance-derived status."
+					},
+					"response": [
+						{
+							"name": "200 — Strategic programs",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/strategic-programs", "host": ["{{base_url}}"], "path": ["api", "v1", "strategic-programs"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"code\": \"P1\",\n            \"title\": \"Animal Health & Production\",\n            \"objective\": \"Strengthen veterinary services nationwide\",\n            \"indicators\": [\n                {\n                    \"id\": 5,\n                    \"programName\": \"National Vaccination Programme\",\n                    \"code\": \"PRG-5\",\n                    \"status\": \"above\",\n                    \"owner\": \"Dept. of Veterinary Services\",\n                    \"finances\": { \"planned\": 500000000, \"actual\": 460000000, \"currency\": \"NGN\" },\n                    \"coverage\": \"National\",\n                    \"coverageStates\": [\"Benue\", \"Kogi\", \"Plateau\"]\n                }\n            ]\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Dashboard — Overview",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/dashboard/overview", "host": ["{{base_url}}"], "path": ["api", "v1", "dashboard", "overview"] },
+						"description": "Status bucket counts (on-track / at-risk / off-track) from the latest report per indicator."
+					},
+					"response": [
+						{
+							"name": "200 — Overview",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/dashboard/overview", "host": ["{{base_url}}"], "path": ["api", "v1", "dashboard", "overview"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": { \"totalPrograms\": 42, \"onTrack\": 25, \"atRisk\": 10, \"offTrack\": 7 }\n}"
+						}
+					]
+				},
+				{
+					"name": "Dashboard — Alerts",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/dashboard/alerts", "host": ["{{base_url}}"], "path": ["api", "v1", "dashboard", "alerts"] },
+						"description": "Up to 10 attention items for off-track indicators."
+					},
+					"response": [
+						{
+							"name": "200 — Alerts",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/dashboard/alerts", "host": ["{{base_url}}"], "path": ["api", "v1", "dashboard", "alerts"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": [\n        { \"id\": 1, \"type\": \"warning\", \"message\": \"OPT-7 is below target\" },\n        { \"id\": 2, \"type\": \"warning\", \"message\": \"OCI-3 is below target\" }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Dashboard — Status Breakdown",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/dashboard/status-breakdown", "host": ["{{base_url}}"], "path": ["api", "v1", "dashboard", "status-breakdown"] },
+						"description": "Per-indicator-type Above/On/Below % breakdown."
+					},
+					"response": [
+						{
+							"name": "200 — Breakdown",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/dashboard/status-breakdown", "host": ["{{base_url}}"], "path": ["api", "v1", "dashboard", "status-breakdown"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": {\n        \"impact\": { \"aboveTarget\": 40, \"onTarget\": 40, \"belowTarget\": 20, \"total\": 5 },\n        \"outcome\": { \"aboveTarget\": 33, \"onTarget\": 34, \"belowTarget\": 33, \"total\": 12 },\n        \"output\": { \"aboveTarget\": 50, \"onTarget\": 30, \"belowTarget\": 20, \"total\": 20 },\n        \"bond\": { \"aboveTarget\": 60, \"onTarget\": 20, \"belowTarget\": 20, \"total\": 5 }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Data Health — Metrics",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/data-health/metrics", "host": ["{{base_url}}"], "path": ["api", "v1", "data-health", "metrics"] },
+						"description": "Headline data-health metric cards from real counts."
+					},
+					"response": [
+						{
+							"name": "200 — Metrics",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/data-health/metrics", "host": ["{{base_url}}"], "path": ["api", "v1", "data-health", "metrics"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": [\n        { \"id\": 1, \"title\": \"Total Indicator Reports\", \"value\": \"128\", \"status\": \"Good\", \"icon\": \"records\", \"description\": \"Reports submitted across all indicators\" },\n        { \"id\": 2, \"title\": \"Reports with Evidence\", \"value\": \"64%\", \"status\": \"Good\", \"icon\": \"streams\", \"description\": \"Share of reports with uploaded proof\" }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Data Health — Validators",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/data-health/validators", "host": ["{{base_url}}"], "path": ["api", "v1", "data-health", "validators"] },
+						"description": "Validator statuses. Not modelled yet — returns an empty array."
+					},
+					"response": [
+						{
+							"name": "200 — Empty",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/data-health/validators", "host": ["{{base_url}}"], "path": ["api", "v1", "data-health", "validators"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "Data Health — Activity Log",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/data-health/activity-log", "host": ["{{base_url}}"], "path": ["api", "v1", "data-health", "activity-log"] },
+						"description": "50 most recent activity-log entries, dashboard-shaped."
+					},
+					"response": [
+						{
+							"name": "200 — Activity",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/data-health/activity-log", "host": ["{{base_url}}"], "path": ["api", "v1", "data-health", "activity-log"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": [\n        { \"id\": 900, \"timestamp\": \"2026-07-19T09:00:00.000000Z\", \"user\": \"Jane Reviewer\", \"action\": \"approve\", \"resource\": \"IndicatorReport\", \"details\": \"Approved OPT-7 for Q3 2026\" }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Reporting Obligations",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/reporting-obligations", "host": ["{{base_url}}"], "path": ["api", "v1", "reporting-obligations"] },
+						"description": "Indicator reports shaped for the Reporting Obligation table (Due tab)."
+					},
+					"response": [
+						{
+							"name": "200 — Obligations",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/reporting-obligations", "host": ["{{base_url}}"], "path": ["api", "v1", "reporting-obligations"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": [\n        {\n            \"id\": 101,\n            \"indicator\": \"Number of animals vaccinated\",\n            \"reportingUnit\": \"Animal Health Division\",\n            \"type\": \"Output Indicator (OPT)\",\n            \"period\": \"Q3 2026\",\n            \"reportingCompletion\": 75,\n            \"status\": \"Pending Validation\",\n            \"submitted\": true,\n            \"overdue\": false\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Suppressed Indicators",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/suppressed-indicators", "host": ["{{base_url}}"], "path": ["api", "v1", "suppressed-indicators"] },
+						"description": "Returned/rejected reports shaped for the Suppressed tab."
+					},
+					"response": [
+						{
+							"name": "200 — Suppressed",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/suppressed-indicators", "host": ["{{base_url}}"], "path": ["api", "v1", "suppressed-indicators"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": [\n        {\n            \"id\": 77,\n            \"indicator\": \"Vaccination coverage rate\",\n            \"owner\": \"Animal Health Division\",\n            \"period\": \"Q2 2026\",\n            \"reason\": \"Evidence file does not match the reported figure.\",\n            \"suppressedDate\": \"2026-07-10\",\n            \"lastAction\": \"Rejected\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Result Chain",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/result-chain", "host": ["{{base_url}}"], "path": ["api", "v1", "result-chain"] },
+						"description": "Result-chain indicators grouped by level (impact / outcomes / outputs)."
+					},
+					"response": [
+						{
+							"name": "200 — Result chain",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/result-chain", "host": ["{{base_url}}"], "path": ["api", "v1", "result-chain"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": {\n        \"impact\": [ { \"code\": \"IMP-1\", \"title\": \"Livestock sector contribution to GDP\", \"status\": \"below\", \"actual\": 6.2, \"target\": 8.0, \"measurementUnit\": \"%\" } ],\n        \"outcomes\": [ { \"code\": \"OCI-3\", \"title\": \"Vaccination coverage rate\", \"status\": \"below\", \"actual\": 72, \"target\": 90, \"measurementUnit\": \"%\" } ],\n        \"outputs\": [ { \"code\": \"OPT-7\", \"title\": \"Animals vaccinated\", \"status\": \"on\", \"actual\": 1650, \"target\": 2000, \"measurementUnit\": \"count\" } ],\n        \"activities\": [],\n        \"inputs\": []\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Sector Trends",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/sector-trends", "host": ["{{base_url}}"], "path": ["api", "v1", "sector-trends"] },
+						"description": "SG_DATA-shaped time series keyed by the 8 dashboard sector names, each with monthly + quarterly series."
+					},
+					"response": [
+						{
+							"name": "200 — Trends",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/sector-trends", "host": ["{{base_url}}"], "path": ["api", "v1", "sector-trends"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": {\n        \"Animal Health\": {\n            \"title\": \"Improved animal health\",\n            \"description\": \"SG outcome Performance\",\n            \"monthly\": [ { \"month\": \"Jan\", \"target\": 100, \"actual\": 68, \"indicator\": 68 } ],\n            \"quarterly\": [ { \"quarter\": \"Q1 (Jan-Mar)\", \"target\": 100, \"actual\": 70, \"indicator\": 70 } ]\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Sector Map",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/sector-map", "host": ["{{base_url}}"], "path": ["api", "v1", "sector-map"] },
+						"description": "PILLAR_PROGRAMS matrix for the Nigeria map: { [pillarTitle]: { [stateName]: { active, programs[], output } } }."
+					},
+					"response": [
+						{
+							"name": "200 — Map",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/sector-map", "host": ["{{base_url}}"], "path": ["api", "v1", "sector-map"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": {\n        \"Animal Health & Production\": {\n            \"Benue\": { \"active\": true, \"programs\": [\"National Vaccination Programme\"], \"output\": \"National Vaccination Programme\" },\n            \"Plateau\": { \"active\": true, \"programs\": [\"National Vaccination Programme\"], \"output\": \"National Vaccination Programme\" }\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Validation Pipeline",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/validation-pipeline", "host": ["{{base_url}}"], "path": ["api", "v1", "validation-pipeline"] },
+						"description": "Submitted reports (max 50) shaped for the Data Validation Pipeline table."
+					},
+					"response": [
+						{
+							"name": "200 — Pipeline",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/validation-pipeline", "host": ["{{base_url}}"], "path": ["api", "v1", "validation-pipeline"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Success\",\n    \"data\": [\n        {\n            \"id\": 101,\n            \"indicator\": \"Number of animals vaccinated\",\n            \"owner\": \"Animal Health Division\",\n            \"submissionDate\": \"2026-07-19\",\n            \"stage\": \"Output Indicator (OPT)\",\n            \"daysPending\": \"0 Days\",\n            \"slaStatus\": 90,\n            \"action\": \"Approved\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Activity Logs",
+			"description": "System activity logging.",
+			"item": [
+				{
+					"name": "List Activity Logs",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/activity-logs?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "activity-logs"],
+							"query": [
+								{ "key": "user_id", "value": "1", "disabled": true },
+								{ "key": "action", "value": "update", "disabled": true },
+								{ "key": "db_action", "value": "updated", "disabled": true },
+								{ "key": "callable_type", "value": "App\\Models\\IndicatorReport", "disabled": true },
+								{ "key": "method", "value": "POST", "disabled": true },
+								{ "key": "start_date", "value": "2026-07-01", "disabled": true },
+								{ "key": "end_date", "value": "2026-07-19", "disabled": true },
+								{ "key": "per_page", "value": "15", "disabled": true }
+							]
+						},
+						"description": "Paginated activity logs with rich filters."
+					},
+					"response": [
+						{
+							"name": "200 — Logs",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/activity-logs", "host": ["{{base_url}}"], "path": ["api", "v1", "activity-logs"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"data\": {\n        \"current_page\": 1,\n        \"data\": [\n            { \"action\": \"approve\", \"method\": \"POST\", \"db_action\": \"updated\", \"status_code\": 200, \"user\": { \"id\": 3, \"full_name\": \"Jane Reviewer\", \"email\": \"jane@fmld.gov.ng\" }, \"created_at\": \"2026-07-19T09:00:00.000000Z\" }\n        ],\n        \"per_page\": 15,\n        \"total\": 1\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "My Activity",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/activity-logs/my-activity?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "activity-logs", "my-activity"],
+							"query": [
+								{ "key": "action", "value": "update", "disabled": true },
+								{ "key": "start_date", "value": "2026-07-01", "disabled": true },
+								{ "key": "end_date", "value": "2026-07-19", "disabled": true },
+								{ "key": "per_page", "value": "15", "disabled": true }
+							]
+						},
+						"description": "The authenticated user's own activity."
+					},
+					"response": [
+						{
+							"name": "200 — My activity",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/activity-logs/my-activity", "host": ["{{base_url}}"], "path": ["api", "v1", "activity-logs", "my-activity"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"data\": {\n        \"current_page\": 1,\n        \"data\": [\n            { \"action\": \"login\", \"method\": \"POST\", \"status_code\": 200, \"created_at\": \"2026-07-19T08:00:00.000000Z\" }\n        ],\n        \"per_page\": 15,\n        \"total\": 1\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Activity Statistics",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/activity-logs/statistics",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "activity-logs", "statistics"],
+							"query": [
+								{ "key": "user_id", "value": "1", "disabled": true },
+								{ "key": "start_date", "value": "2026-07-01", "disabled": true },
+								{ "key": "end_date", "value": "2026-07-19", "disabled": true }
+							]
+						},
+						"description": "Aggregated activity statistics (by method, db action, callable type, status, unique users, recent)."
+					},
+					"response": [
+						{
+							"name": "200 — Statistics",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/activity-logs/statistics", "host": ["{{base_url}}"], "path": ["api", "v1", "activity-logs", "statistics"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"data\": {\n        \"total_activities\": 128,\n        \"by_method\": { \"GET\": 80, \"POST\": 30, \"PUT\": 12, \"DELETE\": 6 },\n        \"by_db_action\": { \"created\": 20, \"updated\": 15, \"deleted\": 6 },\n        \"by_callable_type\": { \"IndicatorReport\": 40, \"User\": 12 },\n        \"by_status\": { \"200\": 110, \"201\": 15, \"422\": 3 },\n        \"unique_users\": 9,\n        \"recent_activities\": []\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Show Activity Log",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/v1/activity-logs/{{activity_log_id}}", "host": ["{{base_url}}"], "path": ["api", "v1", "activity-logs", "{{activity_log_id}}"] },
+						"description": "A single activity log with user + callable."
+					},
+					"response": [
+						{
+							"name": "200 — Log",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/activity-logs/900", "host": ["{{base_url}}"], "path": ["api", "v1", "activity-logs", "900"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"data\": {\n        \"id\": 900,\n        \"action\": \"approve\",\n        \"method\": \"POST\",\n        \"db_action\": \"updated\",\n        \"status_code\": 200,\n        \"description\": \"Approved OPT-7 for Q3 2026\",\n        \"user\": { \"id\": 3, \"full_name\": \"Jane Reviewer\", \"email\": \"jane@fmld.gov.ng\" },\n        \"created_at\": \"2026-07-19T09:00:00.000000Z\"\n    }\n}"
+						},
+						{
+							"name": "404 — Not found",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/v1/activity-logs/999999", "host": ["{{base_url}}"], "path": ["api", "v1", "activity-logs", "999999"] } },
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": false,\n    \"message\": \"Activity log not found\",\n    \"error\": \"No query results for model [App\\\\Models\\\\ActivityLog] 999999\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Cleanup Old Logs",
+					"request": {
+						"method": "DELETE",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/activity-logs/cleanup?days=90",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "activity-logs", "cleanup"],
+							"query": [{ "key": "days", "value": "90", "description": "Delete logs older than N days (default 90).", "disabled": true }]
+						},
+						"description": "Delete activity logs older than `days` (default 90)."
+					},
+					"response": [
+						{
+							"name": "200 — Cleaned up",
+							"originalRequest": { "method": "DELETE", "header": [], "url": { "raw": "{{base_url}}/api/v1/activity-logs/cleanup?days=90", "host": ["{{base_url}}"], "path": ["api", "v1", "activity-logs", "cleanup"], "query": [{ "key": "days", "value": "90" }] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Deleted 34 activity logs older than 90 days\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Dashboard (Session Auth)",
+			"description": "Session-authenticated dashboard route — NOT under /api/v1. Uses cookie session (`api.session.auth`), so it will not work with the Bearer token; use a browser session cookie instead.",
+			"item": [
+				{
+					"name": "Dashboard Stats",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": { "raw": "{{base_url}}/api/dashboard/stats", "host": ["{{base_url}}"], "path": ["api", "dashboard", "stats"] },
+						"description": "Admin dashboard stat cards. Requires a valid session cookie (`api.session.auth`), not the JWT bearer token."
+					},
+					"response": [
+						{
+							"name": "200 — Stats",
+							"originalRequest": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/api/dashboard/stats", "host": ["{{base_url}}"], "path": ["api", "dashboard", "stats"] } },
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [{ "key": "Content-Type", "value": "application/json" }],
+							"body": "[\n    { \"label\": \"Total Users\", \"value\": 42, \"icon\": \"bi bi-people-fill\", \"gradient\": \"from-emerald-500 to-teal-600\", \"bgColor\": \"bg-emerald-50\", \"iconColor\": \"text-emerald-600\", \"badge\": \"Active\" },\n    { \"label\": \"Total Indicators\", \"value\": 57, \"icon\": \"bi bi-bar-chart-fill\", \"gradient\": \"from-emerald-500 to-teal-600\", \"bgColor\": \"bg-emerald-50\", \"iconColor\": \"text-emerald-600\", \"badge\": \"Active\" },\n    { \"label\": \"Sectoral Goals\", \"value\": 8, \"icon\": \"bi bi-bullseye\", \"gradient\": \"from-emerald-500 to-teal-600\", \"bgColor\": \"bg-emerald-50\", \"iconColor\": \"text-emerald-600\", \"badge\": \"Active\" },\n    { \"label\": \"NLGAS Pillars\", \"value\": 5, \"icon\": \"bi bi-columns\", \"gradient\": \"from-emerald-500 to-teal-600\", \"bgColor\": \"bg-emerald-50\", \"iconColor\": \"text-emerald-600\", \"badge\": \"Active\" }\n]"
+						}
+					]
+				}
+			]
+		}
+	]
+}
