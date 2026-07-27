@@ -58,6 +58,8 @@ class IndicatorReportService
                 'indicator_code' => $indicator->code ?? null,
                 'department_id' => $data['department_id'],
                 'reporting_period_id' => $data['reporting_period_id'],
+                'baseline' => $data['baseline'] ?? null,
+                'baseline_year' => $data['baseline_year'] ?? null,
                 'target_value' => $data['target_value'] ?? null,
                 'actual_value' => $data['actual_value'] ?? null,
                 'narrative' => $data['narrative'] ?? null,
@@ -75,6 +77,8 @@ class IndicatorReportService
     {
         return DB::transaction(function () use ($report, $data) {
             $report->fill(array_filter([
+                'baseline' => $data['baseline'] ?? null,
+                'baseline_year' => $data['baseline_year'] ?? null,
                 'target_value' => $data['target_value'] ?? null,
                 'actual_value' => $data['actual_value'] ?? null,
                 'narrative' => $data['narrative'] ?? null,
@@ -147,9 +151,16 @@ class IndicatorReportService
         return $workflow->activeStages()->where('id', $declinedStageId)->first() ?? $firstStage;
     }
 
+    /**
+     * The disk evidence lives on. Pinned explicitly rather than using the
+     * default so that changing FILESYSTEM_DISK (e.g. to `public`) can never
+     * silently republish ministry evidence to a web-reachable directory.
+     */
+    public const EVIDENCE_DISK = 'local';
+
     public function addProof(User $user, IndicatorReport $report, UploadedFile $file): IndicatorReportProof
     {
-        $path = $file->store("indicator-reports/{$report->id}/proofs");
+        $path = $file->store("indicator-reports/{$report->id}/proofs", self::EVIDENCE_DISK);
 
         return $report->proofs()->create([
             'path' => $path,

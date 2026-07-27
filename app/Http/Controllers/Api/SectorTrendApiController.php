@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\ReportStatus;
 use App\Http\Controllers\Controller;
 use App\Models\IndicatorReport;
 use App\Models\OutcomeIndicator;
@@ -87,9 +88,12 @@ class SectorTrendApiController extends Controller
             return 0;
         }
 
+        // Approved only — same gate as IndicatorPerformance::latestReport(), so
+        // an unreviewed draft cannot move a sector's trend line.
         $reports = IndicatorReport::where('indicator_type', OutcomeIndicator::class)
             ->whereIn('indicator_id', $indicatorIds)
             ->where('reporting_period_id', $periodId)
+            ->where('status', ReportStatus::Approved->value)
             ->get(['target_value', 'actual_value']);
 
         if ($reports->isEmpty()) {

@@ -9,6 +9,7 @@ use App\Models\IndicatorReportProof;
 use App\Services\IndicatorReportService;
 use App\Support\ResultChainIndicators;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class IndicatorReportController extends Controller
@@ -40,6 +41,8 @@ class IndicatorReportController extends Controller
             'indicator_id' => 'required|integer',
             'department_id' => 'required|integer|exists:departments,id',
             'reporting_period_id' => 'required|integer|exists:reporting_periods,id',
+            'baseline' => 'nullable|numeric',
+            'baseline_year' => 'nullable|integer|min:2000|max:2100',
             'target_value' => 'nullable|numeric',
             'actual_value' => 'nullable|numeric',
             'narrative' => 'nullable|string',
@@ -68,6 +71,8 @@ class IndicatorReportController extends Controller
         abort_unless($this->canEdit($request, $report), 403, 'Report is not editable.');
 
         $data = $request->validate([
+            'baseline' => 'nullable|numeric',
+            'baseline_year' => 'nullable|integer|min:2000|max:2100',
             'target_value' => 'nullable|numeric',
             'actual_value' => 'nullable|numeric',
             'narrative' => 'nullable|string',
@@ -90,11 +95,34 @@ class IndicatorReportController extends Controller
     public function uploadProof(Request $request, IndicatorReport $report)
     {
         abort_unless($this->canEdit($request, $report), 403, 'Cannot attach proof.');
-        $request->validate(['file' => 'required|file|max:10240']);
+
+        // Allow-list the document/image types the reporting form offers. `mimes`
+        // validates the sniffed content type, not the filename, so renaming a
+        // script to .pdf does not get it through.
+        $request->validate([
+            'file' => ['required', 'file', 'max:10240', 'mimes:pdf,png,jpg,jpeg,doc,docx,xls,xlsx'],
+        ]);
 
         $proof = $this->reports->addProof($request->user(), $report, $request->file('file'));
 
         return response()->json(['success' => true, 'message' => 'Proof uploaded.', 'data' => $proof], 201);
+    }
+
+    /**
+     * Stream an evidence file from the private disk.
+     *
+     * Evidence is never web-reachable: this is the only way to retrieve it, and
+     * it applies the same view authorization as the parent report.
+     */
+    public function downloadProof(Request $request, IndicatorReport $report, IndicatorReportProof $proof)
+    {
+        $this->authorizeView($request, $report);
+        abort_unless($proof->report_id === $report->id, 404);
+
+        $disk = Storage::disk(IndicatorReportService::EVIDENCE_DISK);
+        abort_unless($disk->exists($proof->path), 404, 'Evidence file is missing.');
+
+        return $disk->download($proof->path, $proof->original_name);
     }
 
     public function deleteProof(Request $request, IndicatorReport $report, IndicatorReportProof $proof)

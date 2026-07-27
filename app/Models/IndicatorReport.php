@@ -13,14 +13,17 @@ class IndicatorReport extends Model
 
     protected $fillable = [
         'uuid', 'indicator_type', 'indicator_id', 'indicator_code', 'department_id',
-        'reporting_period_id', 'workflow_id', 'current_stage_id', 'target_value',
-        'actual_value', 'narrative', 'status', 'created_by', 'submitted_at', 'published_at',
+        'reporting_period_id', 'baseline', 'baseline_year', 'workflow_id', 'current_stage_id',
+        'target_value', 'actual_value', 'narrative', 'status', 'created_by', 'submitted_at',
+        'published_at',
     ];
 
     protected $casts = [
         'status' => ReportStatus::class,
         'submitted_at' => 'datetime',
         'published_at' => 'datetime',
+        'baseline' => 'decimal:4',
+        'baseline_year' => 'integer',
         'target_value' => 'decimal:4',
         'actual_value' => 'decimal:4',
     ];
@@ -37,6 +40,28 @@ class IndicatorReport extends Model
     public function getRouteKeyName(): string
     {
         return 'uuid';
+    }
+
+    /**
+     * Resolve by uuid (canonical) or by primary key.
+     *
+     * The API responses expose both `uuid` and `id`, and mne_frontend addresses
+     * reports by `id`. Accepting either keeps both callers working without
+     * making `id` the route key.
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        if ($field !== null) {
+            return parent::resolveRouteBinding($value, $field);
+        }
+
+        $query = $this->newQuery()->where('uuid', $value);
+
+        if (ctype_digit((string) $value)) {
+            $query->orWhere($this->getKeyName(), (int) $value);
+        }
+
+        return $query->first();
     }
 
     public function indicator()

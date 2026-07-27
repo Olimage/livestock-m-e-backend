@@ -109,6 +109,7 @@ class LoginController extends Controller
                     'roles' => $user->roles()->pluck('slug'),
                     'is_admin' => (bool) $user->is_admin,
                     'permissions' => $user->getPermissionNames(),
+                    'departments' => $user->departments()->get(['departments.id', 'name', 'slug']),
                 ],
             ], 200);
 
@@ -185,6 +186,10 @@ class LoginController extends Controller
                     'email' => $user->email,
                     'roles' => $user->roles()->pluck('slug'),
                     'is_admin' => (bool) $user->is_admin,
+                    // Departments the user may report for — mne_frontend scopes
+                    // the reportable indicator list against these ids, matching
+                    // IndicatorReportService::canReport().
+                    'departments' => $user->departments()->get(['departments.id', 'name', 'slug']),
                 ],
                 'permissions' => $user->getPermissionNames(),
             ],

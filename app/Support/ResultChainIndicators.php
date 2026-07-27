@@ -28,7 +28,14 @@ class ResultChainIndicators
      * Flat option list across all Result Chain indicator types.
      *
      * Each row: ['type' => FQCN, 'type_label' => 'Impact', 'id' => 1,
-     *            'code' => 'IMP-1', 'title' => '...', 'measurement_unit' => '%'|null]
+     *            'code' => 'IMP-1', 'title' => '...', 'measurement_unit' => '%'|null,
+     *            'department_id' => 3|null]
+     *
+     * `department_id` is the indicator's owning department — the same value
+     * IndicatorReportService::canReport() authorizes against, so a client can
+     * scope the reportable indicator list without guessing by name. It is null
+     * for the types that carry no department column (Bond Output, Program
+     * Output).
      *
      * @return array<int, array<string, mixed>>
      */
@@ -37,8 +44,17 @@ class ResultChainIndicators
         $options = [];
 
         foreach (self::TYPES as $class => $label) {
-            $hasUnit = in_array('measurement_unit', (new $class)->getFillable(), true);
-            $columns = $hasUnit ? ['id', 'code', 'title', 'measurement_unit'] : ['id', 'code', 'title'];
+            $fillable = (new $class)->getFillable();
+            $hasUnit = in_array('measurement_unit', $fillable, true);
+            $hasDepartment = in_array('department_id', $fillable, true);
+
+            $columns = ['id', 'code', 'title'];
+            if ($hasUnit) {
+                $columns[] = 'measurement_unit';
+            }
+            if ($hasDepartment) {
+                $columns[] = 'department_id';
+            }
 
             foreach ($class::orderBy('code')->get($columns) as $row) {
                 $options[] = [
@@ -48,6 +64,7 @@ class ResultChainIndicators
                     'code' => $row->code,
                     'title' => $row->title,
                     'measurement_unit' => $hasUnit ? $row->measurement_unit : null,
+                    'department_id' => $hasDepartment ? $row->department_id : null,
                 ];
             }
         }

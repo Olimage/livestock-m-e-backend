@@ -22,6 +22,9 @@ Route::middleware(['json-response', 'jwt.verify'])->group(function () {
     Route::put('indicator-reports/{report}', [IndicatorReportController::class, 'update']);
     Route::post('indicator-reports/{report}/submit', [IndicatorReportController::class, 'submit']);
     Route::post('indicator-reports/{report}/proofs', [IndicatorReportController::class, 'uploadProof']);
+    // Evidence lives on a private disk — this is its only retrieval path.
+    Route::get('indicator-reports/{report}/proofs/{proof}', [IndicatorReportController::class, 'downloadProof'])
+        ->name('indicator-reports.proofs.download');
     Route::delete('indicator-reports/{report}/proofs/{proof}', [IndicatorReportController::class, 'deleteProof']);
 
     // Approvals

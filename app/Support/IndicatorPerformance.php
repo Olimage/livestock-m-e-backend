@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Enums\ReportStatus;
 use App\Models\IndicatorReport;
 use Illuminate\Database\Eloquent\Model;
 
@@ -54,8 +55,8 @@ class IndicatorPerformance
             'target' => $target,
             'actual' => $actual,
             'status' => self::status($actual, $target),
-            'baseline' => null,        // baselines not yet seeded (indicator_baseline_years)
-            'baselineYear' => null,
+            'baseline' => $report?->baseline !== null ? (float) $report->baseline : null,
+            'baselineYear' => $report?->baseline_year !== null ? (int) $report->baseline_year : null,
             'measurementUnit' => $indicator->getAttribute('measurement_unit'),
             'department' => $report?->department?->name,
             'supportingDepartment' => null,
@@ -67,19 +68,36 @@ class IndicatorPerformance
     }
 
     /**
-     * The latest approved report for an indicator (most recent reporting period).
+     * The latest approved report for an indicator.
+     *
+     * Only `approved` reports count as ministry data — a draft, a report still
+     * moving through the workflow, and one returned for correction must never
+     * reach a dashboard. This is the single gate for every consumer of
+     * present(), so it has to stay here rather than in each controller.
+     *
+     * Ordered by the period's own chronology (year, then period number) rather
+     * than `reporting_period_id`: periods are not necessarily created in
+     * calendar order, so the id says nothing about which period is later.
      */
     public static function latestReport(string $indicatorType, int $indicatorId): ?IndicatorReport
     {
         return IndicatorReport::with(['proofs', 'department', 'period'])
             ->where('indicator_type', $indicatorType)
             ->where('indicator_id', $indicatorId)
-            ->orderByDesc('reporting_period_id')
+            ->where('indicator_reports.status', ReportStatus::Approved->value)
+            ->join('reporting_periods as rp', 'rp.id', '=', 'indicator_reports.reporting_period_id')
+            ->orderByDesc('rp.year')
+            ->orderByDesc('rp.period_number')
+            ->select('indicator_reports.*')
             ->first();
     }
 
     /**
      * Normalised evidence block: { status, label, url } (never a bare string).
+     *
+     * `url` points at the authorizing download endpoint, never at the file's
+     * location on the private disk — that path is internal and must not leave
+     * the server.
      *
      * @return array{status: string, label: string|null, url: string|null}
      */
@@ -94,7 +112,10 @@ class IndicatorPerformance
         return [
             'status' => 'submitted',
             'label' => $proof->original_name,
-            'url' => $proof->path,
+            'url' => route('indicator-reports.proofs.download', [
+                'report' => $report->uuid,
+                'proof' => $proof->id,
+            ]),
         ];
     }
 

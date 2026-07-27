@@ -173,7 +173,9 @@ class DepartmentController extends Controller
      */
     private function hideFieldsRecursively($department)
     {
-        $department->makeHidden(['id', 'created_at', 'updated_at']);
+        // `id` stays visible: clients need it to post a report's `department_id`
+        // (see Api\IndicatorReportController::store) — a slug alone won't do.
+        $department->makeHidden(['created_at', 'updated_at']);
 
         if ($department->descendants && $department->descendants->count() > 0) {
             $department->descendants = $department->descendants->map(function ($child) {
