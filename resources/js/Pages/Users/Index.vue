@@ -55,7 +55,9 @@ const formatDate = (dateString) => {
 watch([search, perPage, sortBy, sortOrder], () => {
     clearTimeout(searchTimeout.value)
     searchTimeout.value = setTimeout(() => {
-        router.get('/users', {
+        // These routes live under the `settings` prefix — use the named route
+        // rather than a hardcoded path, which silently 404s.
+        router.get(route('users.index'), {
             search: search.value,
             per_page: perPage.value,
             sort_by: sortBy.value,
@@ -69,7 +71,7 @@ watch([search, perPage, sortBy, sortOrder], () => {
 
 const deleteUser = (userId) => {
     if (confirm('Are you sure you want to delete this user?')) {
-        router.delete(`/users/${userId}`, {
+        router.delete(route('users.destroy', userId), {
             preserveScroll: true
         })
     }
@@ -176,15 +178,13 @@ const getSortIcon = (column) => {
                             <table class="table table-hover align-middle">
                                 <thead class="table-light">
                                     <tr>
-                                        <th @click="toggleSort('role')" class="sortable">
-                                            Role <i :class="getSortIcon('role')"></i>
-                                        </th>
+                                        <!-- Role and Department are relations, not columns on `users`,
+                                             so they are not sortable — orderBy would error. -->
+                                        <th>Role</th>
                                         <th @click="toggleSort('full_name')" class="sortable">
                                             Name <i :class="getSortIcon('full_name')"></i>
                                         </th>
-                                        <th @click="toggleSort('email')" class="sortable">
-                                            Department <i :class="getSortIcon('email')"></i>
-                                        </th>
+                                        <th>Department</th>
                                         <th @click="toggleSort('email')" class="sortable">
                                             Email <i :class="getSortIcon('email')"></i>
                                         </th>
@@ -202,7 +202,8 @@ const getSortIcon = (column) => {
                                         </td>
                                     </tr>
                                     <tr v-for="user in users?.data" :key="user.id">
-                                        <td>{{ user.role }}</td>
+                                        <!-- `users.role` was dropped; roles come from the pivot. -->
+                                        <td>{{ (user.roles || []).map(r => r.name).join(', ') || 'N/A' }}</td>
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar-circle me-2">
@@ -218,7 +219,7 @@ const getSortIcon = (column) => {
                                         <td>{{ formatDate(user.created_at) }}</td>
                                         <td class="text-center">
                                             <div class="btn-group" role="group">
-                                                <Link :href="`/users/${user.id}/edit`"
+                                                <Link :href="route('users.edit', user.id)"
                                                     class="btn btn-sm btn-outline-primary" title="Edit">
                                                 <i class="bi bi-pencil"></i>
                                                 </Link>

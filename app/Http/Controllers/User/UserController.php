@@ -15,16 +15,28 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
+    /** Columns the list may be sorted by — these are real columns on `users`. */
+    private const SORTABLE = ['full_name', 'email', 'created_at'];
+
     public function index(Request $request)
     {
-        $users = User::with('departments')
+        // Sorting is driven by a query string, so the column has to be
+        // allow-listed: `role` and `department` are relations, not columns, and
+        // passing either straight to orderBy() raises SQLSTATE[42703].
+        $sortBy = in_array($request->sort_by, self::SORTABLE, true)
+            ? $request->sort_by
+            : 'created_at';
+        $sortOrder = $request->sort_order === 'asc' ? 'asc' : 'desc';
+
+        $users = User::with(['departments', 'roles:id,name'])
             ->when($request->search, function ($query, $search) {
-                $query
-                    ->where('full_name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                $query->where(function ($q) use ($search) {
+                    $q->where('full_name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
             })
             ->whereDoesntHave('roles', fn ($q) => $q->where('slug', 'super_admin'))
-            ->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc')
+            ->orderBy($sortBy, $sortOrder)
             ->paginate($request->per_page ?? 10)
             ->withQueryString();
 
