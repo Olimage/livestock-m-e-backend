@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\DepartmentHierarchy;
 use App\Traits\HasPermissions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -95,6 +96,29 @@ class User extends Authenticatable implements JWTSubject
     public function departments()
     {
         return $this->belongsToMany(Department::class, 'user_departments', 'user_id', 'department_id');
+    }
+
+    /**
+     * The user's departments as an org-chart branch, ordered root-first with a
+     * `depth` on each row — so the LAST entry is the specific unit they belong
+     * to. Shared by sign-in, /auth/me and /user/profile so every client sees the
+     * same shape and the same notion of "assigned department".
+     *
+     * @return \Illuminate\Support\Collection<int, Department>
+     */
+    public function departmentBranch(): \Illuminate\Support\Collection
+    {
+        return DepartmentHierarchy::orderRootToLeaf(
+            $this->departments()->get(['departments.id', 'name', 'slug', 'parent_id'])
+        );
+    }
+
+    /**
+     * The single department this user should be scoped to (deepest on the branch).
+     */
+    public function primaryDepartment(): ?Department
+    {
+        return $this->departmentBranch()->last();
     }
 
     public function permissions()

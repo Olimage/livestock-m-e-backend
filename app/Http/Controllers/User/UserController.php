@@ -46,11 +46,14 @@ class UserController extends Controller
 
     public function getUserProfile()
     {
-        // `departments` must be eager-loaded: mne_frontend merges this payload
-        // over the cached login user, and scopes the reportable indicator list
-        // by these ids. Without it the merge drops the user's departments and
-        // the reporting form falls back to showing every indicator.
-        $me = User::with('departments:id,name,slug')->find(auth()->user()->id);
+        // `departments` must be present: mne_frontend merges this payload over
+        // the cached login user and scopes the reportable indicator list by it.
+        // Without it the merge drops the user's departments and the reporting
+        // form falls back to showing every indicator. Shape matches sign-in and
+        // /auth/me — root-first branch, last entry is the unit they belong to.
+        $me = User::find(auth()->user()->id);
+        $me->setAttribute('departments', $me->departmentBranch());
+        $me->setAttribute('primary_department', $me->primaryDepartment());
 
         return response()->json([
             'status' => true,
