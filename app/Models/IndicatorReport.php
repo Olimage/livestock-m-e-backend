@@ -55,13 +55,17 @@ class IndicatorReport extends Model
             return parent::resolveRouteBinding($value, $field);
         }
 
-        $query = $this->newQuery()->where('uuid', $value);
-
+        // Constrain exactly one column. PostgreSQL will not compare a `uuid`
+        // column against a non-uuid literal — `where uuid = 227` or
+        // `where uuid = 'not-a-uuid'` raises SQLSTATE[22P02] rather than simply
+        // not matching. (SQLite coerces silently, so tests never saw it.)
         if (ctype_digit((string) $value)) {
-            $query->orWhere($this->getKeyName(), (int) $value);
+            return $this->newQuery()->whereKey((int) $value)->first();
         }
 
-        return $query->first();
+        return Str::isUuid($value)
+            ? $this->newQuery()->where('uuid', $value)->first()
+            : null;
     }
 
     public function indicator()

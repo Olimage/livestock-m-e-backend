@@ -4,12 +4,15 @@ namespace Tests\Feature\IndicatorReporting;
 
 use App\Models\BondOutputIndicator;
 use App\Models\Department;
+use App\Models\IndicatorReport;
 use App\Models\OutputIndicator;
 use App\Models\Permission;
 use App\Models\ReportingPeriod;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Tests\Concerns\AuthenticatesWithJwt;
 use Tests\TestCase;
 
@@ -157,5 +160,44 @@ class ReportingFormContractTest extends TestCase
         $this->withHeaders($this->authHeaders($director))
             ->getJson('/api/v1/indicator-reports/does-not-exist')
             ->assertNotFound();
+    }
+
+    /**
+     * The suite runs on SQLite but production is PostgreSQL, which refuses to
+     * compare a `uuid` column against a non-uuid literal (SQLSTATE[22P02])
+     * instead of simply not matching. SQLite coerces silently, so assert on the
+     * generated SQL rather than on the result.
+     */
+    public function test_a_numeric_key_is_never_compared_against_the_uuid_column(): void
+    {
+        DB::enableQueryLog();
+        (new IndicatorReport)->resolveRouteBinding('227');
+        $sql = collect(DB::getQueryLog())->pluck('query')->implode(' ');
+        DB::disableQueryLog();
+
+        $this->assertNotEmpty($sql, 'expected a lookup query');
+        $this->assertStringNotContainsString('uuid', $sql);
+    }
+
+    public function test_a_malformed_key_is_never_compared_against_the_uuid_column(): void
+    {
+        DB::enableQueryLog();
+        $resolved = (new IndicatorReport)->resolveRouteBinding('does-not-exist');
+        $sql = collect(DB::getQueryLog())->pluck('query')->implode(' ');
+        DB::disableQueryLog();
+
+        $this->assertNull($resolved);
+        $this->assertStringNotContainsString('uuid', $sql);
+    }
+
+    public function test_a_uuid_key_is_never_compared_against_the_id_column(): void
+    {
+        DB::enableQueryLog();
+        (new IndicatorReport)->resolveRouteBinding((string) Str::uuid());
+        $sql = collect(DB::getQueryLog())->pluck('query')->implode(' ');
+        DB::disableQueryLog();
+
+        $this->assertStringContainsString('uuid', $sql);
+        $this->assertStringNotContainsString('"id" =', $sql);
     }
 }

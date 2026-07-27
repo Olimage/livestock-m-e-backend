@@ -23,9 +23,13 @@ Route::middleware(['json-response', 'jwt.verify'])->group(function () {
     Route::post('indicator-reports/{report}/submit', [IndicatorReportController::class, 'submit']);
     Route::post('indicator-reports/{report}/proofs', [IndicatorReportController::class, 'uploadProof']);
     // Evidence lives on a private disk — this is its only retrieval path.
+    // `{proof}` is constrained to digits so a non-numeric segment 404s at the
+    // router instead of reaching PostgreSQL, which errors on `id = 'abc'`.
     Route::get('indicator-reports/{report}/proofs/{proof}', [IndicatorReportController::class, 'downloadProof'])
+        ->whereNumber('proof')
         ->name('indicator-reports.proofs.download');
-    Route::delete('indicator-reports/{report}/proofs/{proof}', [IndicatorReportController::class, 'deleteProof']);
+    Route::delete('indicator-reports/{report}/proofs/{proof}', [IndicatorReportController::class, 'deleteProof'])
+        ->whereNumber('proof');
 
     // Approvals
     Route::post('indicator-reports/{report}/approve', [ReportApprovalController::class, 'approve']);
