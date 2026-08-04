@@ -29,6 +29,7 @@ class DashboardPermissionsSeeder extends Seeder
         'create-report' => 'Create Report',
         'edit-report' => 'Edit Report',
         'approve-report' => 'Approve Report',
+        'manage-settings' => 'Manage Settings',
     ];
 
     public function run(): void

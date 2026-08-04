@@ -22,8 +22,16 @@
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_STORE" value="array"/>
-        <env name="DB_CONNECTION" value="sqlite"/>
-        <env name="DB_DATABASE" value=":memory:"/>
+        <!-- Tests run on PostgreSQL, the same driver production uses, against a
+             DEDICATED database. Never point these at the dev database in .env
+             (olimage_livestock): 48 test files use RefreshDatabase, which drops
+             and rebuilds every table on each run.
+             SQLite was hiding real bugs — it silently accepts a `constrained()`
+             that registers no foreign key, and it coerces types PostgreSQL
+             rejects outright. Create the database once with:
+               CREATE DATABASE olimage_livestock_test; -->
+        <env name="DB_CONNECTION" value="pgsql"/>
+        <env name="DB_DATABASE" value="olimage_livestock_test"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="QUEUE_CONNECTION" value="sync"/>

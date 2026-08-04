@@ -49,7 +49,7 @@ class ProgramController extends Controller
         $validated = $request->validate([
             'code' => 'required|string|max:255|unique:sectoral_goals',
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
         ]);
 
         SectoralGoal::create($validated);
@@ -70,7 +70,7 @@ class ProgramController extends Controller
         $validated = $request->validate([
             'code' => 'required|string|max:255|unique:sectoral_goals,code,'.$goal->id,
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
         ]);
 
         $goal->update($validated);
@@ -121,7 +121,7 @@ class ProgramController extends Controller
         $validated = $request->validate([
             'code' => 'required|string|max:255|unique:nlgas_pillars',
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
         ]);
 
         NlgasPillar::create($validated);
@@ -142,7 +142,7 @@ class ProgramController extends Controller
         $validated = $request->validate([
             'code' => 'required|string|max:255|unique:nlgas_pillars,code,'.$pillar->id,
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
         ]);
 
         $pillar->update($validated);

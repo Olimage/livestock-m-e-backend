@@ -1,0 +1,2922 @@
+{
+  "info": {
+    "_postman_id": "b7f1c3a2-9d54-4f1e-8c11-mems00000001",
+    "name": "FMLD MEMS (mems) — Full API",
+    "description": "Complete endpoint collection for the FMLD Monitoring & Evaluation backend (`mems`, Laravel 11).\n\n**Two surfaces are covered:**\n\n1. **Public / integration API** — `routes/api.php` + `routes/v1/*.php`, mounted at `{{api_url}}` (= `{{base_url}}/api/v1`). Auth is **JWT** (`tymon/jwt-auth`), sent as `Authorization: Bearer {{jwt_token}}`. The collection-level auth already does this — run **Auth → Sign In** once and the token is captured automatically.\n\n2. **Internal (Inertia/Vue web app)** — `routes/web.php`. These are the endpoints the bundled Vue frontend calls. They use **session cookie auth** (`auth.web`) plus Laravel **CSRF**, not JWT. See the `Internal — Web App (Session Auth)` folder description for the login + CSRF flow.\n\n**Conventions**\n- Every host/path segment that varies is an environment variable — nothing is hard-coded.\n- Optional query params are included but *disabled*; tick them in Postman to use them.\n- Request bodies mirror the controllers' `validate()` rules exactly (required fields present, optional ones included with sample values).\n\nGenerated from source: `routes/api.php`, `routes/web.php`, `routes/v1/{auth,user,supervisor-enumerator,indicator-reporting,web-indicator-reporting,web-supervisor-enumerator}.php`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{jwt_token}}", "type": "string" }]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Keep {{xsrf_token}} in sync with the XSRF-TOKEN cookie so the internal",
+          "// (session-auth) web routes can pass Laravel's CSRF check.",
+          "const jar = pm.cookies;",
+          "if (jar && jar.has('XSRF-TOKEN')) {",
+          "    pm.environment.set('xsrf_token', decodeURIComponent(jar.get('XSRF-TOKEN')));",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('No server error', function () {",
+          "    pm.expect(pm.response.code).to.be.below(500);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://fmld.olimageserver.com",
+      "type": "string",
+      "description": "Fallback only — prefer the environment variable."
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth (JWT)",
+      "description": "`routes/v1/auth.php` — JWT issuing and session teardown for API clients (mne_frontend, enum_flutter).\n\n`Sign In` has a test script that stores `jwt_token` and `refresh_token` into the active environment; every other request inherits the bearer token from the collection.",
+      "item": [
+        {
+          "name": "Sign In",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (body && body.token) {",
+                  "    pm.environment.set('jwt_token', body.token);",
+                  "    pm.environment.set('refresh_token', body.refresh_token);",
+                  "    if (body.user) { pm.environment.set('user_id', body.user.id); }",
+                  "    console.log('JWT stored for', body.user && body.user.email);",
+                  "}",
+                  "",
+                  "pm.test('Login succeeded', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().status).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{auth_email}}\",\n  \"password\": \"{{auth_password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/auth/sign-in",
+              "host": ["{{api_url}}"],
+              "path": ["auth", "sign-in"]
+            },
+            "description": "Returns `token`, `refresh_token`, `token_type`, `expires_in` and a `user` block (roles, permissions, department branch, primary department).\n\nBody: `email` (required, email), `password` (required)."
+          }
+        },
+        {
+          "name": "Me (current user)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/auth/me",
+              "host": ["{{api_url}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Middleware: `jwt.verify`. Resolves the authenticated user from the bearer token."
+          }
+        },
+        {
+          "name": "Sign Out",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/auth/sign-out",
+              "host": ["{{api_url}}"],
+              "path": ["auth", "sign-out"]
+            },
+            "description": "Middleware: `jwt.verify`, `email.verify`. Invalidates the current JWT."
+          }
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "description": "`routes/v1/user.php`.",
+      "item": [
+        {
+          "name": "Home (unprotected ping)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/user/home",
+              "host": ["{{api_url}}"],
+              "path": ["user", "home"]
+            },
+            "description": "Unauthenticated closure that returns `123`. Handy as a liveness check for the `/api/v1` group."
+          }
+        },
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/user/profile",
+              "host": ["{{api_url}}"],
+              "path": ["user", "profile"]
+            },
+            "description": "Middleware: `json-response`, `jwt.verify`. `User\\UserController@getUserProfile`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Locations (Geography)",
+      "description": "`LocationController` API methods — cascading Zone → State → LGA reference data. Requires a valid JWT (`jwt.verify`) — the hierarchy is **no longer public**. Inherits the collection-level bearer auth like every other authenticated folder here. Write endpoints live in the `Locations (Geography) — Admin Writes` folder below.",
+      "item": [
+        {
+          "name": "List Zones",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/locations/zones?search={{search}}&per_page={{per_page}}",
+              "host": ["{{api_url}}"],
+              "path": ["locations", "zones"],
+              "query": [
+                { "key": "search", "value": "{{search}}", "disabled": true, "description": "Optional. Case-insensitive filter on `name`." },
+                { "key": "per_page", "value": "20", "disabled": true, "description": "Optional. Presence switches `data` from the full array to a Laravel paginator." }
+              ]
+            },
+            "description": "Returns `{ status, message, data: [{ id, uuid, name, code, states_count }] }`."
+          }
+        },
+        {
+          "name": "List States (optionally by zone)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/locations/states?zone_id={{zone_id}}&search={{search}}&per_page={{per_page}}",
+              "host": ["{{api_url}}"],
+              "path": ["locations", "states"],
+              "query": [
+                {
+                  "key": "zone_id",
+                  "value": "{{zone_id}}",
+                  "description": "Optional filter — must exist in `zones` if present. Absent returns the full list (used by the geography management table)."
+                },
+                { "key": "search", "value": "{{search}}", "disabled": true, "description": "Optional. Case-insensitive filter on `name`." },
+                { "key": "per_page", "value": "20", "disabled": true, "description": "Optional. Presence switches `data` from the full array to a Laravel paginator." }
+              ]
+            },
+            "description": "`zone_id` is an **optional filter**, not required (the admin management table needs the full list). Returns `{ status, message, data: [{ id, uuid, name, zone_id, zone_code, zone_name, lgas_count }] }`."
+          }
+        },
+        {
+          "name": "List LGAs (optionally by state or zone)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/locations/lgas?state_id={{state_id}}&zone_id={{zone_id}}&search={{search}}&per_page={{per_page}}",
+              "host": ["{{api_url}}"],
+              "path": ["locations", "lgas"],
+              "query": [
+                {
+                  "key": "state_id",
+                  "value": "{{state_id}}",
+                  "description": "Optional filter — must exist in `states` if present. Absent returns the full list."
+                },
+                {
+                  "key": "zone_id",
+                  "value": "{{zone_id}}",
+                  "disabled": true,
+                  "description": "Optional filter — matches LGAs whose State belongs to this zone."
+                },
+                { "key": "search", "value": "{{search}}", "disabled": true, "description": "Optional. Case-insensitive filter on `name`." },
+                { "key": "per_page", "value": "20", "disabled": true, "description": "Optional. Presence switches `data` from the full array to a Laravel paginator." }
+              ]
+            },
+            "description": "`state_id` / `zone_id` are **optional filters**, not required. Returns `{ status, message, data: [{ id, uuid, name, state_id, state_name, zone_id, zone_code, zone_name }] }`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Locations (Geography) — Admin Writes",
+      "description": "`GeographyApiController` — create/update/delete for Zones, States, LGAs (`routes/v1/admin-crud.php`). Middleware: `jwt.verify`, `permission:manage-settings`. Deleting a Zone that still has States, or a State that still has LGAs, is refused rather than cascaded: `422 { status: false, message: \"This zone still has states. Move or delete them first.\" }` (State/LGA wording analogous).",
+      "item": [
+        {
+          "name": "Create Zone",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"North West\",\n  \"code\": \"NW\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/locations/zones",
+              "host": ["{{api_url}}"],
+              "path": ["locations", "zones"]
+            },
+            "description": "`name` required; `code` optional (max 50). Returns `201 { status: true, message: \"Zone created.\", data: <zone> }`."
+          }
+        },
+        {
+          "name": "Update Zone",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"North West\",\n  \"code\": \"NW\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/locations/zones/{{zone_id}}",
+              "host": ["{{api_url}}"],
+              "path": ["locations", "zones", "{{zone_id}}"]
+            },
+            "description": "Same validation as Create Zone. Returns `200 { status: true, message: \"Zone updated.\", data: <zone> }`."
+          }
+        },
+        {
+          "name": "Delete Zone",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/locations/zones/{{zone_id}}",
+              "host": ["{{api_url}}"],
+              "path": ["locations", "zones", "{{zone_id}}"]
+            },
+            "description": "Returns `200 { status: true, message: \"Zone deleted.\" }`, or `422 { status: false, message }` if the zone still has states."
+          }
+        },
+        {
+          "name": "Create State",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kano\",\n  \"zone_id\": {{zone_id}}\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/locations/states",
+              "host": ["{{api_url}}"],
+              "path": ["locations", "states"]
+            },
+            "description": "`name` required; `zone_id` required and must exist in `zones`. Returns `201 { status: true, message: \"State created.\", data: <state> }`."
+          }
+        },
+        {
+          "name": "Update State",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kano\",\n  \"zone_id\": {{zone_id}}\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/locations/states/{{state_id}}",
+              "host": ["{{api_url}}"],
+              "path": ["locations", "states", "{{state_id}}"]
+            },
+            "description": "Same validation as Create State. Returns `200 { status: true, message: \"State updated.\", data: <state> }`."
+          }
+        },
+        {
+          "name": "Delete State",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/locations/states/{{state_id}}",
+              "host": ["{{api_url}}"],
+              "path": ["locations", "states", "{{state_id}}"]
+            },
+            "description": "Returns `200 { status: true, message: \"State deleted.\" }`, or `422 { status: false, message }` if the state still has LGAs."
+          }
+        },
+        {
+          "name": "Create LGA",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dala\",\n  \"state_id\": {{state_id}}\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/locations/lgas",
+              "host": ["{{api_url}}"],
+              "path": ["locations", "lgas"]
+            },
+            "description": "`name` required; `state_id` required and must exist in `states`. Returns `201 { status: true, message: \"LGA created.\", data: <lga> }`."
+          }
+        },
+        {
+          "name": "Update LGA",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dala\",\n  \"state_id\": {{state_id}}\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/locations/lgas/{{lga_id}}",
+              "host": ["{{api_url}}"],
+              "path": ["locations", "lgas", "{{lga_id}}"]
+            },
+            "description": "Same validation as Create LGA. Returns `200 { status: true, message: \"LGA updated.\", data: <lga> }`."
+          }
+        },
+        {
+          "name": "Delete LGA",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/locations/lgas/{{lga_id}}",
+              "host": ["{{api_url}}"],
+              "path": ["locations", "lgas", "{{lga_id}}"]
+            },
+            "description": "Returns `200 { status: true, message: \"LGA deleted.\" }`. LGAs have no children, so this never refuses with a 422."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reference Data (Programs & Departments)",
+      "description": "Read-only catalogues used to populate selectors in the field app and dashboards. Unauthenticated.",
+      "item": [
+        {
+          "name": "List Result-Chain Indicators",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/programs/indicators",
+              "host": ["{{api_url}}"],
+              "path": ["programs", "indicators"]
+            },
+            "description": "`ProgramsController@getIndicators` — the union of all Result Chain indicator types (impact / outcome / output / bond output / program output) with `code`, `title`, `measurement_unit`, `type_label`."
+          }
+        },
+        {
+          "name": "List Modules",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/programs/modules",
+              "host": ["{{api_url}}"],
+              "path": ["programs", "modules"]
+            }
+          }
+        },
+        {
+          "name": "List Sectoral Goals",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/programs/sectoral-goals",
+              "host": ["{{api_url}}"],
+              "path": ["programs", "sectoral-goals"]
+            }
+          }
+        },
+        {
+          "name": "List Departments (tree)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/departments",
+              "host": ["{{api_url}}"],
+              "path": ["departments"]
+            },
+            "description": "`DepartmentController@getDepartments` — top-level departments with all nested `descendants`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Indicator Forms",
+      "description": "`IndicatorFormController` — prefix `forms/indicator`, middleware `jwt.verify`.",
+      "item": [
+        {
+          "name": "List Submitted Forms",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/forms/indicator?per_page=15",
+              "host": ["{{api_url}}"],
+              "path": ["forms", "indicator"],
+              "query": [
+                { "key": "per_page", "value": "15", "description": "Default 15." },
+                { "key": "page", "value": "1", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Collectable Fields",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/forms/indicator/fields",
+              "host": ["{{api_url}}"],
+              "path": ["forms", "indicator", "fields"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "Impact",
+                  "disabled": true,
+                  "description": "Optional. Filters by `type_label` (case-insensitive), e.g. Impact, Outcome, Output."
+                }
+              ]
+            },
+            "description": "Returns the indicator fields keyed by globally-unique `code`, each with `title`, `measurement_unit`, `type`, `type_prefix`."
+          }
+        },
+        {
+          "name": "Submit Indicator Values",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"IMP-3\": 12,\n  \"OUT-1\": 5\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/forms/indicator",
+              "host": ["{{api_url}}"],
+              "path": ["forms", "indicator"]
+            },
+            "description": "Free-form payload: **every key must be a valid Result Chain indicator code** (see `Get Collectable Fields`). `_token`, `per_page`, `page` and `_method` are stripped. An empty payload or an unknown code yields a 422."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Enumeration Records",
+      "description": "Sync target for the offline-first `enum_flutter` field app. Middleware: `json-response`, `jwt.verify`.",
+      "item": [
+        {
+          "name": "Submit Enumeration Record",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"form_type\": \"{{form_type}}\",\n  \"enumerator_name\": \"Field Officer\",\n  \"latitude\": 9.0563,\n  \"longitude\": 7.4985,\n  \"device_id\": \"{{device_id}}\",\n  \"submitted_at\": \"2026-08-01T09:30:00Z\",\n  \"zone_id\": {{zone_id}},\n  \"state_id\": {{state_id}},\n  \"lga_id\": {{lga_id}},\n  \"form_data\": {\n    \"herd_size\": 42,\n    \"species\": \"cattle\",\n    \"owner_name\": \"Sample Owner\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/enumeration-records",
+              "host": ["{{api_url}}"],
+              "path": ["enumeration-records"]
+            },
+            "description": "**Required:** `form_type` — one of `household`, `market`, `commercial_farm` (`EnumerationRecord::FORM_TYPES`) — plus `form_data` (array/object), `zone_id`, `state_id`, `lga_id`.\n\n**Optional:** `enumerator_name` (ignored — the server always stores the authenticated user's `full_name`), `latitude` (-90..90), `longitude` (-180..180), `device_id`, `submitted_at` (date; defaults to now).\n\nRecords land with `sync_status = synced`. Returns 201."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Indicator Reporting API",
+      "description": "`routes/v1/indicator-reporting.php` — the reporting + approval workflow API. Every route here is behind `json-response` + `jwt.verify`, and most additionally require a permission (noted per request).",
+      "item": [
+        {
+          "name": "Approval Workflows",
+          "description": "Admin-only: requires the `manage-approval-workflows` permission. Registered via `Route::apiResource('workflows', ...)`.",
+          "item": [
+            {
+              "name": "List Workflows",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/workflows",
+                  "host": ["{{api_url}}"],
+                  "path": ["workflows"]
+                },
+                "description": "Eager-loads `stages` and `departments`, newest first."
+              }
+            },
+            {
+              "name": "Create Workflow",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const b = pm.response.json();",
+                      "if (b && b.data && b.data.id) { pm.environment.set('workflow_id', b.data.id); }"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Accept", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Standard Indicator Approval\",\n  \"description\": \"Department reporter -> PRS review -> PS approval\",\n  \"is_active\": true,\n  \"initiator_role_id\": {{role_id}},\n  \"resubmit_behavior\": \"from_start\",\n  \"stages\": [\n    {\n      \"name\": \"PRS Review\",\n      \"assignment_type\": \"role\",\n      \"role_id\": {{role_id}},\n      \"approval_mode\": \"any\",\n      \"user_ids\": []\n    },\n    {\n      \"name\": \"PS Approval\",\n      \"assignment_type\": \"users\",\n      \"role_id\": null,\n      \"approval_mode\": \"all\",\n      \"user_ids\": [{{user_id}}]\n    }\n  ],\n  \"department_ids\": [{{department_id}}]\n}"
+                },
+                "url": {
+                  "raw": "{{api_url}}/workflows",
+                  "host": ["{{api_url}}"],
+                  "path": ["workflows"]
+                },
+                "description": "**Required:** `name`.\n**Optional:** `description`, `is_active` (bool), `initiator_role_id` (exists:roles), `resubmit_behavior` (`from_start` | `from_declined_stage`), `stages[]`, `department_ids[]`.\n\nPer stage: `name` (required), `assignment_type` (`role`|`users`), `role_id`, `approval_mode` (`any`|`all`), `user_ids[]`.\n\nDomain violations return 422 with `success: false`."
+              }
+            },
+            {
+              "name": "Show Workflow",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/workflows/{{workflow_id}}",
+                  "host": ["{{api_url}}"],
+                  "path": ["workflows", "{{workflow_id}}"]
+                },
+                "description": "Loads `stages.users` and `departments`."
+              }
+            },
+            {
+              "name": "Update Workflow",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Accept", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Standard Indicator Approval (v2)\",\n  \"description\": \"Updated stage chain\",\n  \"is_active\": true,\n  \"resubmit_behavior\": \"from_declined_stage\",\n  \"stages\": [\n    {\n      \"name\": \"PRS Review\",\n      \"assignment_type\": \"role\",\n      \"role_id\": {{role_id}},\n      \"approval_mode\": \"any\"\n    }\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{api_url}}/workflows/{{workflow_id}}",
+                  "host": ["{{api_url}}"],
+                  "path": ["workflows", "{{workflow_id}}"]
+                },
+                "description": "Same rules as create, but `name` is `sometimes` rather than `required`."
+              }
+            },
+            {
+              "name": "Delete Workflow",
+              "request": {
+                "method": "DELETE",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/workflows/{{workflow_id}}",
+                  "host": ["{{api_url}}"],
+                  "path": ["workflows", "{{workflow_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Assign Departments to Workflow",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Accept", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"department_ids\": [{{department_id}}]\n}"
+                },
+                "url": {
+                  "raw": "{{api_url}}/workflows/{{workflow_id}}/departments",
+                  "host": ["{{api_url}}"],
+                  "path": ["workflows", "{{workflow_id}}", "departments"]
+                },
+                "description": "`department_ids` — array of ids that must exist in `departments`. Sending an empty array detaches all."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Indicator Reports",
+          "description": "Draft → submit → approve lifecycle. Creating requires `report-indicator-data`; listing everyone's reports requires `view-all-indicator-reports` (otherwise you only see your own).",
+          "item": [
+            {
+              "name": "List Reports",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/indicator-reports?per_page=15",
+                  "host": ["{{api_url}}"],
+                  "path": ["indicator-reports"],
+                  "query": [
+                    { "key": "per_page", "value": "15", "description": "Default 15." },
+                    {
+                      "key": "status",
+                      "value": "draft",
+                      "disabled": true,
+                      "description": "Filter by ReportStatus: draft, submitted, returned, approved."
+                    },
+                    { "key": "page", "value": "1", "disabled": true }
+                  ]
+                },
+                "description": "Paginated, newest first, with `period`, `department`, `currentStage` eager-loaded."
+              }
+            },
+            {
+              "name": "Create Report (draft)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const b = pm.response.json();",
+                      "if (b && b.data && b.data.id) { pm.environment.set('report_id', b.data.id); }"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Accept", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"indicator_type\": \"{{indicator_type}}\",\n  \"indicator_id\": {{indicator_id}},\n  \"department_id\": {{department_id}},\n  \"reporting_period_id\": {{period_id}},\n  \"baseline\": 100,\n  \"baseline_year\": 2024,\n  \"target_value\": 500,\n  \"actual_value\": 320,\n  \"narrative\": \"Q2 progress against the target.\",\n  \"values\": [\n    { \"disagregation_item_id\": {{disagregation_item_id}}, \"value\": 180 },\n    { \"disagregation_item_id\": null, \"value\": 140 }\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{api_url}}/indicator-reports",
+                  "host": ["{{api_url}}"],
+                  "path": ["indicator-reports"]
+                },
+                "description": "**Required:** `indicator_type` (a key of `ResultChainIndicators::TYPES` — the fully-qualified model class, e.g. `App\\\\Models\\\\OutputIndicator`), `indicator_id`, `department_id`, `reporting_period_id`.\n\n**Optional:** `baseline`, `baseline_year` (2000–2100), `target_value`, `actual_value`, `narrative`, `values[]` (each `disagregation_item_id` + `value`).\n\n403 if you lack `report-indicator-data`, or if `canReport()` says the indicator isn't yours. Returns 201."
+              }
+            },
+            {
+              "name": "Show Report",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/indicator-reports/{{report_id}}",
+                  "host": ["{{api_url}}"],
+                  "path": ["indicator-reports", "{{report_id}}"]
+                },
+                "description": "Loads `values`, `proofs`, `approvals.actor`, `approvals.stage`, `currentStage`, `period`, `department`."
+              }
+            },
+            {
+              "name": "Update Report",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Accept", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"baseline\": 110,\n  \"baseline_year\": 2024,\n  \"target_value\": 520,\n  \"actual_value\": 400,\n  \"narrative\": \"Revised after data validation.\",\n  \"reporting_period_id\": {{period_id}},\n  \"values\": [\n    { \"disagregation_item_id\": {{disagregation_item_id}}, \"value\": 220 }\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{api_url}}/indicator-reports/{{report_id}}",
+                  "host": ["{{api_url}}"],
+                  "path": ["indicator-reports", "{{report_id}}"]
+                },
+                "description": "Only editable while status is **Draft** or **Returned**, and only by the creator (or an admin) — otherwise 403. The indicator itself cannot be changed after creation."
+              }
+            },
+            {
+              "name": "Submit Report",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/indicator-reports/{{report_id}}/submit",
+                  "host": ["{{api_url}}"],
+                  "path": ["indicator-reports", "{{report_id}}", "submit"]
+                },
+                "description": "No body. Moves the draft into the configured approval workflow. Same edit guard as Update."
+              }
+            },
+            {
+              "name": "Upload Proof (evidence)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const b = pm.response.json();",
+                      "if (b && b.data && b.data.id) { pm.environment.set('proof_id', b.data.id); }"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "src": [],
+                      "description": "Required. Max 10 MB. Allowed: pdf, png, jpg, jpeg, doc, docx, xls, xlsx (validated by sniffed MIME, not extension)."
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{api_url}}/indicator-reports/{{report_id}}/proofs",
+                  "host": ["{{api_url}}"],
+                  "path": ["indicator-reports", "{{report_id}}", "proofs"]
+                },
+                "description": "`multipart/form-data`. Do **not** set Content-Type manually — Postman adds the boundary. Returns 201 with the stored proof. Files go to a private disk."
+              }
+            },
+            {
+              "name": "Download Proof",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{api_url}}/indicator-reports/{{report_id}}/proofs/{{proof_id}}",
+                  "host": ["{{api_url}}"],
+                  "path": ["indicator-reports", "{{report_id}}", "proofs", "{{proof_id}}"]
+                },
+                "description": "Streams the file from the private evidence disk — this is the **only** retrieval path; evidence is never web-reachable. `{proof}` is constrained to digits (`whereNumber`), so a non-numeric segment 404s at the router. Applies the same view authorization as the parent report."
+              }
+            },
+            {
+              "name": "Delete Proof",
+              "request": {
+                "method": "DELETE",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/indicator-reports/{{report_id}}/proofs/{{proof_id}}",
+                  "host": ["{{api_url}}"],
+                  "path": ["indicator-reports", "{{report_id}}", "proofs", "{{proof_id}}"]
+                },
+                "description": "Requires the report to still be editable (Draft/Returned). 404 if the proof does not belong to the report."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Approvals & Audit Trail",
+          "description": "Requires `review-indicator-reports` or `approve-indicator-reports` (or admin).",
+          "item": [
+            {
+              "name": "Approve Report",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/indicator-reports/{{report_id}}/approve",
+                  "host": ["{{api_url}}"],
+                  "path": ["indicator-reports", "{{report_id}}", "approve"]
+                },
+                "description": "No body. Advances the report to the next workflow stage (or final approval)."
+              }
+            },
+            {
+              "name": "Decline Report",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Accept", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Actual value does not reconcile with the attached evidence.\"\n}"
+                },
+                "url": {
+                  "raw": "{{api_url}}/indicator-reports/{{report_id}}/decline",
+                  "host": ["{{api_url}}"],
+                  "path": ["indicator-reports", "{{report_id}}", "decline"]
+                },
+                "description": "`reason` is **required**, min 3 chars. Returns the report to the reporter."
+              }
+            },
+            {
+              "name": "Report Approval Trail",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/indicator-reports/{{report_id}}/trail",
+                  "host": ["{{api_url}}"],
+                  "path": ["indicator-reports", "{{report_id}}", "trail"]
+                },
+                "description": "Visible to the creator, admins, `view-all-indicator-reports` holders, and reviewers/approvers."
+              }
+            },
+            {
+              "name": "All Approval Trails",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/approval-trails?per_page=25",
+                  "host": ["{{api_url}}"],
+                  "path": ["approval-trails"],
+                  "query": [
+                    { "key": "per_page", "value": "25" },
+                    { "key": "report_id", "value": "{{report_id}}", "disabled": true },
+                    {
+                      "key": "action",
+                      "value": "approved",
+                      "disabled": true,
+                      "description": "e.g. submitted, approved, declined."
+                    }
+                  ]
+                },
+                "description": "Admin / `view-all-indicator-reports` only. Filters: `report_id`, `action`, `per_page`."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reporting Periods",
+          "description": "Reading is open to any authenticated user; writing requires `manage-reporting-periods` (or admin).",
+          "item": [
+            {
+              "name": "List Reporting Periods",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/reporting-periods",
+                  "host": ["{{api_url}}"],
+                  "path": ["reporting-periods"],
+                  "query": [
+                    {
+                      "key": "open_only",
+                      "value": "true",
+                      "disabled": true,
+                      "description": "Boolean. Restricts to currently open periods."
+                    }
+                  ]
+                },
+                "description": "Ordered by `year` desc, then `period_number` desc."
+              }
+            },
+            {
+              "name": "Create Reporting Period",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const b = pm.response.json();",
+                      "if (b && b.data && b.data.id) { pm.environment.set('period_id', b.data.id); }"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Accept", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Q3 2026\",\n  \"type\": \"quarter\",\n  \"year\": 2026,\n  \"period_number\": 3,\n  \"start_date\": \"2026-07-01\",\n  \"end_date\": \"2026-09-30\",\n  \"is_open\": true\n}"
+                },
+                "url": {
+                  "raw": "{{api_url}}/reporting-periods",
+                  "host": ["{{api_url}}"],
+                  "path": ["reporting-periods"]
+                },
+                "description": "**Required:** `name`, `type` (`month`|`quarter`|`year`), `year` (2000–2100).\n**Optional:** `period_number` (1–12), `start_date`, `end_date` (>= start_date), `is_open`."
+              }
+            },
+            {
+              "name": "Update Reporting Period",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Accept", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Q3 2026 (revised)\",\n  \"is_open\": false\n}"
+                },
+                "url": {
+                  "raw": "{{api_url}}/reporting-periods/{{period_id}}",
+                  "host": ["{{api_url}}"],
+                  "path": ["reporting-periods", "{{period_id}}"]
+                },
+                "description": "Same rules as create, but all fields are `sometimes`."
+              }
+            },
+            {
+              "name": "Delete Reporting Period",
+              "request": {
+                "method": "DELETE",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/reporting-periods/{{period_id}}",
+                  "host": ["{{api_url}}"],
+                  "path": ["reporting-periods", "{{period_id}}"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "description": "Requires `manage-settings` (or admin).",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/settings",
+                  "host": ["{{api_url}}"],
+                  "path": ["settings"]
+                },
+                "description": "Returns the public settings map."
+              }
+            },
+            {
+              "name": "Update Settings",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Accept", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"settings\": {\n    \"reporting_reminder_days\": 7,\n    \"allow_late_submissions\": false\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{api_url}}/settings",
+                  "host": ["{{api_url}}"],
+                  "path": ["settings"]
+                },
+                "description": "`settings` is a **required** key/value object; each pair is written via `SettingService::set()`."
+              }
+            }
+          ]
+        },
+        {
+          "name": "External Integration (read-only)",
+          "description": "Approved indicator data for downstream consumers.",
+          "item": [
+            {
+              "name": "Query Indicator Data",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/indicator-data?per_page=50",
+                  "host": ["{{api_url}}"],
+                  "path": ["indicator-data"],
+                  "query": [
+                    { "key": "per_page", "value": "50", "description": "Default 50." },
+                    { "key": "indicator_code", "value": "{{indicator_code}}", "disabled": true },
+                    { "key": "department_id", "value": "{{department_id}}", "disabled": true },
+                    { "key": "reporting_period_id", "value": "{{period_id}}", "disabled": true },
+                    { "key": "year", "value": "2026", "disabled": true, "description": "Filters via the related reporting period's year." },
+                    { "key": "page", "value": "1", "disabled": true }
+                  ]
+                },
+                "description": "Paginated, approved-only data. All filters are optional and combine with AND."
+              }
+            },
+            {
+              "name": "Reports for an Indicator Code",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/indicators/{{indicator_code}}/reports",
+                  "host": ["{{api_url}}"],
+                  "path": ["indicators", "{{indicator_code}}", "reports"]
+                },
+                "description": "`{code}` is the globally-unique Result Chain indicator code (e.g. `IMP-3`, `OUT-1`)."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dashboard Analytics API",
+      "description": "The JWT-protected analytics surface consumed by `mne_frontend`. Contract: `docs/superpowers/specs/2026-07-16-mems-dashboard-api-contract.md`.\n\nAll responses use the `{ status, message, data }` envelope (note: `status`, not `success`, unlike the reporting API).",
+      "item": [
+        {
+          "name": "Overview & Alerts",
+          "item": [
+            {
+              "name": "Dashboard Overview",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/dashboard/overview",
+                  "host": ["{{api_url}}"],
+                  "path": ["dashboard", "overview"]
+                }
+              }
+            },
+            {
+              "name": "Dashboard Alerts",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/dashboard/alerts",
+                  "host": ["{{api_url}}"],
+                  "path": ["dashboard", "alerts"]
+                }
+              }
+            },
+            {
+              "name": "Dashboard Status Breakdown",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/dashboard/status-breakdown",
+                  "host": ["{{api_url}}"],
+                  "path": ["dashboard", "status-breakdown"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sector Outcomes",
+          "item": [
+            {
+              "name": "List Sector Outcomes",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/sector-outcomes",
+                  "host": ["{{api_url}}"],
+                  "path": ["sector-outcomes"]
+                },
+                "description": "Sector goals as `{ id, slug, code, title }`."
+              }
+            },
+            {
+              "name": "Impact Indicators",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/sector-outcomes/impact",
+                  "host": ["{{api_url}}"],
+                  "path": ["sector-outcomes", "impact"]
+                },
+                "description": "Impact indicators with performance blocks plus `currentValue`, `baseline`, `baselineYear`, `target`.\n\n**Route order matters:** this is declared before `/{id}/trends`, whose `{id}` is `whereNumber`-constrained, so `impact` is never swallowed."
+              }
+            },
+            {
+              "name": "Sector Outcome Trends",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/sector-outcomes/{{sectoral_goal_id}}/trends",
+                  "host": ["{{api_url}}"],
+                  "path": ["sector-outcomes", "{{sectoral_goal_id}}", "trends"]
+                },
+                "description": "`{id}` must be numeric. Returns the goal plus its `outcomeIndicators` and the `outputIndicators` rolling up into them."
+              }
+            },
+            {
+              "name": "Sector Trends",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/sector-trends",
+                  "host": ["{{api_url}}"],
+                  "path": ["sector-trends"]
+                }
+              }
+            },
+            {
+              "name": "Sector Map",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/sector-map",
+                  "host": ["{{api_url}}"],
+                  "path": ["sector-map"]
+                },
+                "description": "Geo-keyed aggregates for the Nigeria choropleth in `mne_frontend`."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Programs & Deliverables",
+          "item": [
+            {
+              "name": "Bond Deliverables",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/bond-deliverables",
+                  "host": ["{{api_url}}"],
+                  "path": ["bond-deliverables"]
+                }
+              }
+            },
+            {
+              "name": "Strategic Programs",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/strategic-programs",
+                  "host": ["{{api_url}}"],
+                  "path": ["strategic-programs"]
+                }
+              }
+            },
+            {
+              "name": "Result Chain",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/result-chain",
+                  "host": ["{{api_url}}"],
+                  "path": ["result-chain"]
+                },
+                "description": "The full impact → outcome → output chain for the dashboards."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Data Health & Compliance",
+          "item": [
+            {
+              "name": "Data Health Metrics",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/data-health/metrics",
+                  "host": ["{{api_url}}"],
+                  "path": ["data-health", "metrics"]
+                }
+              }
+            },
+            {
+              "name": "Data Health Validators",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/data-health/validators",
+                  "host": ["{{api_url}}"],
+                  "path": ["data-health", "validators"]
+                }
+              }
+            },
+            {
+              "name": "Data Health Activity Log",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/data-health/activity-log",
+                  "host": ["{{api_url}}"],
+                  "path": ["data-health", "activity-log"]
+                }
+              }
+            },
+            {
+              "name": "Reporting Obligations",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/reporting-obligations",
+                  "host": ["{{api_url}}"],
+                  "path": ["reporting-obligations"]
+                }
+              }
+            },
+            {
+              "name": "Suppressed Indicators",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/suppressed-indicators",
+                  "host": ["{{api_url}}"],
+                  "path": ["suppressed-indicators"]
+                }
+              }
+            },
+            {
+              "name": "Validation Pipeline",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_url}}/validation-pipeline",
+                  "host": ["{{api_url}}"],
+                  "path": ["validation-pipeline"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Supervisor–Enumerator API",
+      "description": "`routes/v1/supervisor-enumerator.php` — middleware `auth:api` (the JWT guard), so the same bearer token applies.\n\nNote: the *internal web app* exposes a parallel set of these under `/settings/...` with session auth — see the Internal folder.",
+      "item": [
+        {
+          "name": "List Assignments",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/supervisor-enumerators",
+              "host": ["{{api_url}}"],
+              "path": ["supervisor-enumerators"]
+            }
+          }
+        },
+        {
+          "name": "Assign Enumerators to a Supervisor",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supervisor_id\": {{supervisor_id}},\n  \"enumerator_ids\": [{{enumerator_id}}]\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/supervisor-enumerators/assign",
+              "host": ["{{api_url}}"],
+              "path": ["supervisor-enumerators", "assign"]
+            },
+            "description": "**Required:** `supervisor_id` (must hold the `supervisor` role, else 422), `enumerator_ids[]` (min 1; each must hold the enumerator role)."
+          }
+        },
+        {
+          "name": "List a Supervisor's Enumerators",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/supervisor-enumerators/{{supervisor_id}}/enumerators",
+              "host": ["{{api_url}}"],
+              "path": ["supervisor-enumerators", "{{supervisor_id}}", "enumerators"]
+            }
+          }
+        },
+        {
+          "name": "Remove an Assignment",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/supervisor-enumerators/{{supervisor_id}}/{{enumerator_id}}",
+              "host": ["{{api_url}}"],
+              "path": ["supervisor-enumerators", "{{supervisor_id}}", "{{enumerator_id}}"]
+            },
+            "description": "Both ids are URL segments (deliberately — not a body) so they arrive reliably."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Activity Logs",
+      "description": "`ActivityLogController`, prefix `activity-logs`. Note: these routes sit **outside** any `jwt.verify` block in `routes/api.php` — they inherit only `json-response` + `cors`. The bearer token is still sent so `my-activity` can resolve a user.",
+      "item": [
+        {
+          "name": "List Activity Logs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/activity-logs?per_page=15",
+              "host": ["{{api_url}}"],
+              "path": ["activity-logs"],
+              "query": [
+                { "key": "per_page", "value": "15", "description": "Default 15." },
+                { "key": "user_id", "value": "{{user_id}}", "disabled": true },
+                { "key": "action", "value": "created", "disabled": true },
+                { "key": "db_action", "value": "insert", "disabled": true },
+                { "key": "callable_type", "value": "App\\Models\\IndicatorReport", "disabled": true },
+                { "key": "method", "value": "POST", "disabled": true, "description": "HTTP method; upper-cased server-side." },
+                { "key": "start_date", "value": "2026-01-01", "disabled": true, "description": "Must be paired with end_date." },
+                { "key": "end_date", "value": "2026-12-31", "disabled": true, "description": "Must be paired with start_date." },
+                { "key": "page", "value": "1", "disabled": true }
+              ]
+            },
+            "description": "`start_date` and `end_date` only apply when **both** are present."
+          }
+        },
+        {
+          "name": "My Activity",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/activity-logs/my-activity?per_page=15",
+              "host": ["{{api_url}}"],
+              "path": ["activity-logs", "my-activity"],
+              "query": [
+                { "key": "per_page", "value": "15" },
+                { "key": "action", "value": "updated", "disabled": true },
+                { "key": "start_date", "value": "2026-01-01", "disabled": true },
+                { "key": "end_date", "value": "2026-12-31", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Activity Statistics",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/activity-logs/statistics",
+              "host": ["{{api_url}}"],
+              "path": ["activity-logs", "statistics"],
+              "query": [
+                { "key": "user_id", "value": "{{user_id}}", "disabled": true },
+                { "key": "start_date", "value": "2026-01-01", "disabled": true },
+                { "key": "end_date", "value": "2026-12-31", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Show Activity Log",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/activity-logs/{{activity_log_id}}",
+              "host": ["{{api_url}}"],
+              "path": ["activity-logs", "{{activity_log_id}}"]
+            },
+            "description": "⚠️ This `/{id}` route is declared **after** `my-activity` and `statistics`, so those literals win. Any other segment resolves here."
+          }
+        },
+        {
+          "name": "Cleanup Old Logs",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_url}}/activity-logs/cleanup?days=90",
+              "host": ["{{api_url}}"],
+              "path": ["activity-logs", "cleanup"],
+              "query": [
+                { "key": "days", "value": "90", "description": "Retention window. Default 90." }
+              ]
+            },
+            "description": "Deletes logs older than `days`. Destructive — run against a non-production environment first."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Internal — Web App (Session Auth)",
+      "description": "**Everything below is the Inertia/Vue web app's own surface (`routes/web.php`), not the public API.**\n\nAuth model: cookie session (`auth.web`) + Laravel CSRF. To use these in Postman:\n\n1. `GET {{web_url}}/login` — establishes the session and drops the `XSRF-TOKEN` cookie.\n2. `POST {{web_url}}/login` (the **Web Login** request below) with your credentials.\n3. Every mutating request afterwards sends `X-XSRF-TOKEN: {{xsrf_token}}`; the collection pre-request script refreshes that variable from the cookie jar on every call.\n\nMost of these return **Inertia HTML/redirects**, not JSON. Add `X-Inertia: true` and `X-Inertia-Version` if you want the JSON page payload; a handful (`/departments/{id}/children`, the `location/*` endpoints, `/api/dashboard/stats`, the broadcast/test routes, quick-add) return plain JSON regardless.\n\nInertia sends `PUT`/`DELETE` as real verbs — no `_method` spoofing is needed.",
+      "item": [
+        {
+          "name": "Session & Shell",
+          "item": [
+            {
+              "name": "Login Page (bootstrap CSRF cookie)",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{web_url}}/login",
+                  "host": ["{{web_url}}"],
+                  "path": ["login"]
+                },
+                "description": "Middleware `guest.web`. Renders the `Login` Inertia page and sets the `XSRF-TOKEN` + session cookies. **Run this first.**"
+              }
+            },
+            {
+              "name": "Web Login",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" },
+                  { "key": "X-Requested-With", "value": "XMLHttpRequest" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{auth_email}}\",\n  \"password\": \"{{auth_password}}\",\n  \"remember\": false\n}"
+                },
+                "url": {
+                  "raw": "{{web_url}}/login",
+                  "host": ["{{web_url}}"],
+                  "path": ["login"]
+                },
+                "description": "`Auth\\LoginController@login`, middleware `guest.web`. Body: `email`, `password`, optional `remember` (bool). Regenerates the session on success."
+              }
+            },
+            {
+              "name": "Web Logout",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{web_url}}/logout",
+                  "host": ["{{web_url}}"],
+                  "path": ["logout"]
+                },
+                "description": "Middleware `auth.web`. Invalidates the session and regenerates the CSRF token."
+              }
+            },
+            {
+              "name": "Home / Dashboard",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{web_url}}/",
+                  "host": ["{{web_url}}"],
+                  "path": [""]
+                },
+                "description": "`DashboardController@index`, middleware `auth.web`."
+              }
+            },
+            {
+              "name": "Dashboard Stats (JSON)",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{api_root}}/dashboard/stats",
+                  "host": ["{{api_root}}"],
+                  "path": ["dashboard", "stats"]
+                },
+                "description": "⚠️ Lives at `/api/dashboard/stats` — **outside** the `/v1` group. Middleware: `EncryptCookies`, `AddQueuedCookiesToResponse`, `api.session.auth`, i.e. it authenticates via the **web session cookie**, not JWT. Log in via `Web Login` first."
+              }
+            },
+            {
+              "name": "New Enumeration Page",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{web_url}}/new",
+                  "host": ["{{web_url}}"],
+                  "path": ["new"]
+                },
+                "description": "Renders `Enumeration/NewEnumeration`."
+              }
+            },
+            {
+              "name": "Saved Data Page",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{web_url}}/saved-data",
+                  "host": ["{{web_url}}"],
+                  "path": ["saved-data"]
+                },
+                "description": "Named `baseline-saved-data`. The closure is currently empty (returns nothing)."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cascading Selectors (JSON)",
+          "description": "Plain-JSON helpers the Vue selectors hit. Unlike the `/api/v1/locations/*` variants, `zone_id` / `state_id` are **optional filters** here — omitting them returns the full list.",
+          "item": [
+            {
+              "name": "Zones",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{web_url}}/location/zones",
+                  "host": ["{{web_url}}"],
+                  "path": ["location", "zones"]
+                }
+              }
+            },
+            {
+              "name": "States",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{web_url}}/location/states",
+                  "host": ["{{web_url}}"],
+                  "path": ["location", "states"],
+                  "query": [
+                    { "key": "zone_id", "value": "{{zone_id}}", "disabled": true, "description": "Optional filter." }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "LGAs",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{web_url}}/location/lgas",
+                  "host": ["{{web_url}}"],
+                  "path": ["location", "lgas"],
+                  "query": [
+                    { "key": "state_id", "value": "{{state_id}}", "disabled": true, "description": "Optional filter." }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Department Children",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                  "raw": "{{web_url}}/departments/{{department_id}}/children",
+                  "host": ["{{web_url}}"],
+                  "path": ["departments", "{{department_id}}", "children"]
+                },
+                "description": "Inline closure — immediate children of a department, ordered by name."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Profile",
+          "item": [
+            {
+              "name": "Show Profile",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{web_url}}/profile",
+                  "host": ["{{web_url}}"],
+                  "path": ["profile"]
+                }
+              }
+            },
+            {
+              "name": "Edit Password Page",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{web_url}}/profile/password",
+                  "host": ["{{web_url}}"],
+                  "path": ["profile", "password"]
+                }
+              }
+            },
+            {
+              "name": "Update Password",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current_password\": \"{{auth_password}}\",\n  \"password\": \"new-secret-password\",\n  \"password_confirmation\": \"new-secret-password\"\n}"
+                },
+                "url": {
+                  "raw": "{{web_url}}/profile/password",
+                  "host": ["{{web_url}}"],
+                  "path": ["profile", "password"]
+                },
+                "description": "**Required:** `current_password`, `password` (min 8, `confirmed` → must send `password_confirmation`). A wrong `current_password` comes back as a validation error on that field."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings — Users",
+          "description": "Permission: `manage-users`.",
+          "item": [
+            {
+              "name": "List Users",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [],
+                "url": { "raw": "{{web_url}}/settings/users", "host": ["{{web_url}}"], "path": ["settings", "users"] }
+              }
+            },
+            {
+              "name": "Create User Page",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [],
+                "url": { "raw": "{{web_url}}/settings/users/create", "host": ["{{web_url}}"], "path": ["settings", "users", "create"] }
+              }
+            },
+            {
+              "name": "Store User",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"full_name\": \"Ada Okonkwo\",\n  \"email\": \"ada.okonkwo@example.gov.ng\",\n  \"role\": \"enumerator\",\n  \"department_ids\": [{{department_id}}]\n}"
+                },
+                "url": { "raw": "{{web_url}}/settings/users", "host": ["{{web_url}}"], "path": ["settings", "users"] },
+                "description": "**Required:** `full_name`, `email` (unique), `role` (a role **slug**, not id), `department_ids[]` (min 1).\n\nThe account is created with the hard-coded default password `1234567890`."
+              }
+            },
+            {
+              "name": "Edit User Page",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [],
+                "url": { "raw": "{{web_url}}/settings/users/{{user_id}}/edit", "host": ["{{web_url}}"], "path": ["settings", "users", "{{user_id}}", "edit"] }
+              }
+            },
+            {
+              "name": "Update User",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"full_name\": \"Ada Okonkwo\",\n  \"email\": \"ada.okonkwo@example.gov.ng\",\n  \"is_admin\": false,\n  \"role_ids\": [{{role_id}}],\n  \"permission_ids\": [],\n  \"department_ids\": [{{department_id}}]\n}"
+                },
+                "url": { "raw": "{{web_url}}/settings/users/{{user_id}}", "host": ["{{web_url}}"], "path": ["settings", "users", "{{user_id}}"] },
+                "description": "**Required:** `full_name`, `email` (unique, ignoring self).\n**Optional:** `is_admin`, `role_ids[]`, `permission_ids[]`, `department_ids[]`.\n\nPrivilege-granting fields (`is_admin`, roles, direct permissions, and the email — an account-takeover vector via password reset) are only applied when the **actor** is a full admin; a non-admin's changes to those are silently dropped."
+              }
+            },
+            {
+              "name": "Delete User",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "DELETE",
+                "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }],
+                "url": { "raw": "{{web_url}}/settings/users/{{user_id}}", "host": ["{{web_url}}"], "path": ["settings", "users", "{{user_id}}"] }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings — Roles",
+          "description": "Permission: `manage-permissions`.",
+          "item": [
+            {
+              "name": "List Roles",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/roles", "host": ["{{web_url}}"], "path": ["settings", "roles"] } }
+            },
+            {
+              "name": "Create Role Page",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/roles/create", "host": ["{{web_url}}"], "path": ["settings", "roles", "create"] } }
+            },
+            {
+              "name": "Store Role",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Desk Officer\",\n  \"slug\": \"desk_officer\",\n  \"permission_ids\": [{{permission_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/settings/roles", "host": ["{{web_url}}"], "path": ["settings", "roles"] },
+                "description": "**Required:** `name`. **Optional:** `slug` (unique; auto-derived with `_` separator when omitted), `permission_ids[]`."
+              }
+            },
+            {
+              "name": "Edit Role Page",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/roles/{{role_id}}/edit", "host": ["{{web_url}}"], "path": ["settings", "roles", "{{role_id}}", "edit"] } }
+            },
+            {
+              "name": "Update Role",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Desk Officer\",\n  \"slug\": \"desk_officer\",\n  \"permission_ids\": [{{permission_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/settings/roles/{{role_id}}", "host": ["{{web_url}}"], "path": ["settings", "roles", "{{role_id}}"] },
+                "description": "`slug` is **required** on update (unique, ignoring self). `permission_ids[]` is synced — omitting it clears all permissions."
+              }
+            },
+            {
+              "name": "Delete Role",
+              "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/settings/roles/{{role_id}}", "host": ["{{web_url}}"], "path": ["settings", "roles", "{{role_id}}"] } }
+            }
+          ]
+        },
+        {
+          "name": "Settings — Permissions",
+          "description": "Permission: `manage-permissions`.",
+          "item": [
+            {
+              "name": "List Permissions",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/permissions", "host": ["{{web_url}}"], "path": ["settings", "permissions"] } }
+            },
+            {
+              "name": "Create Permission Page",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/permissions/create", "host": ["{{web_url}}"], "path": ["settings", "permissions", "create"] } }
+            },
+            {
+              "name": "Store Permission",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"permission\": \"export-enumeration-records\",\n  \"label\": \"Export enumeration records\",\n  \"module_id\": {{module_id}},\n  \"description\": \"Allows CSV/XLSX export of field enumeration data.\"\n}" },
+                "url": { "raw": "{{web_url}}/settings/permissions", "host": ["{{web_url}}"], "path": ["settings", "permissions"] },
+                "description": "**Required:** `permission` (unique). **Optional:** `label`, `module_id`, `description`."
+              }
+            },
+            {
+              "name": "Edit Permission Page",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/permissions/{{permission_id}}/edit", "host": ["{{web_url}}"], "path": ["settings", "permissions", "{{permission_id}}", "edit"] } }
+            },
+            {
+              "name": "Update Permission",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"permission\": \"export-enumeration-records\",\n  \"label\": \"Export enumeration records\",\n  \"module_id\": {{module_id}},\n  \"description\": \"Updated description.\"\n}" },
+                "url": { "raw": "{{web_url}}/settings/permissions/{{permission_id}}", "host": ["{{web_url}}"], "path": ["settings", "permissions", "{{permission_id}}"] }
+              }
+            },
+            {
+              "name": "Delete Permission",
+              "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/settings/permissions/{{permission_id}}", "host": ["{{web_url}}"], "path": ["settings", "permissions", "{{permission_id}}"] } }
+            }
+          ]
+        },
+        {
+          "name": "Settings — Modules",
+          "description": "Permission: `manage-settings`.",
+          "item": [
+            {
+              "name": "List Modules",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/modules", "host": ["{{web_url}}"], "path": ["settings", "modules"] } }
+            },
+            {
+              "name": "Create Module Page",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/modules/create", "host": ["{{web_url}}"], "path": ["settings", "modules", "create"] } }
+            },
+            {
+              "name": "Store Module",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Enumeration\",\n  \"slug\": \"enumeration\",\n  \"description\": \"Field data collection module.\"\n}" },
+                "url": { "raw": "{{web_url}}/settings/modules", "host": ["{{web_url}}"], "path": ["settings", "modules"] },
+                "description": "**Required:** `name`. **Optional:** `slug` (unique; slugified from name if omitted), `description`."
+              }
+            },
+            {
+              "name": "Edit Module Page",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/modules/{{module_id}}/edit", "host": ["{{web_url}}"], "path": ["settings", "modules", "{{module_id}}", "edit"] } }
+            },
+            {
+              "name": "Update Module",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Enumeration\",\n  \"slug\": \"enumeration\",\n  \"description\": \"Updated description.\"\n}" },
+                "url": { "raw": "{{web_url}}/settings/modules/{{module_id}}", "host": ["{{web_url}}"], "path": ["settings", "modules", "{{module_id}}"] },
+                "description": "`slug` is **required** on update."
+              }
+            },
+            {
+              "name": "Delete Module",
+              "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/settings/modules/{{module_id}}", "host": ["{{web_url}}"], "path": ["settings", "modules", "{{module_id}}"] } }
+            }
+          ]
+        },
+        {
+          "name": "Settings — Geography",
+          "description": "Permission: `manage-settings`. Zone → State → LGA. Deletes are blocked while children exist (zones with states, states with LGAs).",
+          "item": [
+            {
+              "name": "Zones — List",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/zones", "host": ["{{web_url}}"], "path": ["settings", "zones"] } }
+            },
+            {
+              "name": "Zones — Create Page",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/zones/create", "host": ["{{web_url}}"], "path": ["settings", "zones", "create"] } }
+            },
+            {
+              "name": "Zones — Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"North Central\",\n  \"code\": \"NC\"\n}" },
+                "url": { "raw": "{{web_url}}/settings/zones", "host": ["{{web_url}}"], "path": ["settings", "zones"] },
+                "description": "**Required:** `name`. **Optional:** `code` (max 50)."
+              }
+            },
+            {
+              "name": "Zones — Edit Page",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/zones/{{zone_id}}/edit", "host": ["{{web_url}}"], "path": ["settings", "zones", "{{zone_id}}", "edit"] } }
+            },
+            {
+              "name": "Zones — Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"North Central\",\n  \"code\": \"NC\"\n}" },
+                "url": { "raw": "{{web_url}}/settings/zones/{{zone_id}}", "host": ["{{web_url}}"], "path": ["settings", "zones", "{{zone_id}}"] }
+              }
+            },
+            {
+              "name": "Zones — Delete",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "DELETE",
+                "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }],
+                "url": { "raw": "{{web_url}}/settings/zones/{{zone_id}}", "host": ["{{web_url}}"], "path": ["settings", "zones", "{{zone_id}}"] },
+                "description": "Refuses (flash error, no delete) if the zone still has states."
+              }
+            },
+            {
+              "name": "States — List",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/states", "host": ["{{web_url}}"], "path": ["settings", "states"] } }
+            },
+            {
+              "name": "States — Create Page",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/states/create", "host": ["{{web_url}}"], "path": ["settings", "states", "create"] } }
+            },
+            {
+              "name": "States — Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Benue\",\n  \"zone_id\": {{zone_id}}\n}" },
+                "url": { "raw": "{{web_url}}/settings/states", "host": ["{{web_url}}"], "path": ["settings", "states"] },
+                "description": "**Required:** `name`, `zone_id`."
+              }
+            },
+            {
+              "name": "States — Edit Page",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/states/{{state_id}}/edit", "host": ["{{web_url}}"], "path": ["settings", "states", "{{state_id}}", "edit"] } }
+            },
+            {
+              "name": "States — Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Benue\",\n  \"zone_id\": {{zone_id}}\n}" },
+                "url": { "raw": "{{web_url}}/settings/states/{{state_id}}", "host": ["{{web_url}}"], "path": ["settings", "states", "{{state_id}}"] }
+              }
+            },
+            {
+              "name": "States — Delete",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "DELETE",
+                "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }],
+                "url": { "raw": "{{web_url}}/settings/states/{{state_id}}", "host": ["{{web_url}}"], "path": ["settings", "states", "{{state_id}}"] },
+                "description": "Refuses if the state still has LGAs."
+              }
+            },
+            {
+              "name": "LGAs — List",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/lgas", "host": ["{{web_url}}"], "path": ["settings", "lgas"] } }
+            },
+            {
+              "name": "LGAs — Create Page",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/lgas/create", "host": ["{{web_url}}"], "path": ["settings", "lgas", "create"] } }
+            },
+            {
+              "name": "LGAs — Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Makurdi\",\n  \"state_id\": {{state_id}}\n}" },
+                "url": { "raw": "{{web_url}}/settings/lgas", "host": ["{{web_url}}"], "path": ["settings", "lgas"] },
+                "description": "**Required:** `name`, `state_id`."
+              }
+            },
+            {
+              "name": "LGAs — Edit Page",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/lgas/{{lga_id}}/edit", "host": ["{{web_url}}"], "path": ["settings", "lgas", "{{lga_id}}", "edit"] } }
+            },
+            {
+              "name": "LGAs — Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Makurdi\",\n  \"state_id\": {{state_id}}\n}" },
+                "url": { "raw": "{{web_url}}/settings/lgas/{{lga_id}}", "host": ["{{web_url}}"], "path": ["settings", "lgas", "{{lga_id}}"] }
+              }
+            },
+            {
+              "name": "LGAs — Delete",
+              "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/settings/lgas/{{lga_id}}", "host": ["{{web_url}}"], "path": ["settings", "lgas", "{{lga_id}}"] } }
+            }
+          ]
+        },
+        {
+          "name": "Settings — Supervisor & Enumerators",
+          "description": "`routes/v1/web-supervisor-enumerator.php`, required inside the `settings` prefix. Middleware `auth.web`.\n\n⚠️ Note the path asymmetry vs. the API: the list/create screens are `/settings/supervisor-enumerator**s**`, but assign/remove are `/settings/supervisor-enumerator` (singular).",
+          "item": [
+            {
+              "name": "List Assignments (page)",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/supervisor-enumerators", "host": ["{{web_url}}"], "path": ["settings", "supervisor-enumerators"] } }
+            },
+            {
+              "name": "Create Assignment Page",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/settings/supervisor-enumerators/create", "host": ["{{web_url}}"], "path": ["settings", "supervisor-enumerators", "create"] } }
+            },
+            {
+              "name": "Assign Enumerators",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"supervisor_id\": {{supervisor_id}},\n  \"enumerator_ids\": [{{enumerator_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/settings/supervisor-enumerator/assign", "host": ["{{web_url}}"], "path": ["settings", "supervisor-enumerator", "assign"] },
+                "description": "Same controller action as the API variant. **Required:** `supervisor_id`, `enumerator_ids[]` (min 1)."
+              }
+            },
+            {
+              "name": "Remove Assignment",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "DELETE",
+                "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }],
+                "url": { "raw": "{{web_url}}/settings/supervisor-enumerator/remove/{{supervisor_id}}/{{enumerator_id}}", "host": ["{{web_url}}"], "path": ["settings", "supervisor-enumerator", "remove", "{{supervisor_id}}", "{{enumerator_id}}"] },
+                "description": "IDs are URL parameters by design, so they are received reliably."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Programs — Sectoral Goals",
+          "item": [
+            { "name": "List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/sectoral-goals", "host": ["{{web_url}}"], "path": ["programs", "sectoral-goals"] } } },
+            { "name": "Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/sectoral-goals/create", "host": ["{{web_url}}"], "path": ["programs", "sectoral-goals", "create"] } } },
+            {
+              "name": "Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"code\": \"SG-1\",\n  \"title\": \"Improve livestock productivity\",\n  \"description\": \"Raise national output per animal across priority species.\"\n}" },
+                "url": { "raw": "{{web_url}}/programs/sectoral-goals", "host": ["{{web_url}}"], "path": ["programs", "sectoral-goals"] },
+                "description": "**Required:** `code` (unique), `title`. **Optional:** `description`."
+              }
+            },
+            { "name": "Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/sectoral-goals/{{sectoral_goal_id}}/edit", "host": ["{{web_url}}"], "path": ["programs", "sectoral-goals", "{{sectoral_goal_id}}", "edit"] } } },
+            {
+              "name": "Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"code\": \"SG-1\",\n  \"title\": \"Improve livestock productivity\",\n  \"description\": \"Updated description.\"\n}" },
+                "url": { "raw": "{{web_url}}/programs/sectoral-goals/{{sectoral_goal_id}}", "host": ["{{web_url}}"], "path": ["programs", "sectoral-goals", "{{sectoral_goal_id}}"] }
+              }
+            },
+            { "name": "Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/programs/sectoral-goals/{{sectoral_goal_id}}", "host": ["{{web_url}}"], "path": ["programs", "sectoral-goals", "{{sectoral_goal_id}}"] } } }
+          ]
+        },
+        {
+          "name": "Programs — NLGAS Pillars",
+          "item": [
+            { "name": "List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/nlgas-pillars", "host": ["{{web_url}}"], "path": ["programs", "nlgas-pillars"] } } },
+            { "name": "Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/nlgas-pillars/create", "host": ["{{web_url}}"], "path": ["programs", "nlgas-pillars", "create"] } } },
+            {
+              "name": "Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"code\": \"P-1\",\n  \"title\": \"Animal Health & Disease Control\",\n  \"description\": \"NLGAS pillar covering veterinary services.\"\n}" },
+                "url": { "raw": "{{web_url}}/programs/nlgas-pillars", "host": ["{{web_url}}"], "path": ["programs", "nlgas-pillars"] },
+                "description": "**Required:** `code` (unique), `title`. **Optional:** `description`."
+              }
+            },
+            { "name": "Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/nlgas-pillars/{{pillar_id}}/edit", "host": ["{{web_url}}"], "path": ["programs", "nlgas-pillars", "{{pillar_id}}", "edit"] } } },
+            {
+              "name": "Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"code\": \"P-1\",\n  \"title\": \"Animal Health & Disease Control\",\n  \"description\": \"Updated description.\"\n}" },
+                "url": { "raw": "{{web_url}}/programs/nlgas-pillars/{{pillar_id}}", "host": ["{{web_url}}"], "path": ["programs", "nlgas-pillars", "{{pillar_id}}"] }
+              }
+            },
+            { "name": "Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/programs/nlgas-pillars/{{pillar_id}}", "host": ["{{web_url}}"], "path": ["programs", "nlgas-pillars", "{{pillar_id}}"] } } }
+          ]
+        },
+        {
+          "name": "Programs — Programs",
+          "description": "Note the doubled segment: the route group prefix is `programs` and the resource is also `programs`, so the URL is `/programs/programs`.",
+          "item": [
+            { "name": "List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/programs", "host": ["{{web_url}}"], "path": ["programs", "programs"] } } },
+            { "name": "Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/programs/create", "host": ["{{web_url}}"], "path": ["programs", "programs", "create"] } } },
+            {
+              "name": "Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"code\": \"PRG-1\",\n  \"title\": \"National Vaccination Programme\"\n}" },
+                "url": { "raw": "{{web_url}}/programs/programs", "host": ["{{web_url}}"], "path": ["programs", "programs"] },
+                "description": "**Required:** `code` (unique), `title`."
+              }
+            },
+            { "name": "Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/programs/{{program_id}}/edit", "host": ["{{web_url}}"], "path": ["programs", "programs", "{{program_id}}", "edit"] } } },
+            {
+              "name": "Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"code\": \"PRG-1\",\n  \"title\": \"National Vaccination Programme\"\n}" },
+                "url": { "raw": "{{web_url}}/programs/programs/{{program_id}}", "host": ["{{web_url}}"], "path": ["programs", "programs", "{{program_id}}"] }
+              }
+            },
+            { "name": "Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/programs/programs/{{program_id}}", "host": ["{{web_url}}"], "path": ["programs", "programs", "{{program_id}}"] } } }
+          ]
+        },
+        {
+          "name": "Programs — Departments",
+          "item": [
+            { "name": "List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/departments", "host": ["{{web_url}}"], "path": ["programs", "departments"] } } },
+            { "name": "Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/departments/create", "host": ["{{web_url}}"], "path": ["programs", "departments", "create"] } } },
+            {
+              "name": "Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Department of Veterinary Services\",\n  \"is_technical\": true,\n  \"is_agency\": false,\n  \"parent_id\": null\n}" },
+                "url": { "raw": "{{web_url}}/programs/departments", "host": ["{{web_url}}"], "path": ["programs", "departments"] },
+                "description": "**Required:** `name`. **Optional:** `is_technical` (bool), `is_agency` (bool), `parent_id`. `slug` is derived server-side from `name`."
+              }
+            },
+            { "name": "Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/departments/{{department_id}}/edit", "host": ["{{web_url}}"], "path": ["programs", "departments", "{{department_id}}", "edit"] } } },
+            {
+              "name": "Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Department of Veterinary Services\",\n  \"is_technical\": true,\n  \"is_agency\": false,\n  \"parent_id\": null\n}" },
+                "url": { "raw": "{{web_url}}/programs/departments/{{department_id}}", "host": ["{{web_url}}"], "path": ["programs", "departments", "{{department_id}}"] }
+              }
+            },
+            {
+              "name": "Show",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [],
+                "url": { "raw": "{{web_url}}/programs/departments/{{department_id}}", "host": ["{{web_url}}"], "path": ["programs", "departments", "{{department_id}}"] },
+                "description": "⚠️ Declared **after** `/departments/create`, so a department literally named/id'd `create` would be unreachable here. Not an issue for numeric ids."
+              }
+            },
+            { "name": "Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/programs/departments/{{department_id}}", "host": ["{{web_url}}"], "path": ["programs", "departments", "{{department_id}}"] } } }
+          ]
+        },
+        {
+          "name": "Programs — Baselines",
+          "item": [
+            { "name": "List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/baselines", "host": ["{{web_url}}"], "path": ["programs", "baselines"] } } },
+            { "name": "Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/baselines/create", "host": ["{{web_url}}"], "path": ["programs", "baselines", "create"] } } },
+            {
+              "name": "Store Baseline",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"indicatorable_type\": \"{{indicator_type}}\",\n  \"indicatorable_id\": {{indicator_id}},\n  \"baseline_year\": 2024,\n  \"target_year\": 2030,\n  \"baseline\": 1200,\n  \"target\": 5000,\n  \"actual\": 2100\n}" },
+                "url": { "raw": "{{web_url}}/programs/baselines", "host": ["{{web_url}}"], "path": ["programs", "baselines"] },
+                "description": "**Required:** `indicatorable_type` (must be a key of `ResultChainIndicators::TYPES` — anything else 422s), `indicatorable_id`, `baseline`, `target`, `actual` (all numeric).\n**Optional:** `baseline_year`, `target_year` (1900–2100)."
+              }
+            },
+            { "name": "Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/baselines/{{baseline_id}}/edit", "host": ["{{web_url}}"], "path": ["programs", "baselines", "{{baseline_id}}", "edit"] } } },
+            {
+              "name": "Update Baseline",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"indicatorable_type\": \"{{indicator_type}}\",\n  \"indicatorable_id\": {{indicator_id}},\n  \"baseline_year\": 2024,\n  \"target_year\": 2030,\n  \"baseline\": 1200,\n  \"target\": 5200,\n  \"actual\": 2400\n}" },
+                "url": { "raw": "{{web_url}}/programs/baselines/{{baseline_id}}", "host": ["{{web_url}}"], "path": ["programs", "baselines", "{{baseline_id}}"] }
+              }
+            },
+            { "name": "Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/programs/baselines/{{baseline_id}}", "host": ["{{web_url}}"], "path": ["programs", "baselines", "{{baseline_id}}"] } } }
+          ]
+        },
+        {
+          "name": "Programs — Disaggregations",
+          "description": "Note the spelling used throughout the codebase: `disagregations` (single 'g').",
+          "item": [
+            { "name": "List Categories", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/disagregations", "host": ["{{web_url}}"], "path": ["programs", "disagregations"] } } },
+            { "name": "Create Category Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/disagregations/create", "host": ["{{web_url}}"], "path": ["programs", "disagregations", "create"] } } },
+            {
+              "name": "Store Category (with items)",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Sex\",\n  \"items\": [\"Male\", \"Female\"]\n}" },
+                "url": { "raw": "{{web_url}}/programs/disagregations", "host": ["{{web_url}}"], "path": ["programs", "disagregations"] },
+                "description": "**Required:** `name` (unique). **Optional:** `items[]` (strings) — created as child `disagregation_items`; blank entries are filtered out."
+              }
+            },
+            { "name": "Edit Category Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/disagregations/{{disagregation_category_id}}/edit", "host": ["{{web_url}}"], "path": ["programs", "disagregations", "{{disagregation_category_id}}", "edit"] } } },
+            {
+              "name": "Update Category",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Sex\"\n}" },
+                "url": { "raw": "{{web_url}}/programs/disagregations/{{disagregation_category_id}}", "host": ["{{web_url}}"], "path": ["programs", "disagregations", "{{disagregation_category_id}}"] }
+              }
+            },
+            { "name": "Delete Category", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/programs/disagregations/{{disagregation_category_id}}", "host": ["{{web_url}}"], "path": ["programs", "disagregations", "{{disagregation_category_id}}"] } } },
+            {
+              "name": "Store Item",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Female\"\n}" },
+                "url": { "raw": "{{web_url}}/programs/disagregations/{{disagregation_category_id}}/items", "host": ["{{web_url}}"], "path": ["programs", "disagregations", "{{disagregation_category_id}}", "items"] },
+                "description": "**Required:** `name`."
+              }
+            },
+            {
+              "name": "Update Item",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Female\"\n}" },
+                "url": { "raw": "{{web_url}}/programs/disagregations/{{disagregation_category_id}}/items/{{disagregation_item_id}}", "host": ["{{web_url}}"], "path": ["programs", "disagregations", "{{disagregation_category_id}}", "items", "{{disagregation_item_id}}"] }
+              }
+            },
+            { "name": "Delete Item", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/programs/disagregations/{{disagregation_category_id}}/items/{{disagregation_item_id}}", "host": ["{{web_url}}"], "path": ["programs", "disagregations", "{{disagregation_category_id}}", "items", "{{disagregation_item_id}}"] } } }
+          ]
+        },
+        {
+          "name": "Programs — Bond Deliverables",
+          "item": [
+            { "name": "List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/bond-deliverables", "host": ["{{web_url}}"], "path": ["programs", "bond-deliverables"] } } },
+            { "name": "Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/bond-deliverables/create", "host": ["{{web_url}}"], "path": ["programs", "bond-deliverables", "create"] } } },
+            {
+              "name": "Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"code\": \"BD-1\",\n  \"deliverable\": \"500 functional veterinary clinics established\",\n  \"indicator_ids\": [{{bond_output_indicator_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/programs/bond-deliverables", "host": ["{{web_url}}"], "path": ["programs", "bond-deliverables"] },
+                "description": "**Required:** `code` (unique, max 50), `deliverable`. **Optional:** `indicator_ids[]` → `bond_output_indicators`."
+              }
+            },
+            { "name": "Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/bond-deliverables/{{bond_deliverable_id}}/edit", "host": ["{{web_url}}"], "path": ["programs", "bond-deliverables", "{{bond_deliverable_id}}", "edit"] } } },
+            {
+              "name": "Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"code\": \"BD-1\",\n  \"deliverable\": \"500 functional veterinary clinics established\",\n  \"indicator_ids\": [{{bond_output_indicator_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/programs/bond-deliverables/{{bond_deliverable_id}}", "host": ["{{web_url}}"], "path": ["programs", "bond-deliverables", "{{bond_deliverable_id}}"] },
+                "description": "`indicator_ids[]` is **synced** — omitting it detaches all linked indicators."
+              }
+            },
+            { "name": "Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/programs/bond-deliverables/{{bond_deliverable_id}}", "host": ["{{web_url}}"], "path": ["programs", "bond-deliverables", "{{bond_deliverable_id}}"] } } }
+          ]
+        },
+        {
+          "name": "Programs — Cross-Cutting Metrics",
+          "item": [
+            { "name": "List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/cross-cutting-metrics", "host": ["{{web_url}}"], "path": ["programs", "cross-cutting-metrics"] } } },
+            { "name": "Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/cross-cutting-metrics/create", "host": ["{{web_url}}"], "path": ["programs", "cross-cutting-metrics", "create"] } } },
+            {
+              "name": "Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"code\": \"CCM-1\",\n  \"area\": \"Gender inclusion\",\n  \"key_metric\": \"% of women-led livestock enterprises supported\",\n  \"purpose\": \"Track equitable access to programme benefits.\"\n}" },
+                "url": { "raw": "{{web_url}}/programs/cross-cutting-metrics", "host": ["{{web_url}}"], "path": ["programs", "cross-cutting-metrics"] },
+                "description": "**All required:** `code` (unique), `area`, `key_metric`, `purpose`."
+              }
+            },
+            { "name": "Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/programs/cross-cutting-metrics/{{cross_cutting_metric_id}}/edit", "host": ["{{web_url}}"], "path": ["programs", "cross-cutting-metrics", "{{cross_cutting_metric_id}}", "edit"] } } },
+            {
+              "name": "Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"code\": \"CCM-1\",\n  \"area\": \"Gender inclusion\",\n  \"key_metric\": \"% of women-led livestock enterprises supported\",\n  \"purpose\": \"Updated purpose.\"\n}" },
+                "url": { "raw": "{{web_url}}/programs/cross-cutting-metrics/{{cross_cutting_metric_id}}", "host": ["{{web_url}}"], "path": ["programs", "cross-cutting-metrics", "{{cross_cutting_metric_id}}"] }
+              }
+            },
+            { "name": "Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/programs/cross-cutting-metrics/{{cross_cutting_metric_id}}", "host": ["{{web_url}}"], "path": ["programs", "cross-cutting-metrics", "{{cross_cutting_metric_id}}"] } } }
+          ]
+        },
+        {
+          "name": "Result Chain — Activities & Inputs",
+          "item": [
+            {
+              "name": "Inputs (read-only)",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/inputs", "host": ["{{web_url}}"], "path": ["result-chain", "inputs"] } },
+              "description": "Index only — there is no create/update/delete for inputs."
+            },
+            { "name": "Activities — List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/activities", "host": ["{{web_url}}"], "path": ["result-chain", "activities"] } } },
+            { "name": "Activities — Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/activities/create", "host": ["{{web_url}}"], "path": ["result-chain", "activities", "create"] } } },
+            {
+              "name": "Activities — Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"program_id\": {{program_id}},\n  \"code\": \"ACT-1\",\n  \"title\": \"Conduct nationwide CBPP vaccination campaign\",\n  \"description\": \"Two rounds across all 36 states and the FCT.\",\n  \"output_indicator_ids\": [{{output_indicator_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/result-chain/activities", "host": ["{{web_url}}"], "path": ["result-chain", "activities"] },
+                "description": "**Required:** `program_id`, `code` (unique, max 50), `title`. **Optional:** `description`, `output_indicator_ids[]`."
+              }
+            },
+            { "name": "Activities — Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/activities/{{activity_id}}/edit", "host": ["{{web_url}}"], "path": ["result-chain", "activities", "{{activity_id}}", "edit"] } } },
+            {
+              "name": "Activities — Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"program_id\": {{program_id}},\n  \"code\": \"ACT-1\",\n  \"title\": \"Conduct nationwide CBPP vaccination campaign\",\n  \"description\": \"Updated scope.\",\n  \"output_indicator_ids\": [{{output_indicator_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/result-chain/activities/{{activity_id}}", "host": ["{{web_url}}"], "path": ["result-chain", "activities", "{{activity_id}}"] },
+                "description": "`output_indicator_ids[]` is synced — omit to detach all."
+              }
+            },
+            { "name": "Activities — Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/result-chain/activities/{{activity_id}}", "host": ["{{web_url}}"], "path": ["result-chain", "activities", "{{activity_id}}"] } } }
+          ]
+        },
+        {
+          "name": "Result Chain — Output Indicators",
+          "item": [
+            { "name": "List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/output-indicators", "host": ["{{web_url}}"], "path": ["result-chain", "output-indicators"] } } },
+            { "name": "Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/output-indicators/create", "host": ["{{web_url}}"], "path": ["result-chain", "output-indicators", "create"] } } },
+            {
+              "name": "Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Number of animals vaccinated\",\n  \"description\": \"Counted from field enumeration records.\",\n  \"department_id\": {{department_id}},\n  \"supporting_department_ids\": [],\n  \"measurement_unit\": \"head\",\n  \"disagregation_item_ids\": [{{disagregation_item_id}}],\n  \"outcome_indicator_ids\": [{{outcome_indicator_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/result-chain/output-indicators", "host": ["{{web_url}}"], "path": ["result-chain", "output-indicators"] },
+                "description": "**Required:** `title`, `department_id`, `outcome_indicator_ids[]` (min 1).\n**Optional:** `description`, `supporting_department_ids[]`, `measurement_unit` (max 100), `disagregation_item_ids[]`.\n\nThe indicator `code` is generated server-side."
+              }
+            },
+            { "name": "Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/output-indicators/{{output_indicator_id}}/edit", "host": ["{{web_url}}"], "path": ["result-chain", "output-indicators", "{{output_indicator_id}}", "edit"] } } },
+            {
+              "name": "Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Number of animals vaccinated\",\n  \"description\": \"Updated definition.\",\n  \"department_id\": {{department_id}},\n  \"supporting_department_ids\": [],\n  \"measurement_unit\": \"head\",\n  \"disagregation_item_ids\": [{{disagregation_item_id}}],\n  \"outcome_indicator_ids\": [{{outcome_indicator_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/result-chain/output-indicators/{{output_indicator_id}}", "host": ["{{web_url}}"], "path": ["result-chain", "output-indicators", "{{output_indicator_id}}"] }
+              }
+            },
+            { "name": "Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/result-chain/output-indicators/{{output_indicator_id}}", "host": ["{{web_url}}"], "path": ["result-chain", "output-indicators", "{{output_indicator_id}}"] } } }
+          ]
+        },
+        {
+          "name": "Result Chain — Bond Output Indicators",
+          "item": [
+            { "name": "List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/bond-output-indicators", "host": ["{{web_url}}"], "path": ["result-chain", "bond-output-indicators"] } } },
+            { "name": "Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/bond-output-indicators/create", "host": ["{{web_url}}"], "path": ["result-chain", "bond-output-indicators", "create"] } } },
+            {
+              "name": "Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Veterinary clinics commissioned\",\n  \"description\": \"Bond-financed facilities handed over.\",\n  \"outcome_indicator_ids\": [{{outcome_indicator_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/result-chain/bond-output-indicators", "host": ["{{web_url}}"], "path": ["result-chain", "bond-output-indicators"] },
+                "description": "**Required:** `title`. **Optional:** `description`, `outcome_indicator_ids[]`."
+              }
+            },
+            { "name": "Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/bond-output-indicators/{{bond_output_indicator_id}}/edit", "host": ["{{web_url}}"], "path": ["result-chain", "bond-output-indicators", "{{bond_output_indicator_id}}", "edit"] } } },
+            {
+              "name": "Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Veterinary clinics commissioned\",\n  \"description\": \"Updated definition.\",\n  \"outcome_indicator_ids\": [{{outcome_indicator_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/result-chain/bond-output-indicators/{{bond_output_indicator_id}}", "host": ["{{web_url}}"], "path": ["result-chain", "bond-output-indicators", "{{bond_output_indicator_id}}"] }
+              }
+            },
+            { "name": "Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/result-chain/bond-output-indicators/{{bond_output_indicator_id}}", "host": ["{{web_url}}"], "path": ["result-chain", "bond-output-indicators", "{{bond_output_indicator_id}}"] } } }
+          ]
+        },
+        {
+          "name": "Result Chain — Program Output Indicators",
+          "description": "Backed by `PillarProgramOutputIndicator`; the URL segment is `program-output-indicators`.",
+          "item": [
+            { "name": "List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/program-output-indicators", "host": ["{{web_url}}"], "path": ["result-chain", "program-output-indicators"] } } },
+            { "name": "Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/program-output-indicators/create", "host": ["{{web_url}}"], "path": ["result-chain", "program-output-indicators", "create"] } } },
+            {
+              "name": "Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Extension officers trained\",\n  \"description\": \"Under the pillar programme.\",\n  \"program_id\": {{program_id}},\n  \"outcome_indicator_ids\": [{{outcome_indicator_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/result-chain/program-output-indicators", "host": ["{{web_url}}"], "path": ["result-chain", "program-output-indicators"] },
+                "description": "**Required:** `title`. **Optional:** `description`, `program_id`, `outcome_indicator_ids[]`."
+              }
+            },
+            { "name": "Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/program-output-indicators/{{program_output_indicator_id}}/edit", "host": ["{{web_url}}"], "path": ["result-chain", "program-output-indicators", "{{program_output_indicator_id}}", "edit"] } } },
+            {
+              "name": "Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Extension officers trained\",\n  \"description\": \"Updated definition.\",\n  \"program_id\": {{program_id}},\n  \"outcome_indicator_ids\": [{{outcome_indicator_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/result-chain/program-output-indicators/{{program_output_indicator_id}}", "host": ["{{web_url}}"], "path": ["result-chain", "program-output-indicators", "{{program_output_indicator_id}}"] }
+              }
+            },
+            { "name": "Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/result-chain/program-output-indicators/{{program_output_indicator_id}}", "host": ["{{web_url}}"], "path": ["result-chain", "program-output-indicators", "{{program_output_indicator_id}}"] } } }
+          ]
+        },
+        {
+          "name": "Result Chain — Outcome Indicators",
+          "item": [
+            { "name": "List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/outcome-indicators", "host": ["{{web_url}}"], "path": ["result-chain", "outcome-indicators"] } } },
+            { "name": "Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/outcome-indicators/create", "host": ["{{web_url}}"], "path": ["result-chain", "outcome-indicators", "create"] } } },
+            {
+              "name": "Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Reduction in CBPP prevalence\",\n  \"description\": \"Measured by annual serological survey.\",\n  \"department_id\": {{department_id}},\n  \"supporting_department_ids\": [],\n  \"measurement_unit\": \"%\",\n  \"disagregation_item_ids\": [],\n  \"impact_indicator_ids\": [{{impact_indicator_id}}],\n  \"sectoral_goal_ids\": [{{sectoral_goal_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/result-chain/outcome-indicators", "host": ["{{web_url}}"], "path": ["result-chain", "outcome-indicators"] },
+                "description": "**Required:** `title`, `department_id`, `impact_indicator_ids[]` (min 1).\n**Optional:** `description`, `supporting_department_ids[]`, `measurement_unit`, `disagregation_item_ids[]`, `sectoral_goal_ids[]`.\n\n`sectoral_goal_ids` is what makes the indicator appear under `GET /sector-outcomes/{id}/trends`."
+              }
+            },
+            { "name": "Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/outcome-indicators/{{outcome_indicator_id}}/edit", "host": ["{{web_url}}"], "path": ["result-chain", "outcome-indicators", "{{outcome_indicator_id}}", "edit"] } } },
+            {
+              "name": "Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Reduction in CBPP prevalence\",\n  \"description\": \"Updated definition.\",\n  \"department_id\": {{department_id}},\n  \"supporting_department_ids\": [],\n  \"measurement_unit\": \"%\",\n  \"disagregation_item_ids\": [],\n  \"impact_indicator_ids\": [{{impact_indicator_id}}],\n  \"sectoral_goal_ids\": [{{sectoral_goal_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/result-chain/outcome-indicators/{{outcome_indicator_id}}", "host": ["{{web_url}}"], "path": ["result-chain", "outcome-indicators", "{{outcome_indicator_id}}"] }
+              }
+            },
+            { "name": "Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/result-chain/outcome-indicators/{{outcome_indicator_id}}", "host": ["{{web_url}}"], "path": ["result-chain", "outcome-indicators", "{{outcome_indicator_id}}"] } } }
+          ]
+        },
+        {
+          "name": "Result Chain — Impact Indicators",
+          "item": [
+            { "name": "List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/impact-indicators", "host": ["{{web_url}}"], "path": ["result-chain", "impact-indicators"] } } },
+            { "name": "Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/impact-indicators/create", "host": ["{{web_url}}"], "path": ["result-chain", "impact-indicators", "create"] } } },
+            {
+              "name": "Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Livestock sector contribution to GDP\",\n  \"description\": \"National accounts, livestock sub-sector.\",\n  \"department_id\": {{department_id}},\n  \"supporting_department_ids\": [],\n  \"measurement_unit\": \"% of GDP\",\n  \"disagregation_item_ids\": []\n}" },
+                "url": { "raw": "{{web_url}}/result-chain/impact-indicators", "host": ["{{web_url}}"], "path": ["result-chain", "impact-indicators"] },
+                "description": "**Required:** `title`, `department_id`.\n**Optional:** `description`, `supporting_department_ids[]`, `measurement_unit`, `disagregation_item_ids[]`.\n\nImpact indicators sit at the top of the chain — they have no parent links."
+              }
+            },
+            { "name": "Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/result-chain/impact-indicators/{{impact_indicator_id}}/edit", "host": ["{{web_url}}"], "path": ["result-chain", "impact-indicators", "{{impact_indicator_id}}", "edit"] } } },
+            {
+              "name": "Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Livestock sector contribution to GDP\",\n  \"description\": \"Updated definition.\",\n  \"department_id\": {{department_id}},\n  \"supporting_department_ids\": [],\n  \"measurement_unit\": \"% of GDP\",\n  \"disagregation_item_ids\": []\n}" },
+                "url": { "raw": "{{web_url}}/result-chain/impact-indicators/{{impact_indicator_id}}", "host": ["{{web_url}}"], "path": ["result-chain", "impact-indicators", "{{impact_indicator_id}}"] }
+              }
+            },
+            { "name": "Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/result-chain/impact-indicators/{{impact_indicator_id}}", "host": ["{{web_url}}"], "path": ["result-chain", "impact-indicators", "{{impact_indicator_id}}"] } } },
+            {
+              "name": "Quick-Add Disaggregation Item (JSON)",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Accept", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"category_id\": {{disagregation_category_id}},\n  \"category_name\": null,\n  \"item_name\": \"Non-binary\"\n}" },
+                "url": { "raw": "{{web_url}}/result-chain/disagregation-items/quick-add", "host": ["{{web_url}}"], "path": ["result-chain", "disagregation-items", "quick-add"] },
+                "description": "JSON helper used inline by the indicator forms — returns the created item rather than redirecting.\n\n**Required:** `item_name`. Supply **either** `category_id` (existing category) **or** `category_name` (`required_without:category_id`; the category is `firstOrCreate`d)."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Indicator Reporting (Web Screens)",
+          "description": "`routes/v1/web-indicator-reporting.php` — the Inertia counterpart of the Indicator Reporting API, mounted under `/indicator-reporting`. Same services, session auth.",
+          "item": [
+            { "name": "Reports — List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/indicator-reporting/reports", "host": ["{{web_url}}"], "path": ["indicator-reporting", "reports"] } } },
+            { "name": "Reports — Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/indicator-reporting/reports/create", "host": ["{{web_url}}"], "path": ["indicator-reporting", "reports", "create"] } } },
+            {
+              "name": "Reports — Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"indicator_type\": \"{{indicator_type}}\",\n  \"indicator_id\": {{indicator_id}},\n  \"department_id\": {{department_id}},\n  \"reporting_period_id\": {{period_id}},\n  \"target_value\": 500,\n  \"actual_value\": 320,\n  \"narrative\": \"Q2 progress.\",\n  \"values\": [\n    { \"disagregation_item_id\": {{disagregation_item_id}}, \"value\": 180 }\n  ]\n}" },
+                "url": { "raw": "{{web_url}}/indicator-reporting/reports", "host": ["{{web_url}}"], "path": ["indicator-reporting", "reports"] },
+                "description": "**Required:** `indicator_type`, `indicator_id`, `department_id`, `reporting_period_id`.\n**Optional:** `target_value`, `actual_value`, `narrative`, `values[]`.\n\nUnlike the API variant, the web form does **not** accept `baseline` / `baseline_year`."
+              }
+            },
+            { "name": "Reports — Show", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/indicator-reporting/reports/{{report_id}}", "host": ["{{web_url}}"], "path": ["indicator-reporting", "reports", "{{report_id}}"] } } },
+            { "name": "Reports — Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/indicator-reporting/reports/{{report_id}}/edit", "host": ["{{web_url}}"], "path": ["indicator-reporting", "reports", "{{report_id}}", "edit"] } } },
+            {
+              "name": "Reports — Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"target_value\": 520,\n  \"actual_value\": 400,\n  \"narrative\": \"Revised after validation.\",\n  \"reporting_period_id\": {{period_id}},\n  \"values\": [\n    { \"disagregation_item_id\": {{disagregation_item_id}}, \"value\": 220 }\n  ]\n}" },
+                "url": { "raw": "{{web_url}}/indicator-reporting/reports/{{report_id}}", "host": ["{{web_url}}"], "path": ["indicator-reporting", "reports", "{{report_id}}"] }
+              }
+            },
+            { "name": "Reports — Submit", "request": { "auth": { "type": "noauth" }, "method": "POST", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/indicator-reporting/reports/{{report_id}}/submit", "host": ["{{web_url}}"], "path": ["indicator-reporting", "reports", "{{report_id}}", "submit"] } } },
+            {
+              "name": "Reports — Upload Proof",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [{ "key": "file", "type": "file", "src": [], "description": "Required. Max 10 MB. (The web variant does not restrict MIME types — the API variant does.)" }]
+                },
+                "url": { "raw": "{{web_url}}/indicator-reporting/reports/{{report_id}}/proofs", "host": ["{{web_url}}"], "path": ["indicator-reporting", "reports", "{{report_id}}", "proofs"] }
+              }
+            },
+            { "name": "Reports — Delete Proof", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/indicator-reporting/reports/{{report_id}}/proofs/{{proof_id}}", "host": ["{{web_url}}"], "path": ["indicator-reporting", "reports", "{{report_id}}", "proofs", "{{proof_id}}"] } } },
+            {
+              "name": "Review Queue (PRS / PS)",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/indicator-reporting/review", "host": ["{{web_url}}"], "path": ["indicator-reporting", "review"] } },
+              "description": "`ReportReviewController@queue`."
+            },
+            { "name": "Review — Approve", "request": { "auth": { "type": "noauth" }, "method": "POST", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/indicator-reporting/review/{{report_id}}/approve", "host": ["{{web_url}}"], "path": ["indicator-reporting", "review", "{{report_id}}", "approve"] } } },
+            {
+              "name": "Review — Decline",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"reason\": \"Evidence does not support the reported actual.\"\n}" },
+                "url": { "raw": "{{web_url}}/indicator-reporting/review/{{report_id}}/decline", "host": ["{{web_url}}"], "path": ["indicator-reporting", "review", "{{report_id}}", "decline"] },
+                "description": "`reason` required, min 3 chars."
+              }
+            },
+            { "name": "Workflows — List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/indicator-reporting/workflows", "host": ["{{web_url}}"], "path": ["indicator-reporting", "workflows"] } } },
+            { "name": "Workflows — Create Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/indicator-reporting/workflows/create", "host": ["{{web_url}}"], "path": ["indicator-reporting", "workflows", "create"] } } },
+            {
+              "name": "Workflows — Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Standard Indicator Approval\",\n  \"description\": \"Reporter -> PRS -> PS\",\n  \"is_active\": true,\n  \"initiator_role_id\": {{role_id}},\n  \"resubmit_behavior\": \"from_start\",\n  \"stages\": [\n    { \"name\": \"PRS Review\", \"assignment_type\": \"role\", \"role_id\": {{role_id}}, \"approval_mode\": \"any\" }\n  ],\n  \"department_ids\": [{{department_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/indicator-reporting/workflows", "host": ["{{web_url}}"], "path": ["indicator-reporting", "workflows"] },
+                "description": "Identical validation to the API workflow endpoint."
+              }
+            },
+            { "name": "Workflows — Edit Page", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/indicator-reporting/workflows/{{workflow_id}}/edit", "host": ["{{web_url}}"], "path": ["indicator-reporting", "workflows", "{{workflow_id}}", "edit"] } } },
+            {
+              "name": "Workflows — Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Standard Indicator Approval (v2)\",\n  \"is_active\": true,\n  \"resubmit_behavior\": \"from_declined_stage\",\n  \"stages\": [\n    { \"name\": \"PRS Review\", \"assignment_type\": \"role\", \"role_id\": {{role_id}}, \"approval_mode\": \"any\" }\n  ],\n  \"department_ids\": [{{department_id}}]\n}" },
+                "url": { "raw": "{{web_url}}/indicator-reporting/workflows/{{workflow_id}}", "host": ["{{web_url}}"], "path": ["indicator-reporting", "workflows", "{{workflow_id}}"] }
+              }
+            },
+            { "name": "Workflows — Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/indicator-reporting/workflows/{{workflow_id}}", "host": ["{{web_url}}"], "path": ["indicator-reporting", "workflows", "{{workflow_id}}"] } } },
+            { "name": "Periods — List", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/indicator-reporting/periods", "host": ["{{web_url}}"], "path": ["indicator-reporting", "periods"] } } },
+            {
+              "name": "Periods — Store",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Q3 2026\",\n  \"type\": \"quarter\",\n  \"year\": 2026,\n  \"period_number\": 3,\n  \"start_date\": \"2026-07-01\",\n  \"end_date\": \"2026-09-30\",\n  \"is_open\": true\n}" },
+                "url": { "raw": "{{web_url}}/indicator-reporting/periods", "host": ["{{web_url}}"], "path": ["indicator-reporting", "periods"] },
+                "description": "Stricter than the API variant: `period_number` must be **unique per (type, year)** and is capped by type (max 4 for quarters, 12 for months)."
+              }
+            },
+            {
+              "name": "Periods — Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Q3 2026\",\n  \"type\": \"quarter\",\n  \"year\": 2026,\n  \"period_number\": 3,\n  \"start_date\": \"2026-07-01\",\n  \"end_date\": \"2026-09-30\",\n  \"is_open\": false\n}" },
+                "url": { "raw": "{{web_url}}/indicator-reporting/periods/{{period_id}}", "host": ["{{web_url}}"], "path": ["indicator-reporting", "periods", "{{period_id}}"] },
+                "description": "All of `name`, `type`, `year` are required here (unlike the API's `sometimes`). The uniqueness rule ignores the current record."
+              }
+            },
+            { "name": "Periods — Delete", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/indicator-reporting/periods/{{period_id}}", "host": ["{{web_url}}"], "path": ["indicator-reporting", "periods", "{{period_id}}"] } } },
+            { "name": "Settings — Show", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/indicator-reporting/settings", "host": ["{{web_url}}"], "path": ["indicator-reporting", "settings"] } } },
+            {
+              "name": "Settings — Update",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"settings\": {\n    \"reporting_reminder_days\": 7,\n    \"allow_late_submissions\": false\n  }\n}" },
+                "url": { "raw": "{{web_url}}/indicator-reporting/settings", "host": ["{{web_url}}"], "path": ["indicator-reporting", "settings"] },
+                "description": "`settings` required (object). Guarded by `manage-settings`."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Enumerations (Web)",
+          "description": "The web-side counterpart of the field app's sync endpoint. Records created here start as `pending`, whereas API submissions land as `synced`.",
+          "item": [
+            { "name": "List Records", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/enumerations", "host": ["{{web_url}}"], "path": ["enumerations"] } } },
+            {
+              "name": "Create Form Page",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/enumerations/create/{{form_type}}", "host": ["{{web_url}}"], "path": ["enumerations", "create", "{{form_type}}"] } },
+              "description": "`{formType}` must be one of `household`, `market`, `commercial_farm`."
+            },
+            {
+              "name": "Store Record",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"latitude\": 9.0563,\n  \"longitude\": 7.4985,\n  \"device_id\": \"{{device_id}}\",\n  \"payload\": {\n    \"herd_size\": 42,\n    \"species\": \"cattle\"\n  }\n}" },
+                "url": { "raw": "{{web_url}}/enumerations/{{form_type}}", "host": ["{{web_url}}"], "path": ["enumerations", "{{form_type}}"] },
+                "description": "**Required:** `payload` (object). **Optional:** `latitude`, `longitude`, `device_id` (max 100).\n\nNote the field is `payload` here, but `form_data` on the API endpoint. Zone/state/LGA are **not** accepted on this route."
+              }
+            },
+            { "name": "Show Record", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/enumerations/record/{{enumeration_record_id}}", "host": ["{{web_url}}"], "path": ["enumerations", "record", "{{enumeration_record_id}}"] } } },
+            {
+              "name": "Update Sync Status",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"sync_status\": \"synced\"\n}" },
+                "url": { "raw": "{{web_url}}/enumerations/record/{{enumeration_record_id}}/sync-status", "host": ["{{web_url}}"], "path": ["enumerations", "record", "{{enumeration_record_id}}", "sync-status"] },
+                "description": "`sync_status` required, one of `pending`, `synced`, `failed`."
+              }
+            },
+            { "name": "Delete Record", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [{ "key": "X-XSRF-TOKEN", "value": "{{xsrf_token}}" }], "url": { "raw": "{{web_url}}/enumerations/record/{{enumeration_record_id}}", "host": ["{{web_url}}"], "path": ["enumerations", "record", "{{enumeration_record_id}}"] } } },
+            {
+              "name": "Export Records",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "header": [],
+                "url": { "raw": "{{web_url}}/enumerations/export/csv", "host": ["{{web_url}}"], "path": ["enumerations", "export", "csv"] },
+                "description": "`{format?}` is optional — omit the segment (`/enumerations/export`) to use the controller default."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Broadcast & Test Utilities",
+          "description": "Reverb/Echo smoke-test endpoints, all behind `auth.web` and all returning JSON. Useful when debugging websocket delivery.",
+          "item": [
+            { "name": "Send Live Data", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{web_url}}/broadcast/live", "host": ["{{web_url}}"], "path": ["broadcast", "live"] } } },
+            { "name": "Notify a User", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{web_url}}/broadcast/notify/{{user_id}}", "host": ["{{web_url}}"], "path": ["broadcast", "notify", "{{user_id}}"] } } },
+            {
+              "name": "Test Notification",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{web_url}}/test-notification", "host": ["{{web_url}}"], "path": ["test-notification"] } },
+              "description": "Fires `App\\Events\\UserNotification` for the authenticated user. Returns `{ status: 'sent' }`, or 401 if unauthenticated."
+            },
+            {
+              "name": "Test Dashboard Stats Broadcast",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{web_url}}/test-dashboard-stats", "host": ["{{web_url}}"], "path": ["test-dashboard-stats"] } },
+              "description": "Fires `App\\Events\\DashboardStatsUpdated` with randomised figures."
+            }
+          ]
+        },
+        {
+          "name": "Maintenance (unauthenticated)",
+          "description": "⚠️ **These three routes have no auth middleware whatsoever** — anyone who can reach the host can call them. Treat as an operational hazard; they are listed here for completeness and for local debugging.",
+          "item": [
+            {
+              "name": "Clear Cache",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{web_url}}/clear-cache", "host": ["{{web_url}}"], "path": ["clear-cache"] } },
+              "description": "Runs `config:clear`, `cache:clear`, `route:clear`, `view:clear`. Returns the plain string `Cache cleared!`."
+            },
+            {
+              "name": "Run Seeders",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{web_url}}/run-seed", "host": ["{{web_url}}"], "path": ["run-seed"] } },
+              "description": "⚠️ Executes `db:seed` against the live database. Do **not** call in production."
+            },
+            {
+              "name": "Run Queue Worker",
+              "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{web_url}}/run-worker", "host": ["{{web_url}}"], "path": ["run-worker"] } },
+              "description": "⚠️ Calls `queue:work` **synchronously inside the request** (the `--once` flag is commented out), so the request blocks until the PHP time limit. Prefer a supervised worker process."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

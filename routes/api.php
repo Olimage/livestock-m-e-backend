@@ -13,8 +13,9 @@ Route::group([
     require __DIR__.'/v1/user.php';
     require __DIR__.'/v1/supervisor-enumerator.php';
     require __DIR__.'/v1/indicator-reporting.php';
+    require __DIR__.'/v1/admin-crud.php';
 
-    Route::prefix('locations')->name('api.locations.')->group(function () {
+    Route::prefix('locations')->name('api.locations.')->middleware('jwt.verify')->group(function () {
         Route::get('/zones', [App\Http\Controllers\LocationController::class, 'ApiGetZones'])->name('zones');
         Route::get('/states', [App\Http\Controllers\LocationController::class, 'ApiGetStates'])->name('states');
         Route::get('/lgas', [App\Http\Controllers\LocationController::class, 'ApiGetLgas'])->name('lgas');

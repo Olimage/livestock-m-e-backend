@@ -203,18 +203,21 @@
 		},
 		{
 			"name": "Locations",
-			"description": "Geography reference data — Zone → State → LGA. Public (no auth).",
+			"description": "Geography reference data — Zone → State → LGA (`LocationController`). Requires a valid JWT (`jwt.verify`) — no longer public. Inherits the collection-level bearer auth like every other authenticated folder in this file. Write endpoints (create/update/delete) live in the \"Locations — Admin Writes\" folder below and additionally require `manage-settings`.",
 			"item": [
 				{
 					"name": "Zones",
 					"request": {
-						"auth": { "type": "noauth" },
 						"method": "GET",
 						"header": [{ "key": "Accept", "value": "application/json" }],
 						"url": {
-							"raw": "{{base_url}}/api/v1/locations/zones",
+							"raw": "{{base_url}}/api/v1/locations/zones?search={{search}}&per_page={{per_page}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "locations", "zones"]
+							"path": ["api", "v1", "locations", "zones"],
+							"query": [
+								{ "key": "search", "value": "{{search}}", "disabled": true, "description": "Optional. Case-insensitive filter on name." },
+								{ "key": "per_page", "value": "20", "disabled": true, "description": "Optional. Presence switches data from the full array to a Laravel paginator." }
+							]
 						},
 						"description": "List all geopolitical zones."
 					},
@@ -230,23 +233,26 @@
 							"code": 200,
 							"_postman_previewlanguage": "json",
 							"header": [{ "key": "Content-Type", "value": "application/json" }],
-							"body": "{\n    \"status\": true,\n    \"message\": \"Zones fetched successfully\",\n    \"data\": [\n        { \"id\": 1, \"name\": \"North Central\", \"code\": \"NC\" },\n        { \"id\": 2, \"name\": \"North East\", \"code\": \"NE\" },\n        { \"id\": 3, \"name\": \"South West\", \"code\": \"SW\" }\n    ]\n}"
+							"body": "{\n    \"status\": true,\n    \"message\": \"Zones fetched successfully\",\n    \"data\": [\n        { \"id\": 1, \"uuid\": \"b3c1...\", \"name\": \"North Central\", \"code\": \"NC\", \"states_count\": 6 },\n        { \"id\": 2, \"uuid\": \"a91f...\", \"name\": \"North East\", \"code\": \"NE\", \"states_count\": 6 }\n    ]\n}"
 						}
 					]
 				},
 				{
 					"name": "States",
 					"request": {
-						"auth": { "type": "noauth" },
 						"method": "GET",
 						"header": [{ "key": "Accept", "value": "application/json" }],
 						"url": {
-							"raw": "{{base_url}}/api/v1/locations/states?zone_id={{zone_id}}",
+							"raw": "{{base_url}}/api/v1/locations/states?zone_id={{zone_id}}&search={{search}}&per_page={{per_page}}",
 							"host": ["{{base_url}}"],
 							"path": ["api", "v1", "locations", "states"],
-							"query": [{ "key": "zone_id", "value": "{{zone_id}}", "description": "Required. Filter states by zone." }]
+							"query": [
+								{ "key": "zone_id", "value": "{{zone_id}}", "description": "Optional filter — must exist in zones if present. Absent returns the full list." },
+								{ "key": "search", "value": "{{search}}", "disabled": true, "description": "Optional. Case-insensitive filter on name." },
+								{ "key": "per_page", "value": "20", "disabled": true, "description": "Optional. Presence switches data from the full array to a Laravel paginator." }
+							]
 						},
-						"description": "List states within a zone. `zone_id` is required."
+						"description": "List states, optionally filtered by zone_id — the filter is optional, not required (the admin management table needs the full list)."
 					},
 					"response": [
 						{
@@ -260,23 +266,27 @@
 							"code": 200,
 							"_postman_previewlanguage": "json",
 							"header": [{ "key": "Content-Type", "value": "application/json" }],
-							"body": "{\n    \"status\": true,\n    \"message\": \"States fetched successfully\",\n    \"data\": [\n        { \"id\": 12, \"name\": \"Benue\", \"zone_id\": 1 },\n        { \"id\": 13, \"name\": \"Kogi\", \"zone_id\": 1 },\n        { \"id\": 14, \"name\": \"Plateau\", \"zone_id\": 1 }\n    ]\n}"
+							"body": "{\n    \"status\": true,\n    \"message\": \"States fetched successfully\",\n    \"data\": [\n        { \"id\": 12, \"uuid\": \"c771...\", \"name\": \"Benue\", \"zone_id\": 1, \"zone_code\": \"NC\", \"zone_name\": \"North Central\", \"lgas_count\": 23 },\n        { \"id\": 13, \"uuid\": \"d882...\", \"name\": \"Kogi\", \"zone_id\": 1, \"zone_code\": \"NC\", \"zone_name\": \"North Central\", \"lgas_count\": 21 }\n    ]\n}"
 						}
 					]
 				},
 				{
 					"name": "LGAs",
 					"request": {
-						"auth": { "type": "noauth" },
 						"method": "GET",
 						"header": [{ "key": "Accept", "value": "application/json" }],
 						"url": {
-							"raw": "{{base_url}}/api/v1/locations/lgas?state_id={{state_id}}",
+							"raw": "{{base_url}}/api/v1/locations/lgas?state_id={{state_id}}&zone_id={{zone_id}}&search={{search}}&per_page={{per_page}}",
 							"host": ["{{base_url}}"],
 							"path": ["api", "v1", "locations", "lgas"],
-							"query": [{ "key": "state_id", "value": "{{state_id}}", "description": "Required. Filter LGAs by state." }]
+							"query": [
+								{ "key": "state_id", "value": "{{state_id}}", "description": "Optional filter — must exist in states if present. Absent returns the full list." },
+								{ "key": "zone_id", "value": "{{zone_id}}", "disabled": true, "description": "Optional filter — matches LGAs whose state belongs to this zone." },
+								{ "key": "search", "value": "{{search}}", "disabled": true, "description": "Optional. Case-insensitive filter on name." },
+								{ "key": "per_page", "value": "20", "disabled": true, "description": "Optional. Presence switches data from the full array to a Laravel paginator." }
+							]
 						},
-						"description": "List LGAs within a state. `state_id` is required."
+						"description": "List LGAs, optionally filtered by state_id and/or zone_id — both are optional filters, not required."
 					},
 					"response": [
 						{
@@ -290,9 +300,156 @@
 							"code": 200,
 							"_postman_previewlanguage": "json",
 							"header": [{ "key": "Content-Type", "value": "application/json" }],
-							"body": "{\n    \"status\": true,\n    \"message\": \"Lgas fetched successfully\",\n    \"data\": [\n        { \"id\": 201, \"name\": \"Makurdi\", \"state_id\": 12 },\n        { \"id\": 202, \"name\": \"Gboko\", \"state_id\": 12 }\n    ]\n}"
+							"body": "{\n    \"status\": true,\n    \"message\": \"Lgas fetched successfully\",\n    \"data\": [\n        { \"id\": 201, \"uuid\": \"e993...\", \"name\": \"Makurdi\", \"state_id\": 12, \"state_name\": \"Benue\", \"zone_id\": 1, \"zone_code\": \"NC\", \"zone_name\": \"North Central\" },\n        { \"id\": 202, \"uuid\": \"f0a4...\", \"name\": \"Gboko\", \"state_id\": 12, \"state_name\": \"Benue\", \"zone_id\": 1, \"zone_code\": \"NC\", \"zone_name\": \"North Central\" }\n    ]\n}"
 						}
 					]
+				}
+			]
+		},
+		{
+			"name": "Locations — Admin Writes",
+			"description": "`GeographyApiController` — create/update/delete for Zones, States, LGAs (`routes/v1/admin-crud.php`). Middleware: `jwt.verify`, `permission:manage-settings`. Deleting a Zone that still has States, or a State that still has LGAs, is refused rather than cascaded: 422 { status: false, message } (e.g. \"This zone still has states. Move or delete them first.\").",
+			"item": [
+				{
+					"name": "Create Zone",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"body": { "mode": "raw", "raw": "{\n    \"name\": \"North West\",\n    \"code\": \"NW\"\n}" },
+						"url": {
+							"raw": "{{base_url}}/api/v1/locations/zones",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "locations", "zones"]
+						},
+						"description": "name required; code optional (max 50). 201 { status: true, message: \"Zone created.\", data: <zone> }."
+					}
+				},
+				{
+					"name": "Update Zone",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"body": { "mode": "raw", "raw": "{\n    \"name\": \"North West\",\n    \"code\": \"NW\"\n}" },
+						"url": {
+							"raw": "{{base_url}}/api/v1/locations/zones/{{zone_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "locations", "zones", "{{zone_id}}"]
+						},
+						"description": "Same validation as Create Zone. 200 { status: true, message: \"Zone updated.\", data: <zone> }."
+					}
+				},
+				{
+					"name": "Delete Zone",
+					"request": {
+						"method": "DELETE",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/locations/zones/{{zone_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "locations", "zones", "{{zone_id}}"]
+						},
+						"description": "200 { status: true, message: \"Zone deleted.\" }, or 422 { status: false, message } if the zone still has states."
+					}
+				},
+				{
+					"name": "Create State",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"body": { "mode": "raw", "raw": "{\n    \"name\": \"Kano\",\n    \"zone_id\": {{zone_id}}\n}" },
+						"url": {
+							"raw": "{{base_url}}/api/v1/locations/states",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "locations", "states"]
+						},
+						"description": "name required; zone_id required and must exist in zones. 201 { status: true, message: \"State created.\", data: <state> }."
+					}
+				},
+				{
+					"name": "Update State",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"body": { "mode": "raw", "raw": "{\n    \"name\": \"Kano\",\n    \"zone_id\": {{zone_id}}\n}" },
+						"url": {
+							"raw": "{{base_url}}/api/v1/locations/states/{{state_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "locations", "states", "{{state_id}}"]
+						},
+						"description": "Same validation as Create State. 200 { status: true, message: \"State updated.\", data: <state> }."
+					}
+				},
+				{
+					"name": "Delete State",
+					"request": {
+						"method": "DELETE",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/locations/states/{{state_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "locations", "states", "{{state_id}}"]
+						},
+						"description": "200 { status: true, message: \"State deleted.\" }, or 422 { status: false, message } if the state still has LGAs."
+					}
+				},
+				{
+					"name": "Create LGA",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"body": { "mode": "raw", "raw": "{\n    \"name\": \"Dala\",\n    \"state_id\": {{state_id}}\n}" },
+						"url": {
+							"raw": "{{base_url}}/api/v1/locations/lgas",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "locations", "lgas"]
+						},
+						"description": "name required; state_id required and must exist in states. 201 { status: true, message: \"LGA created.\", data: <lga> }."
+					}
+				},
+				{
+					"name": "Update LGA",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"body": { "mode": "raw", "raw": "{\n    \"name\": \"Dala\",\n    \"state_id\": {{state_id}}\n}" },
+						"url": {
+							"raw": "{{base_url}}/api/v1/locations/lgas/{{lga_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "locations", "lgas", "{{lga_id}}"]
+						},
+						"description": "Same validation as Create LGA. 200 { status: true, message: \"LGA updated.\", data: <lga> }."
+					}
+				},
+				{
+					"name": "Delete LGA",
+					"request": {
+						"method": "DELETE",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/api/v1/locations/lgas/{{lga_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "locations", "lgas", "{{lga_id}}"]
+						},
+						"description": "200 { status: true, message: \"LGA deleted.\" }. LGAs have no children, so this never refuses with a 422."
+					}
 				}
 			]
 		},
